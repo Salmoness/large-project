@@ -9,8 +9,8 @@ function LoggedInName()
     function doLogout(event:any) : void
     {
         event.preventDefault();
-        alert('doLogout');
-        navigate("/")
+        localStorage.removeItem("user_data");
+        navigate("/");
     };
     return(
         <div id="loggedInDiv">
