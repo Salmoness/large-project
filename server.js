@@ -244,6 +244,7 @@ app.post('/api/searchcards', async (req, res, next) =>
 });
 
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://Admin:admin123@large-project.pzmluhu.mongodb.net/?retryWrites=true&w=majority&appName=Large-Project';
+require('dotenv').config();
+const url = process.env.MONGO_URL 
 const client = new MongoClient(url);
 client.connect();
