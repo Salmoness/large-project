@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+//import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function LoggedInName()
 {
     const navigate = useNavigate();
 
-    let user={}
+    //let user={}
     function doLogout(event:any) : void
     {
         event.preventDefault();
