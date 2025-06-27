@@ -1,6 +1,19 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
+const app_name = 'hopethiswork.com';
+function buildPath(route:string) : string
+{
+    if (process.env.NODE_ENV != 'development')
+    {
+    return 'http://' + app_name + ':5000/' + route;
+    }
+    else
+    {
+    return 'http://localhost:5000/' + route;
+    }
+}
+
 function Login() 
 {
     const [message,setMessage] = useState('');
@@ -17,8 +30,7 @@ function Login()
 
         try
         {
-            const response = await fetch('http://localhost:5000/api/login',
-            {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(buildPath('api/login'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
             var res = JSON.parse(await response.text());
             if( res.id <= 0 )
             {
@@ -27,10 +39,9 @@ function Login()
             else
             {
                 var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-            localStorage.setItem('user_data', JSON.stringify(user));
-            setMessage('');
-            window.location.href = '/cards';
-            // consider navigate('/cards'); instead of window.location.href
+                localStorage.setItem('user_data', JSON.stringify(user));
+                setMessage('');
+                navigate('/cards'); 
             }
         }
         catch(error:any)
