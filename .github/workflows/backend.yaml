@@ -24,6 +24,9 @@ jobs:
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
           cd /var/www/large-project/
           git pull origin main
+          sudo rm -rf /var/server/*
+          sudo cp server.js package.json package-lock.json /var/www/html/
+          cd /var/server/
           npm install
           pm2 restart server
           EOF
