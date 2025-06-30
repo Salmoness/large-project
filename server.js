@@ -245,6 +245,6 @@ app.post('/api/searchcards', async (req, res, next) =>
 
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config();
-const url = process.env.MONGO_URL 
+const url = process.env.MONGODB_URI 
 const client = new MongoClient(url);
 client.connect();
