@@ -1,6 +1,6 @@
 const app_name = 'hopethiswork.com';
 
-exports.buildPath = function buildPath(route:string) : string
+export function buildPath(route:string) : string
 {
     if (process.env.NODE_ENV != 'development')
     {
