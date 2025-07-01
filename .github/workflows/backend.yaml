@@ -30,5 +30,5 @@ jobs:
           sudo cp server.js package.json package-lock.json /var/server/
           cd /var/server/
           npm install
-          pm2 restart server
+          pm2 restart server.js
           EOF

@@ -7,38 +7,38 @@ on:
   pull_request:
     branches: 
       - main
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      steps: 
-        - name: Checkout code
-          uses: actions/checkout@v3
-        - name: Set up Node.js
-          uses: actions/setup-node@v2
-          with:
-            node-version: '22.17.0'
-        - name: Install dependencies
-          run: npm install
-    deploy: 
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-        - name: Install sshpass
-          run: sudo apt-get install -y sshpass
-        - name: Deploy to DigitalOcean Droplet
-          env:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-            SSH_HOST: ${{ secrets.SSH_HOST }}
-          run: |
-            sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
-            cd /var/www/large-project/frontend
-            git pull origin main
-            npm install
-            npm run build
-            sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
-            systemctl restart nginx
-            EOF
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.17.0'
+      - name: Install dependencies
+        run: npm install
+  deploy: 
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: Deploy to DigitalOcean Droplet
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
+          cd /var/www/large-project/frontend
+          git pull originls main
+          npm install
+          npm run build
+          sudo rm -rf /var/www/html/*
+          sudo cp -r dist/* /var/www/html/
+          systemctl restart nginx
+          EOF
