@@ -34,11 +34,12 @@ function Login()
             var res = JSON.parse(await response.text());
             if( res.id <= 0 )
             {
+                var user = {firstName:"null",lastName:"null",id:-1}
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
+                user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
                 localStorage.setItem('user_data', JSON.stringify(user));
                 setMessage('');
                 navigate('/cards'); 
