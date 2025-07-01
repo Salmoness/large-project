@@ -1,6 +1,6 @@
 function PageTitle() {
   return (
-    <h1 id="title">Mern Stack Demo</h1>
+    <h1 id="title">Title</h1>
   );
 }
 export default PageTitle;
