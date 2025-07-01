@@ -2,11 +2,9 @@
 name: CI/CD
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
 jobs:
   deploy_backend:
     runs-on: ubuntu-latest
