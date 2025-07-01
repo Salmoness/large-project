@@ -248,3 +248,6 @@ require('dotenv').config();
 const url = process.env.MONGODB_URI 
 const client = new MongoClient(url);
 client.connect();
+
+var api = require('./api.js');
+api.setApp(app, client);
