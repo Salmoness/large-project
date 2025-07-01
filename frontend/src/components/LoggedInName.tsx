@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 function LoggedInName()
 {
+
+    if (typeof window === 'undefined') return null;
+
     const navigate = useNavigate();
 
     //let user={}
