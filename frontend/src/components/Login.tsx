@@ -36,7 +36,6 @@ function Login()
             {
                 var user = {firstName:"null",lastName:"null",id:-1}
                 setMessage('User/Password combination incorrect');
-                navigate('/cards'); 
             }
             else
             {
