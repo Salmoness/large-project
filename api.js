@@ -1,6 +1,9 @@
 require("express");
 require("mongodb");
 
+const MOCK_USERNAME = "user";
+const MOCK_PASSWORD = "password";
+
 exports.setApp = function(app, client)
 {
     
@@ -20,10 +23,73 @@ exports.setApp = function(app, client)
             id = results[0].UserID;
             fn = results[0].FirstName;
             ln = results[0].LastName;
+            try
+            {
+                const token = require("./createJWT.js");
+                ret = token.createToken( fn, ln, id );
+            }
+            catch(e)
+            {
+                ret = {error:e.message};
+            }
         }
-        var ret = { id:id, firstName:fn, lastName:ln, error:''};
+        
+        else if( login === MOCK_USERNAME && password === MOCK_PASSWORD )
+        {
+            id = 1; // Mock user ID
+            fn = 'Mock';
+            ln = 'User';
+            try
+            {
+                const token = require("./createJWT.js");
+                ret = token.createToken( fn, ln, id );
+            }
+            catch(e)
+            {
+                ret = {error:e.message};
+            }
+        }
+        else    
+        {
+            ret = {error:"Login/Password incorrect"};
+        }
         res.status(200).json(ret);
     });
+
+    app.post('/api/login', async (req, res, next) =>
+{
+    // incoming: login, password
+    // outgoing: id, firstName, lastName, error
+    var error = '';
+    const { login, password } = req.body;
+    const db = client.db('COP4331Cards');
+    const results = await
+    db.collection('Users').find({Login:login,Password:password}).toArray();
+    var id = -1;
+    var fn = '';
+    var ln = '';
+    var ret;
+    if( results.length > 0 )
+    {
+    id = results[0].UserId;
+    fn = results[0].FirstName;
+    ln = results[0].LastName;
+    try
+    {
+    const token = require("./createJWT.js");
+    ret = token.createToken( fn, ln, id );
+    }
+    catch(e)
+    {
+    ret = {error:e.message};
+    }
+    }
+    else
+    {
+    ret = {error:"Login/Password incorrect"};
+    }
+    res.status(200).json(ret);
+});
 
     app.post('/api/addcard', async (req, res, next) =>
     {
@@ -41,7 +107,6 @@ exports.setApp = function(app, client)
         {
             error = e.toString();
         }
-        cardList.push( card );
         var ret = { error: error };
         res.status(200).json(ret);
     });
