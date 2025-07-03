@@ -1,18 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
-const app_name = 'hopethiswork.com';
-function buildPath(route:string) : string
-{
-    if (process.env.NODE_ENV != 'development')
-    {
-    return 'http://' + app_name + ':5000/' + route;
-    }
-    else
-    {
-    return 'http://localhost:5000/' + route;
-    }
-}
+import { buildPath } from './Path';
+import { storeToken } from '../tokenStorage';
+import { jwtDecode } from 'jwt-decode';
 
 function Login() 
 {
@@ -23,6 +13,11 @@ function Login()
 
     async function doLogin(event:any) : Promise<void>
     {
+        interface MyPayload {
+            userId: number;
+            firstName: string;
+            lastName: string;
+        }
         event.preventDefault();
 
         var obj = {login:loginName,password:loginPassword};
@@ -32,18 +27,33 @@ function Login()
         {
             const response = await fetch(buildPath('api/login'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
             var res = JSON.parse(await response.text());
-            if( res.id <= 0 )
+            console.log(res.error);
+            storeToken(res.jwtToken);
+            try
             {
-                var user = {firstName:"null",lastName:"null",id:-1}
-                localStorage.setItem('user_data', JSON.stringify(user));
-                setMessage('User/Password combination incorrect');
+
+                let ud = jwtDecode<MyPayload>(res.jwtToken);
+                console.log(ud);
+                let userId = ud.userId;
+                let firstName = ud.firstName;
+                let lastName = ud.lastName;
+
+                if( userId <= 0 )
+                {
+                    setMessage('User/Password combination incorrect');
+                }
+                else
+                {
+                    let user = {firstName:firstName, lastName:lastName, id:userId};
+                    localStorage.setItem('user_data', JSON.stringify(user));
+                    setMessage('');
+                    navigate('/cards'); 
+                }
             }
-            else
+            catch(e)
             {
-                user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
-                setMessage('');
-                navigate('/cards'); 
+                console.log(e);
+                return
             }
         }
         catch(error:any)
@@ -64,7 +74,7 @@ function Login()
 
     return (
         <div id="loginDiv">
-            <span id="inner-title">LOG IN</span><br />
+            <span id="inner-title">LOG IN PLEASEEEEE</span><br />
             <input type="text" id="loginName" placeholder="Username" onChange={handleSetLoginName} /><br />
             <input type="password" id="loginPassword" placeholder="Password" onChange={handleSetPassword} /><br />
             <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doLogin} />

@@ -1,22 +1,11 @@
 import React, { useState } from 'react'
-
-const app_name = 'hopethiswork.com';
-function buildPath(route:string) : string
-{
-    if (process.env.NODE_ENV != 'development')
-    {
-    return 'http://' + app_name + ':5000/' + route;
-    }
-    else
-    {
-    return 'http://localhost:5000/' + route;
-    }
-}
+import { buildPath } from './Path.tsx';
+import { retrieveToken, storeToken } from '../tokenStorage';
 
 function CardUI()
 {
     let _ud : any = localStorage.getItem('user_data');
-    let ud = JSON.parse( _ud );
+    let ud = JSON.parse( _ud ); 
     let userId : string = ud.id;
     //let firstName : string = ud.firstName;
     //let lastName : string = ud.lastName;
@@ -29,7 +18,7 @@ function CardUI()
     async function addCard(e:any) : Promise<void>
     {
         e.preventDefault();
-        let obj = {userId:userId, card:card};
+        let obj = {userId:userId, card:card, jwtToken:retrieveToken()};
         let js = JSON.stringify(obj);
         try
         {
@@ -43,6 +32,7 @@ function CardUI()
             else
             {
                 setMessage('Card has been added');
+                storeToken( res.jwtToken );
             }
         }
         catch(error:any)
@@ -54,7 +44,7 @@ function CardUI()
     async function searchCard(e:any) : Promise<void>
     {
         e.preventDefault();
-        let obj = {userId:userId,search:search};
+        let obj = {userId:userId,search:search, jwtToken:retrieveToken()};
         let js = JSON.stringify(obj);
         try
         {
@@ -72,6 +62,7 @@ function CardUI()
                 }
             }
             setResults('Card(s) have been retrieved');
+            storeToken( res.jwtToken );
             setCardList(resultText);
         }
         catch(error:any)
