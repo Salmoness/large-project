@@ -17,8 +17,8 @@ exports.setApp = function(app, client)
         const db = client.db('COP4331Cards');
         const results = await db.collection('Users').find({Login:login,Password:password}).toArray();
         var id = -1;
-        var fn = '';
-        var ln = '';
+        var fn = 'Jon';
+        var ln = 'Doe';
 
         let error = '';
         let newToken = null;
@@ -29,7 +29,7 @@ exports.setApp = function(app, client)
             ln = results[0].LastName;
             try
             {
-                newToken = token.createToken( fn, ln, id );
+                newToken = token.createToken( fn, ln, id ).accessToken;
             }
             catch(e)
             {
@@ -44,7 +44,7 @@ exports.setApp = function(app, client)
             ln = 'User';
             try
             {
-                newToken = token.createToken( fn, ln, id );
+                newToken = token.createToken( fn, ln, id ).accessToken; 
             }
             catch(e)
             {
@@ -54,8 +54,9 @@ exports.setApp = function(app, client)
         else    
         {
             error = {error:"Login/Password incorrect"};
-            newToken = "";
+            newToken = token.createToken( fn, ln, id ).accessToken;
         }
+
         ret = { error:error, jwtToken:newToken };
         res.status(200).json(ret);
     });

@@ -1,3 +1,4 @@
+const { access } = require("fs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -20,12 +21,13 @@ _createToken = function ( fn, ln, id )
         '24h'
         '365d'
         */
-        var ret = {accessToken:accessToken};
+        var ret = {error: "", accessToken:accessToken};
     }
 
     catch(e)
     {
-        var ret = {error:e.message};
+        var ret = {error:e.message, accessToken:""};
+        console.error("Error creating JWT: " + ret.error);
     }
     return ret;
 }
