@@ -1,6 +1,8 @@
 require("express");
 require("mongodb");
+require('dotenv').config();
 const token = require("./createJWT.js");
+const jwt = require("jsonwebtoken");
 
 const MOCK_USERNAME = "user";
 const MOCK_PASSWORD = "password";
@@ -13,6 +15,7 @@ exports.setApp = function(app, client)
         // outgoing: error
         const { firstName, lastName, username, email, password, confirmPassword } = req.body;
         var error = '';
+        var newToken = null;
         if( password !== confirmPassword )
         {
             error = 'Passwords do not match';
@@ -31,10 +34,12 @@ exports.setApp = function(app, client)
             }
             else
             {
-                const newUser = {FirstName:firstName, LastName:lastName, Login:username, Email:email, Password:password};
                 try
                 {
-                    await db.collection('Users').insertOne(newUser);
+                    let id = await db.collection('Users').countDocuments() + 1; // Get the next user ID
+                    const newUser = {FirstName:firstName, LastName:lastName, Login:username, Email:email, Password:password, UserId: id};
+                    const response = await db.collection('Users').insertOne(newUser);
+                    newToken = token.createToken(firstName, lastName, id).accessToken
                 }
                 catch(e)
                 {
@@ -42,7 +47,7 @@ exports.setApp = function(app, client)
                 }
             }
         }
-        let ret = {error:error};
+        let ret = {error:error, jwtToken:newToken};
         res.status(200).json(ret);
     });
     
@@ -53,18 +58,20 @@ exports.setApp = function(app, client)
         
         const { login, password } = req.body;
         const db = client.db('COP4331Cards');
-        const results = await db.collection('Users').find({Login:login,Password:password}).toArray();
+        const result = await db.collection('Users').findOne({Login:login, Password:password});
+        // ADD HERE LOGIC TO CHECK HASHED PASSWORD
+
         var id = -1;
-        var fn = 'Jon';
-        var ln = 'Doe';
+        var fn = '';
+        var ln = '';
 
         let error = '';
         let newToken = null;
-        if( results.length > 0 )
+        if( result )
         {
-            id = results[0].UserID;
-            fn = results[0].FirstName;
-            ln = results[0].LastName;
+            id = result.UserId;
+            fn = result.FirstName;
+            ln = result.LastName;
             try
             {
                 newToken = token.createToken( fn, ln, id ).accessToken;
@@ -77,7 +84,8 @@ exports.setApp = function(app, client)
         
         else if( login === MOCK_USERNAME && password === MOCK_PASSWORD )
         {
-            id = 1; // Mock user ID
+            // Mock user 
+            id = 0; 
             fn = 'Mock';
             ln = 'User';
             try
@@ -103,7 +111,7 @@ exports.setApp = function(app, client)
     {
         // incoming: userId, color
         // outgoing: error, jwtToken
-        const { userId, card, jwtToken} = req.body;
+        const { card, jwtToken } = req.body;
 
         // Validate JWT token
         try
@@ -123,8 +131,10 @@ exports.setApp = function(app, client)
             return;
         }
 
-        // Backend logic to add card
-        const newCard = {Card:card,UserId:userId};
+        let userData = jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
+
+        // logic to add card
+        const newCard = {Card:card,UserId:userData.userId};
         var error = '';
         try
         {
@@ -159,7 +169,7 @@ exports.setApp = function(app, client)
 
         // Validate JWT token
         var error = '';
-        const { userId, search, jwtToken } = req.body;
+        const { search, jwtToken } = req.body;
         try
         {
             if(token.isExpired(jwtToken))
@@ -179,9 +189,10 @@ exports.setApp = function(app, client)
 
         // Backend logic to search cards
 
+        let userData = jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
         var _search = search.trim();
         const db = client.db('COP4331Cards');
-        const results = await db.collection('Cards').find({"Card":{$regex:_search+'.*', $options:'i'}, "UserId": userId}).toArray(); //test if this actually works
+        const results = await db.collection('Cards').find({"Card":{$regex:_search+'.*', $options:'i'}, "UserId": userData.userId}).toArray(); //test if this actually works
         var _ret = [];
         for( var i=0; i<results.length; i++ )
         {

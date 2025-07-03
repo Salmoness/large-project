@@ -1,31 +1,28 @@
-import React, { useState } from 'react'
-import { buildPath } from './Path.tsx';
-import { retrieveToken, storeToken } from '../tokenStorage';
+import React, { useState } from 'react'; 
+import { buildPath } from './Path.tsx'; 
+import { retrieveToken, storeToken } from '../tokenStorage'; 
 
 function CardUI()
 {
-    let _ud : any = localStorage.getItem('user_data');
-    let ud = JSON.parse( _ud ); 
-    let userId : string = ud.id;
     //let firstName : string = ud.firstName;
     //let lastName : string = ud.lastName;
-    const [message,setMessage] = useState('');
-    const [searchResults,setResults] = useState('');
-    const [cardList,setCardList] = useState('');
-    const [search,setSearchValue] = React.useState('');
-    const [card,setCardNameValue] = React.useState('');
+    const [message,setMessage] = useState(''); 
+    const [searchResults,setResults] = useState(''); 
+    const [cardList,setCardList] = useState(''); 
+    const [search,setSearchValue] = React.useState(''); 
+    const [card,setCardNameValue] = React.useState(''); 
 
-    async function addCard(e:any) : Promise<void>
+    async function addCard(e:any) : Promise<void> 
     {
-        e.preventDefault();
-        let obj = {userId:userId, card:card, jwtToken:retrieveToken()};
+        e.preventDefault(); 
+        let obj = { card:card, jwtToken:retrieveToken()}; 
         let js = JSON.stringify(obj);
         try
         {
-            const response = await fetch(buildPath('api/addCard'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
-            let txt = await response.text();
-            let res = JSON.parse(txt);
-            if( res.error.length > 0 )
+            const response = await fetch(buildPath('api/addCard'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}}); 
+            let txt = await response.text(); 
+            let res = JSON.parse(txt); 
+            if( res.error )
             {
                 setMessage( "API Error:" + res.error );
             }
@@ -44,7 +41,7 @@ function CardUI()
     async function searchCard(e:any) : Promise<void>
     {
         e.preventDefault();
-        let obj = {userId:userId,search:search, jwtToken:retrieveToken()};
+        let obj = {search:search, jwtToken:retrieveToken()};
         let js = JSON.stringify(obj);
         try
         {

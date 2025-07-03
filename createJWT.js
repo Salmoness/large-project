@@ -50,9 +50,10 @@ exports.isExpired = function( token )
 
 exports.refresh = function( token )
 {
-    var ud = jwt.decode(token,{complete:true});
-    var userId = ud.payload.id;
-    var firstName = ud.payload.firstName;
-    var lastName = ud.payload.lastName;
-    return _createToken( firstName, lastName, userId );
+    var ud = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+    //console.log("Refresh: " + JSON.stringify(ud));
+    var userId = ud.id;
+    var firstName = ud.firstName;
+    var lastName = ud.lastName;
+    return _createToken( firstName, lastName, userId ).accessToken;
 }

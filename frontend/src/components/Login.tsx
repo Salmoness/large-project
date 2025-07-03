@@ -14,12 +14,12 @@ function Login()
 
     async function doLogin(event:any) : Promise<void>
     {
-        interface MyPayload {
-            userId: number;
-            firstName: string;
-            lastName: string;
-        }
-        
+        // interface MyPayload {
+        //     userId: number;
+        //     firstName: string;
+        //     lastName: string;
+        // }
+
         event.preventDefault();
 
         var obj = {login:loginName,password:loginPassword};
@@ -33,21 +33,15 @@ function Login()
             storeToken(res.jwtToken);
             try
             {
-
-                let ud = jwtDecode<MyPayload>(res.jwtToken);
-                console.log(ud);
-                let userId = ud.userId;
-                let firstName = ud.firstName;
-                let lastName = ud.lastName;
-
-                if( userId <= 0 )
+                if( res.error )
                 {
-                    setMessage('User/Password combination incorrect');
+                    setMessage(res.error);
+                    console.log(res.error);
                 }
                 else
                 {
-                    let user = {firstName:firstName, lastName:lastName, id:userId};
-                    localStorage.setItem('user_data', JSON.stringify(user));
+                    // let user = {firstName:firstName, lastName:lastName, id:userId};
+                    // localStorage.setItem('user_data', JSON.stringify(user));
                     setMessage('');
                     navigate('/cards'); 
                 }

@@ -178,7 +178,11 @@ app.use((req, res, next) =>
     );
     next();
 });
-app.listen(5000); // start Node + Express server on port 5000
+
+// start Node + Express server on port 5000
+app.listen(5000,() => {
+  console.log('Server listening on port 5000');
+}); 
 
 // Connect to MongoDB
 const MongoClient = require('mongodb').MongoClient;
