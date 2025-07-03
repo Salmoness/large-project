@@ -43,7 +43,7 @@ exports.setApp = function(app, client)
             }
         }
         let ret = {error:error};
-        
+        res.status(200).json(ret);
     });
     
     app.post('/api/login', async (req, res, next) =>
