@@ -95,8 +95,8 @@ function Register()
             <input type="text" placeholder="Last Name" onChange={handleSetLastName} /><br />
             <input type="text" placeholder="Username" onChange={handleSetUsername} /><br />
             <input type="text" placeholder="Email Address" onChange={handleSetEmail} /><br />
-            <input type="password" id="" placeholder="Password" onChange={handleSetPassword} /><br />
-            <input type="password" id="" placeholder="Confirm Password" onChange={handleSetConfirmPassword} /><br />
+            <input type="password" placeholder="Password" onChange={handleSetPassword} /><br />
+            <input type="password" placeholder="Confirm Password" onChange={handleSetConfirmPassword} /><br />
             <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doRegister} />
             <p>Already have an account? <Link to="/">Log In Now</Link></p>
             <span id="loginResult">{message}</span>
