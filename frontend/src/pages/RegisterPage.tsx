@@ -1,7 +1,7 @@
 import Register from "../components/Register";
 import PageTitle from "../components/PageTitle"
 
-const LoginPage = () => 
+const RegisterPage = () => 
 {
     return (
         <div>
@@ -10,4 +10,4 @@ const LoginPage = () =>
         </div>
     );
 }
-export default LoginPage;
+export default RegisterPage;

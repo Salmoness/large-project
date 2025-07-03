@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { buildPath } from './Path';
 import { storeToken } from '../tokenStorage';
 import { jwtDecode } from 'jwt-decode';
+import { Link } from 'react-router-dom';
 
 function Login() 
 {
@@ -78,6 +79,7 @@ function Login()
             <input type="text" id="loginName" placeholder="Username" onChange={handleSetLoginName} /><br />
             <input type="password" id="loginPassword" placeholder="Password" onChange={handleSetPassword} /><br />
             <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doLogin} />
+            <p>Don't have an account? <Link to="/register">Register Now</Link></p>
             <span id="loginResult">{message}</span>
         </div>
     )

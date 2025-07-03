@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { buildPath } from './Path';
 
-function Login() 
+function Register() 
 {
     const [message,setMessage] = useState('');
     const [registerName,setRegisterName] = React.useState('');
     const [loginPassword,setPassword] = React.useState('');
     const navigate = useNavigate();
 
-    async function doLogin(event:any) : Promise<void>
+    async function doRegister(event:any) : Promise<void>
     {
         event.preventDefault();
 
@@ -55,9 +55,10 @@ function Login()
             <span id="inner-title">Register</span><br />
             <input type="text" id="registername" placeholder="Set Username" onChange={handleSetRegisterName} /><br />
             <input type="password" id="loginPassword" placeholder="Password" onChange={handleSetPassword} /><br />
-            <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doLogin} />
+            <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doRegister} />
+            <p>Already have an account? <Link to="/">Log In Now</Link></p>
             <span id="loginResult">{message}</span>
         </div>
     )
 }
-export default Login;
+export default Register;
