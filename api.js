@@ -38,7 +38,7 @@ exports.setApp = function(app, client)
                 {
                     let id = await db.collection('Users').countDocuments() + 1; // Get the next user ID
                     const newUser = {FirstName:firstName, LastName:lastName, Login:username, Email:email, Password:password, UserId: id};
-                    const response = await db.collection('Users').insertOne(newUser);
+                    await db.collection('Users').insertOne(newUser);
                     newToken = token.createToken(firstName, lastName, id).accessToken
                 }
                 catch(e)
@@ -132,7 +132,6 @@ exports.setApp = function(app, client)
         }
 
         let userData = jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
-
         // logic to add card
         const newCard = {Card:card,UserId:userData.userId};
         var error = '';

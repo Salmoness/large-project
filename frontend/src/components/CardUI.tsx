@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
 import { buildPath } from './Path.tsx'; 
 import { retrieveToken, storeToken } from '../tokenStorage'; 
+import { jwtDecode } from 'jwt-decode';
 
 function CardUI()
 {
@@ -43,6 +44,7 @@ function CardUI()
         e.preventDefault();
         let obj = {search:search, jwtToken:retrieveToken()};
         let js = JSON.stringify(obj);
+        console.log("AAAA" + JSON.stringify(jwtDecode(obj.jwtToken)));
         try
         {
             const response = await fetch(buildPath('api/searchCards'), {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
@@ -61,6 +63,7 @@ function CardUI()
             setResults('Card(s) have been retrieved');
             storeToken( res.jwtToken );
             setCardList(resultText);
+            console.log("AAAA" + JSON.stringify(jwtDecode(res.jwtToken)));
         }
         catch(error:any)
         {
