@@ -91,10 +91,10 @@ function Register()
     return (
         <div id="loginDiv">
             <span id="inner-title">Register</span><br />
-            <input type="text" id="" placeholder="First Name" onChange={handleSetFirstName} /><br />
-            <input type="text" id="" placeholder="Last Name" onChange={handleSetLastName} /><br />
-            <input type="text" id="" placeholder="Username" onChange={handleSetUsername} /><br />
-            <input type="text" id="" placeholder="Email Address" onChange={handleSetEmail} /><br />
+            <input type="text" placeholder="First Name" onChange={handleSetFirstName} /><br />
+            <input type="text" placeholder="Last Name" onChange={handleSetLastName} /><br />
+            <input type="text" placeholder="Username" onChange={handleSetUsername} /><br />
+            <input type="text" placeholder="Email Address" onChange={handleSetEmail} /><br />
             <input type="password" id="" placeholder="Password" onChange={handleSetPassword} /><br />
             <input type="password" id="" placeholder="Confirm Password" onChange={handleSetConfirmPassword} /><br />
             <input type="submit" id="loginButton" className="buttons" value= "Do It" onClick={doRegister} />
