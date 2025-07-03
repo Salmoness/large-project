@@ -1,5 +1,5 @@
 #Frontend CI/CD Pipeline 
-name: CI/CD 
+name: CI/CD Frontent
 on: 
   push: 
     branches:
