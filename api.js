@@ -7,6 +7,44 @@ const MOCK_PASSWORD = "password";
 
 exports.setApp = function(app, client)
 {
+    app.post('/api/register', async (req, res, next) =>
+    {
+        // incoming: firstName, lastName, username, email, password, confirmPassword
+        // outgoing: error
+        const { firstName, lastName, username, email, password, confirmPassword } = req.body;
+        var error = '';
+        if( password !== confirmPassword )
+        {
+            error = 'Passwords do not match';
+        }
+        else if( username.length < 3 || password.length < 3 )
+        {
+            error = 'Username and Password must be at least 3 characters long';
+        }
+        else
+        {
+            const db = client.db('COP4331Cards');
+            const existingUser = await db.collection('Users').findOne({Login:username});
+            if( existingUser )
+            {
+                error = 'Username already exists';
+            }
+            else
+            {
+                const newUser = {FirstName:firstName, LastName:lastName, Login:username, Email:email, Password:password};
+                try
+                {
+                    await db.collection('Users').insertOne(newUser);
+                }
+                catch(e)
+                {
+                    error = e.toString();
+                }
+            }
+        }
+        let ret = {error:error};
+        
+    });
     
     app.post('/api/login', async (req, res, next) =>
     {
