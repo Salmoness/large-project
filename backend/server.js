@@ -1,7 +1,11 @@
+// Make variables in .env accessible globally (use process.env.VARIABLE)
+require('dotenv').config({path: "../.env"});
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+const router = require('./api-router.js');
 
 app.use(cors());
 app.use(bodyParser.json()); // cant get it to work tsxon. 
@@ -27,11 +31,10 @@ app.listen(5000,() => {
 
 // Connect to MongoDB
 const MongoClient = require('mongodb').MongoClient;
-require('dotenv').config({path: "../.env"});
 const url = process.env.MONGODB_URI 
 const client = new MongoClient(url);
 client.connect();
+app.locals.mongodb = client.db("COP4331Cards");
 
 // Set up API routes
-var api = require('./api.js');
-api.setApp(app, client);
+app.use('/api', router);

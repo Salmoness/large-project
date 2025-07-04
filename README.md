@@ -19,7 +19,7 @@ Create a file named `.env` in the root directory of the project and fill in the 
 
 ```
 MONGODB_URI=
-JWT_SECRET_KEY=
+JWT_SECRET=
 OPENAI_API_KEY=
 ```
 

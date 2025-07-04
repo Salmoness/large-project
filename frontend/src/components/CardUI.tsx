@@ -20,7 +20,7 @@ function CardUI()
         let js = JSON.stringify(obj);
         try
         {
-            const response = await fetch(buildPath('api/addCard'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}}); 
+            const response = await fetch(buildPath('api/cards/add'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}}); 
             let txt = await response.text(); 
             let res = JSON.parse(txt); 
             if( res.error )
@@ -47,7 +47,7 @@ function CardUI()
         console.log("AAAA" + JSON.stringify(jwtDecode(obj.jwtToken)));
         try
         {
-            const response = await fetch(buildPath('api/searchCards'), {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(buildPath('api/cards/search'), {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
             let txt = await response.text();
             let res = JSON.parse(txt);
             let _results = res.results;

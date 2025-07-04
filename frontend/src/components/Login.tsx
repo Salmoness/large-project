@@ -27,7 +27,7 @@ function Login()
 
         try
         {
-            const response = await fetch(buildPath('api/login'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(buildPath('api/users/login'), {method:'POST', body:js, headers:{'Content-Type': 'application/json'}});
             var res = JSON.parse(await response.text());
             console.log(res.error);
             storeToken(res.jwtToken);
