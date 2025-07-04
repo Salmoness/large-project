@@ -1,37 +1,40 @@
 //import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { retrieveToken } from '../tokenStorage';
-import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from "react-router-dom";
+import {
+  retrieveJWTFromLocalStorage,
+  forgetJWTInLocalStorage,
+} from "../assets/jwt-utils";
+import { jwtDecode } from "jwt-decode";
 
-function LoggedInName()
-{
-    interface UserData {
-        firstName: string;
-        lastName: string;
-        UserId: number;
-    }
+function LoggedInName() {
+  if (typeof window === "undefined") return null;
 
-    if (typeof window === 'undefined') return null;
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  function doLogout(event: any): void {
+    event.preventDefault();
+    forgetJWTInLocalStorage();
+    navigate("/");
+  }
 
-    function doLogout(event:any) : void
-    {
-        event.preventDefault();
-        localStorage.removeItem("token_data");
-        navigate("/");
-    };
+  const jwt = jwtDecode(retrieveJWTFromLocalStorage()).payload;
 
-    let token = retrieveToken();
-    console.log("Token: " + token);
-    let userData = jwtDecode<UserData>(token);
-
-    return(
-        <div id="loggedInDiv">
-        <span id="userName">Logged In As {userData.firstName} {userData.lastName} </span><br />
-        <button type="button" id="logoutButton" className="buttons"
-            onClick={doLogout}> Log Out </button>
-        </div>
-    );
-};
+  return (
+    <div id="loggedInDiv">
+      <span id="userName">
+        Logged In As {jwt.firstName} {jwt.lastName}{" "}
+      </span>
+      <br />
+      <button
+        type="button"
+        id="logoutButton"
+        className="buttons"
+        onClick={doLogout}
+      >
+        {" "}
+        Log Out{" "}
+      </button>
+    </div>
+  );
+}
 export default LoggedInName;

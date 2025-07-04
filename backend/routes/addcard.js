@@ -1,56 +1,21 @@
 const jwtutils = require("../jwt-utils.js");
 
-// incoming: userId, color
-// outgoing: error, jwtToken
 async function addcard(req, res, next) {
+  const { card, jwt } = req.body;
 
-    const { card, jwtToken } = req.body;
+  try {
+    jwtutils.verifyJWT(jwt);
+  } catch (e) {
+    res.status(200).json({ error: "Session invalid", jwt: "" });
+    return;
+  }
 
-    // Validate JWT token
-    try
-    {
-        if(jwtutils.isExpired(jwtToken))
-        {
-            let r = {error: "JWT no longer valid", jwtToken:""};
-            res.status(200).json(r);
-            return;
-        }
-    }
-    catch(e)
-    {
-        console.log("JWT Error: " + e.message);
-        let r = {error: "Error validating JWT", jwtToken:""};
-        res.status(200).json(r);
-        return;
-    }
+  const payload = jwtutils.decodeJWT(jwt).payload;
+  const newCard = { Card: card, UserId: payload.userId };
 
-    let userData = jwtutils.verify(jwtToken);
-    // logic to add card
-    const newCard = {Card:card,UserId:userData.userId};
-    var error = '';
-    try
-    {
-        const result = await req.app.locals.mongodb.collection('Cards').insertOne(newCard);
-    }
-    catch(e)
-    {
-        error = e.toString();
-    }
+  await req.app.locals.mongodb.collection("Cards").insertOne(newCard);
 
-    // Refresh JWT token
-    let refreshedToken = null;
-    try
-    {
-        refreshedToken = jwtutils.refresh(jwtToken);
-    }
-    catch(e)
-    {
-        console.log("JWT Refresh Error: " + e.message);
-    }
-
-    let ret = { error: error, jwtToken: refreshedToken };
-
-    res.status(200).json(ret);
-};
+  res.status(200).json({ error: "", jwt: jwtutils.refreshJWT(payload) });
+}
 
 module.exports = addcard;

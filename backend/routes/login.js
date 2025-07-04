@@ -1,43 +1,30 @@
 const jwtutils = require("../jwt-utils.js");
 
-// incoming: login, password
-// outgoing: error, jwtToken
 async function login(req, res, next) {
-    
-    const { login, password } = req.body;
+  const { username, password } = req.body;
 
-    // TODO: verify request
+  // TODO: verify request
 
-    const result = await req.app.locals.mongodb.collection('Users').findOne({Login:login, Password:password});
+  const result = await req.app.locals.mongodb
+    .collection("Users")
+    .findOne({ Username: username, Password: password });
 
-    var id = -1;
-    var fn = '';
-    var ln = '';
+  let error = "";
+  let token = null;
 
-    let error = '';
-    let newToken = null;
-    if( result )
-    {
-        id = result.UserId;
-        fn = result.FirstName;
-        ln = result.LastName;
-        try
-        {
-            newToken = jwtutils.createToken( fn, ln, id ).accessToken;
-        }
-        catch(e)
-        {
-            error = e.message;
-        }
-    }
-    else    
-    {
-        error = {error:"Login/Password incorrect"};
-        newToken = jwtutils.createToken( fn, ln, id ).accessToken;
-    }
+  if (result) {
+    token = jwtutils.createJWT({
+      userId: result._id,
+      username: result.Username,
+      firstName: result.FirstName,
+      lastName: result.LastName,
+    });
+  } else {
+    error = "Username/Password incorrect";
+  }
 
-    ret = { error:error, jwtToken:newToken };
-    res.status(200).json(ret);
-};
+  ret = { error: error, jwt: token };
+  res.status(200).json(ret);
+}
 
 module.exports = login;

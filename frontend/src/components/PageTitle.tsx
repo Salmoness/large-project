@@ -1,6 +1,6 @@
 function PageTitle() {
   return (
-    <h1 id="title">Project (The large one)</h1>
+    <h1 id="title">Untitled Project</h1>
   );
 }
 export default PageTitle;

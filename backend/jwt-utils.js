@@ -1,62 +1,24 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
-exports.createToken = function ( fn, ln, id )
-{
-    return _createToken( fn, ln, id );
-}
+// Creates a JWT with some arbitrary data.
+exports.createJWT = function (data) {
+  return jwt.sign({ payload: data }, JWT_SECRET, { expiresIn: "1h" });
+};
 
-_createToken = function ( fn, ln, id )
-{
-    try
-    {
-        const expiration = new Date();
-        const user = {userId:id,firstName:fn,lastName:ln};
-        const accessToken = jwt.sign( user, JWT_SECRET);
-        // In order to expire with a value other than the default, use the
-        // following
-        /*
-        const accessToken= jwt.sign(user,JWT_SECRET, { expiresIn: '30m'} );
-        '24h'
-        '365d'
-        */
-        var ret = {error: "", accessToken:accessToken};
-    }
+// Pushes the expirtion date of a JWT back.
+// Throws an exception if the JWT is expired or invalid.
+exports.refreshJWT = function (data) {
+  return jwt.sign({ payload: data }, JWT_SECRET, { expiresIn: "1h" });
+};
 
-    catch(e)
-    {
-        var ret = {error:e.message, accessToken:""};
-        console.error("Error creating JWT: " + ret.error);
-    }
-    return ret;
-}
+// Throws an exception if the JWT is expired or invalid.
+exports.verifyJWT = function (token) {
+  jwt.verify(token, JWT_SECRET);
+};
 
-exports.isExpired = function( token )
-{
-    var isError = jwt.verify( token, JWT_SECRET,(err, verifiedJwt) =>
-    {
-        if( err )
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
-    return isError;
-}
-
-exports.refresh = function( token )
-{
-    var ud = jwt.verify(token,JWT_SECRET);
-    //console.log("Refresh: " + JSON.stringify(ud));
-    var userId = ud.userId;
-    var firstName = ud.firstName;
-    var lastName = ud.lastName;
-    return _createToken( firstName, lastName, userId ).accessToken;
-}
-
-exports.verify = function(token) {
-    return jwt.verify(jwtToken, JWT_SECRET);
-}
+// Returns the decoding of a JWT.
+// Throws an exception if the JWT is expired or invalid.
+exports.decodeJWT = function (token) {
+  return jwt.verify(token, JWT_SECRET);
+};
