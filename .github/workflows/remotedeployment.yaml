@@ -23,15 +23,15 @@ jobs:
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
           cd /var/www/large-project/
           git pull origin main
-          sudo rm -rf /var/server/*
-          sudo cp -r backend/. /var/server/
-          cd /var/server/
+          cd backend/
           npm install
           pm2 restart server.js
-          cd /var/www/large-project/frontend/
+          cd /var/www/large-project/
+          cp nginx.conf /etc/nginx/sites-available/default
+          nginx -s reload
+          cd frontend/
+          rm -rf dist/
           npm install
           npm run build
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/
           systemctl restart nginx
           EOF
