@@ -1,32 +1,37 @@
-#Backend CI/CD Pipeline
-name: CI/CD Backend
+name: Remote Deployment
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
   push:
-    branches: [main]
+    branches:
+      - main
 jobs:
-  deploy_backend:
+  build:
     runs-on: ubuntu-latest
-    steps:
+    steps: 
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm install
+        uses: actions/checkout@v3
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-      - name: Deploy
+      - name: Deploy to server
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_USERNAME : ${{secrets.SSH_USERNAME}}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
           cd /var/www/large-project/
           git pull origin main
           sudo rm -rf /var/server/*
-          sudo cp -a backend/. /var/server/
+          sudo cp backend/. /var/server/
           cd /var/server/
           npm install
           pm2 restart server.js
+          cd /var/www/large-project/frontend/
+          npm install
+          npm run build
+          sudo rm -rf /var/www/html/*
+          sudo cp -r dist/* /var/www/html/
+          systemctl restart nginx
           EOF
