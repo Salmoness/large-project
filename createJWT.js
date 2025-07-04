@@ -52,7 +52,7 @@ exports.refresh = function( token )
 {
     var ud = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
     //console.log("Refresh: " + JSON.stringify(ud));
-    var userId = ud.id;
+    var userId = ud.userId;
     var firstName = ud.firstName;
     var lastName = ud.lastName;
     return _createToken( firstName, lastName, userId ).accessToken;
