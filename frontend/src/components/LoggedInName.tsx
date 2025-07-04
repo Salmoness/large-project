@@ -17,7 +17,10 @@ function LoggedInName() {
     navigate("/");
   }
 
-  const jwt = jwtDecode(retrieveJWTFromLocalStorage()).payload;
+  interface Payload {
+    payload: any;
+  }
+  const jwt = jwtDecode<Payload>(retrieveJWTFromLocalStorage()).payload;
 
   return (
     <div id="loggedInDiv">

@@ -4,7 +4,6 @@ import {
   retrieveJWTFromLocalStorage,
   saveJWTToLocalStorage,
 } from "../assets/jwt-utils.ts";
-import { jwtDecode } from "jwt-decode";
 
 function CardUI() {
   //let firstName : string = ud.firstName;
