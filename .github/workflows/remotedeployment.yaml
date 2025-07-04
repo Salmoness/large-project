@@ -24,7 +24,7 @@ jobs:
           cd /var/www/large-project/
           git pull origin main
           sudo rm -rf /var/server/*
-          sudo cp backend/. /var/server/
+          sudo cp -r backend/. /var/server/
           cd /var/server/
           npm install
           pm2 restart server.js
