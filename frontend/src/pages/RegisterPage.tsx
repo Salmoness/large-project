@@ -9,8 +9,6 @@ import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 export default function Register() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,11 +19,9 @@ export default function Register() {
     const payload = JSON.stringify({
       username: username,
       password: password,
-      firstName: firstName,
-      lastName: lastName,
       confirmPassword: confirmPassword,
-      confirmEmail: confirmEmail,
       email: email,
+      confirmEmail: confirmEmail,
     });
 
     try {
@@ -59,22 +55,6 @@ export default function Register() {
             placeholder="Username"
             fullWidth
             onChange={(e) => setUsername(e.target.value)}
-          />
-
-          <TextField
-            label="First Name"
-            variant="outlined"
-            placeholder="First name"
-            fullWidth
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-
-          <TextField
-            label="Last Name"
-            variant="outlined"
-            placeholder="Last name"
-            fullWidth
-            onChange={(e) => setLastName(e.target.value)}
           />
 
           <TextField

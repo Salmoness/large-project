@@ -1,15 +1,7 @@
 const jwtutils = require("../jwt-utils.js");
 
 async function register(req, res, next) {
-  const {
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    confirmPassword,
-    confirmEmail,
-  } = req.body;
+  const { username, email, password, confirmPassword, confirmEmail } = req.body;
 
   let error = "";
   let jwt = "";
@@ -32,8 +24,6 @@ async function register(req, res, next) {
       const result = await req.app.locals.mongodb
         .collection("Users")
         .insertOne({
-          FirstName: firstName,
-          LastName: lastName,
           Username: username,
           Email: email,
           Password: password,
@@ -41,8 +31,6 @@ async function register(req, res, next) {
       jwt = jwtutils.createJWT({
         userId: result.insertedId,
         username: username,
-        firstName: firstName,
-        lastName: lastName,
       });
     }
   }

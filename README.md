@@ -15,7 +15,7 @@ Untitled Project uses the MERN stack.
 
 ### Environment File
 
-Create a file named `.env` in the root directory of the project and fill in the following required parameters: 
+Create a file named `.env` in the root directory of the project and fill in the following required parameters:
 
 ```
 MONGODB_URI=
@@ -25,17 +25,23 @@ OPENAI_API_KEY=
 
 ### Command-line (Deployment)
 
-Run `cd /frontend && npm run build` and copy the contents of `/frontend/dist` to `/var/www/html` on a web server of your choice.
+Run `cd /frontend && npm install && npm run build` and copy the contents of `/frontend/dist` to `/var/www/html` on a web server of your choice.
 
-To start the backend server: `cd /backend && npm start`
+To start the backend server: `cd /backend && npm install && npm start`
 
 ### Command-line (Development)
 
 From the root directory of the project:
 
-To start the backend server: `cd /backend && npm start`
+To start the backend server: `cd /backend && npm install && npm start`
 
-To start the frontend server: `cd /frontend && npm run dev`
+To start the frontend server: `cd /frontend && npm install && npm run dev`
+
+## Mobile
+
+Untitled Project uses Flutter for its mobile application.
+
+To run: `cd /mobile && flutter run -d chrome`
 
 ## Technologies Used
 

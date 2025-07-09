@@ -20,13 +20,14 @@ const questions: Question[] = [
 
 export default function PlayPage() {
   const [step, setStep] = useState<"start" | "quiz" | "result">("start");
-  const [name, setName] = useState("");
   const [score, setScore] = useState(0);
   const [current, setCurrent] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
+  const [name, setName] = useState("");
 
   // Timer logic
   useEffect(() => {
+    console.log(name);
     if (step !== "quiz") return;
 
     setTimeLeft(10); // Reset timer on new question
@@ -75,7 +76,15 @@ export default function PlayPage() {
       {step === "start" && <StartScreen onStart={handleStart} />}
       {step === "quiz" && (
         <>
-          <div style={{ width: "100%", maxWidth: 600, marginBottom: 8, textAlign: "right", color: "gray" }}>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 600,
+              marginBottom: 8,
+              textAlign: "right",
+              color: "gray",
+            }}
+          >
             Time left: {timeLeft}s
           </div>
           <QuizCard
@@ -86,7 +95,11 @@ export default function PlayPage() {
         </>
       )}
       {step === "result" && (
-        <ResultScreen score={score} total={questions.length} onRestart={handleRestart} />
+        <ResultScreen
+          score={score}
+          total={questions.length}
+          onRestart={handleRestart}
+        />
       )}
     </CenteredContainer>
   );
