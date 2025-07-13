@@ -36,7 +36,7 @@ export default function Register() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/cards");
+        navigate("/email");
       }
     } catch (error: any) {
       setMessage("Service unavailable. Try again later!");
