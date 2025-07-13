@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'jwt_utils.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -15,9 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> handleRegister() async {
     final response = await http.post(
-      Uri.parse(
-        'http://hopethiswork.com:5000/api/users/register',
-      ), // Replace with your real API
+      Uri.parse('http://hopethiswork.com:5000/api/users/register'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': usernameController.text,
@@ -30,7 +29,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     setState(() {
       if (response.statusCode == 200) {
-        responseMessage = jsonDecode(response.body).toString();
+        final json = jsonDecode(response.body);
+        if (json["error"] != null && json["error"] != "") {
+          responseMessage = 'Registration failed: ${json["error"]}';
+        } else {
+          TokenStorage.saveToken(json["jwt"].toString());
+          Navigator.pushNamedAndRemoveUntil(context, '/host', (route) => false);
+        }
       } else {
         responseMessage = 'Registration failed: ${response.statusCode}';
       }
@@ -62,6 +67,19 @@ class _RegisterPageState extends State<RegisterPage> {
             ElevatedButton(child: Text('Submit'), onPressed: handleRegister),
             SizedBox(height: 16),
             Text(responseMessage),
+            SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Already have an account?"),
+                TextButton(
+                  child: Text('Log In'),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
