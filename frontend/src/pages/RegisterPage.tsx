@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildPath } from "../components/Path.tsx";
+import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
 import { Box, TextField, Button, Stack } from "@mui/material";
@@ -12,20 +12,16 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmEmail, setConfirmEmail] = useState("");
 
   async function doRegister(): Promise<void> {
     const payload = JSON.stringify({
       username: username,
       password: password,
-      confirmPassword: confirmPassword,
       email: email,
-      confirmEmail: confirmEmail,
     });
 
     try {
-      const response = await fetch(buildPath("api/users/register"), {
+      const response = await fetch(getAPIBaseURL() + "users/register", {
         method: "POST",
         body: payload,
         headers: { "Content-Type": "application/json" },
@@ -36,7 +32,7 @@ export default function Register() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/email");
+        navigate("/account/registration-email-sent");
       }
     } catch (error: any) {
       setMessage("Service unavailable. Try again later!");
@@ -66,29 +62,12 @@ export default function Register() {
           />
 
           <TextField
-            label="Confirm Email"
-            variant="outlined"
-            placeholder="Confirm email"
-            fullWidth
-            onChange={(e) => setConfirmEmail(e.target.value)}
-          />
-
-          <TextField
             label="Password"
             variant="outlined"
             type="password"
             placeholder="Password"
             fullWidth
             onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <TextField
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-            placeholder="Confirm password"
-            fullWidth
-            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <p id="statusMessage">{message}</p>

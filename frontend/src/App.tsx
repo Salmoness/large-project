@@ -15,8 +15,9 @@ import RegisterPage from "./pages/RegisterPage.tsx";
 import CardPage from "./pages/CardsPage.tsx";
 import IndexPage from "./pages/IndexPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
-import EmailVerificationSent from "./pages/EmailVerificationSent.tsx";
-import EmailConfirm from "./pages/EmailConfirm";
+import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
+import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage.tsx";
+import HostPage from "./pages/HostPage.tsx";
 
 function App() {
   return (
@@ -27,9 +28,16 @@ function App() {
           <Route path="/play" element={<PlayPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/cards" element={<CardPage />} />
+          <Route path="/host" element={<HostPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/email" element={<EmailVerificationSent />} />
-          <Route path="/pages/EmailConfirm/:token" element={<EmailConfirm />} />
+          <Route
+            path="/account/registration-email-sent"
+            element={<ConfirmEmailTokenSentPage />}
+          />
+          <Route
+            path="/account/registration-email-confirmation/:token"
+            element={<ConfirmEmailByTokenPage />}
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

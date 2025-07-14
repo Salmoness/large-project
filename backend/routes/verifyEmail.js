@@ -4,29 +4,26 @@ module.exports.verifyEmail = async function (req, res) {
     const { token } = req.body;
 
     if (!token) {
-      return res.status(400).json({ success: false, message: "Missing token" });
+      return res.status(400).send("Missing token");
     }
 
     const result = await db.collection("Users").findOneAndUpdate(
-      { verificationToken: token },
+      { email_verification_token: token },
       {
-        $set: { email_validated: true },
-        $unset: { verificationToken: "" },
+        $set: { email_validated: true, email_verification_token: "" },
       },
-      { returnDocument: "after" } // for MongoDB driver v4+
+      { returnDocument: "after" }
     );
 
-    if (!result.value) {
+    if (!result) {
       // token not found or already used
-      return res.status(400).json({
-        success: false,
-        message: "Verification failed. Token invalid or already used.",
-      });
+      return res
+        .status(400)
+        .send("Verification failed. Token invalid or already used.");
     }
 
-    return res.json({ success: true, message: "Email verified successfully!" });
+    return res.send("Email verified successfully!");
   } catch (err) {
-    console.error("Verification error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).send("Server error: " + err);
   }
 };

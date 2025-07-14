@@ -2,18 +2,12 @@ const jwtutils = require("../jwt-utils.js");
 const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
 const sendEmail = require("./sendEmail.js");
 
-async function register(req, res, next) {
-  const { username, email, password, confirmPassword, confirmEmail } = req.body;
+module.exports.doRegister = async function (req, res, next) {
+  const { username, email, password } = req.body;
 
   let error = "";
-  let jwt = "";
-  const verificationToken = uuidv4(); // <--- Generate token
 
-  if (password != confirmPassword) {
-    error = "Passwords do not match";
-  } else if (email != confirmEmail) {
-    error = "Emails do not match";
-  } else if (username.length < 3) {
+  if (username.length < 3) {
     error = "Username must be at least 3 characters long";
   } else if (password.length < 3) {
     error = "Password must be at least 3 characters long";
@@ -24,6 +18,8 @@ async function register(req, res, next) {
     if (existingUser) {
       error = "Username taken";
     } else {
+      const verificationToken = uuidv4(); // Random token used for account verification
+
       const result = await req.app.locals.mongodb
         .collection("Users")
         .insertOne({
@@ -31,10 +27,11 @@ async function register(req, res, next) {
           password: password,
           email: email,
           email_validated: false,
-          verificationToken: verificationToken, // this is the uuidv4, saved and used for sending a person to the email verification /pages/EmailVerification/<uuidv4>
+          email_verification_token: verificationToken,
+          password_reset_token: "",
         });
 
-      const confirmUrl = `http://hopethiswork.com/pages/EmailConfirm/${verificationToken}`;
+      const confirmUrl = `http://hopethiswork.com/account/registration-email-confirmation/${verificationToken}`;
       const emailHtml = `<p>Hi ${username},</p>
                          <p>Please confirm your email by clicking the link below:</p>
                          <a href="${confirmUrl}">Verify Email</a>`;
@@ -42,19 +39,10 @@ async function register(req, res, next) {
       try {
         await sendEmail(email, "Verify your email", emailHtml);
       } catch (e) {
-        console.error("Error sending verification email:", e);
-        error = "Failed to send verification email";
+        error = "Failed to send verification email: " + e;
       }
-
-
-      jwt = jwtutils.createJWT({
-        userId: result.insertedId,
-        username: username,
-      });
     }
   }
 
-  res.status(200).json({ error: error, jwt: jwt });
-}
-
-module.exports = register;
+  res.status(200).json({ error: error });
+};

@@ -4,7 +4,7 @@ require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const router = require("./api-router.js");
+const apiRouter = require("./apiRouter.js");
 
 app.use(cors());
 app.use(express.json());
@@ -35,4 +35,4 @@ client.connect();
 app.locals.mongodb = client.db("COP4331Cards");
 
 // Set up API routes
-app.use("/api", router);
+app.use("/api", apiRouter);

@@ -22,7 +22,8 @@ Create a file named `.env` in the root directory of the project and fill in the 
 ```
 MONGODB_URI=
 JWT_SECRET=
-OPENAI_API_KEY=
+EMAIL_USER=
+EMAIL_PASSWORD=
 ```
 
 ### Deployment Instructions
@@ -72,7 +73,8 @@ Run `cd /mobile && flutter pub get && flutter run -d chrome` to emulate the mobi
 - Heroku (Hosting and Domain)
 - Flutter (Mobile UI)
 - Figma (UI Prototyping)
-- SendGrid (Email Service)
+- NodeEmailer (Email Component)
+- Gmail (Email Provider)
 - NPM (NodeJS Package Manager)
 
 ## Contributors
