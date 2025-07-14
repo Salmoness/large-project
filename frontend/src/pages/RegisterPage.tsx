@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildPath } from "../components/Path.tsx";
+import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
 import { Box, TextField, Button, Stack } from "@mui/material";
@@ -9,27 +9,19 @@ import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 export default function Register() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmEmail, setConfirmEmail] = useState("");
 
   async function doRegister(): Promise<void> {
     const payload = JSON.stringify({
       username: username,
       password: password,
-      firstName: firstName,
-      lastName: lastName,
-      confirmPassword: confirmPassword,
-      confirmEmail: confirmEmail,
       email: email,
     });
 
     try {
-      const response = await fetch(buildPath("api/users/register"), {
+      const response = await fetch(getAPIBaseURL() + "users/register", {
         method: "POST",
         body: payload,
         headers: { "Content-Type": "application/json" },
@@ -40,7 +32,7 @@ export default function Register() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/cards");
+        navigate("/account/registration-email-sent");
       }
     } catch (error: any) {
       setMessage("Service unavailable. Try again later!");
@@ -62,35 +54,11 @@ export default function Register() {
           />
 
           <TextField
-            label="First Name"
-            variant="outlined"
-            placeholder="First name"
-            fullWidth
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-
-          <TextField
-            label="Last Name"
-            variant="outlined"
-            placeholder="Last name"
-            fullWidth
-            onChange={(e) => setLastName(e.target.value)}
-          />
-
-          <TextField
             label="Email"
             variant="outlined"
             placeholder="Email"
             fullWidth
             onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <TextField
-            label="Confirm Email"
-            variant="outlined"
-            placeholder="Confirm email"
-            fullWidth
-            onChange={(e) => setConfirmEmail(e.target.value)}
           />
 
           <TextField
@@ -100,15 +68,6 @@ export default function Register() {
             placeholder="Password"
             fullWidth
             onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <TextField
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-            placeholder="Confirm password"
-            fullWidth
-            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <p id="statusMessage">{message}</p>

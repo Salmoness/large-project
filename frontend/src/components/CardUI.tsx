@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { buildPath } from "./Path.tsx";
+import { getAPIBaseURL } from "./APIBaseURL.tsx";
 import {
   retrieveJWTFromLocalStorage,
   saveJWTToLocalStorage,
@@ -19,7 +19,7 @@ function CardUI() {
     let obj = { card: card, jwt: retrieveJWTFromLocalStorage() };
     let js = JSON.stringify(obj);
     try {
-      const response = await fetch(buildPath("api/cards/add"), {
+      const response = await fetch(getAPIBaseURL() + "cards/add", {
         method: "POST",
         body: js,
         headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ function CardUI() {
     let obj = { search: search, jwt: retrieveJWTFromLocalStorage() };
     let js = JSON.stringify(obj);
     try {
-      const response = await fetch(buildPath("api/cards/search"), {
+      const response = await fetch(getAPIBaseURL() + "cards/search", {
         method: "POST",
         body: js,
         headers: { "Content-Type": "application/json" },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildPath } from "../components/Path.tsx";
+import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
@@ -16,7 +16,7 @@ export default function Login() {
     const payload = JSON.stringify({ username: username, password: password });
 
     try {
-      const response = await fetch(buildPath("api/users/login"), {
+      const response = await fetch(getAPIBaseURL() + "users/login", {
         method: "POST",
         body: payload,
         headers: { "Content-Type": "application/json" },
@@ -27,7 +27,7 @@ export default function Login() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/cards");
+        navigate("/host");
       }
     } catch (error: any) {
       setMessage("Service unavailable. Try again later!");

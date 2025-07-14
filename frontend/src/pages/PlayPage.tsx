@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import type { Question } from "../types";
 import QuizCard from "../components/QuizCard";
-import StartScreen from "../components/StartScreen";
 import ResultScreen from "../components/ResultsScreen";
 import CenteredContainer from "../components/CenteredContainer";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Stack,
+} from "@mui/material";
 
 const questions: Question[] = [
   {
@@ -20,10 +26,11 @@ const questions: Question[] = [
 
 export default function PlayPage() {
   const [step, setStep] = useState<"start" | "quiz" | "result">("start");
-  const [name, setName] = useState("");
   const [score, setScore] = useState(0);
   const [current, setCurrent] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
+  const [name, setName] = useState("");
+  const [gameCode, setGameCode] = useState("");
 
   // Timer logic
   useEffect(() => {
@@ -34,7 +41,7 @@ export default function PlayPage() {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev === 1) {
-          handleAnswer("timeout"); // Handle timeout as no or wrong answer
+          handleAnswer("timeout");
           return 10;
         }
         return prev - 1;
@@ -44,15 +51,15 @@ export default function PlayPage() {
     return () => clearInterval(timer);
   }, [step, current]);
 
-  const handleStart = (userName: string) => {
-    setName(userName);
-    setStep("quiz");
-    setScore(0);
-    setCurrent(0);
+  const handleStart = () => {
+    if (name.trim() && gameCode.trim()) {
+      setStep("quiz");
+      setScore(0);
+      setCurrent(0);
+    }
   };
 
   const handleAnswer = (answer: string) => {
-    // Ignore 'timeout' answer as incorrect (or handle differently if you want)
     if (answer !== "timeout" && answer === questions[current].correct) {
       setScore((prev) => prev + 1);
     }
@@ -68,16 +75,62 @@ export default function PlayPage() {
     setStep("start");
     setScore(0);
     setCurrent(0);
+    setName("");
+    setGameCode("");
   };
 
   return (
     <CenteredContainer>
-      {step === "start" && <StartScreen onStart={handleStart} />}
+      {step === "start" && (
+        <Box sx={{ maxWidth: 400, mx: "auto", textAlign: "center" }}>
+          <Typography variant="h5" gutterBottom>
+            Enter your Name and Game Code
+          </Typography>
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            <TextField
+              label="Name"
+              variant="outlined"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+            <TextField
+              label="Game Code"
+              variant="outlined"
+              fullWidth
+              value={gameCode}
+              onChange={(e) => setGameCode(e.target.value.toUpperCase())}
+              inputProps={{ maxLength: 6, style: { textTransform: "uppercase" } }}
+              placeholder="e.g. ABC123"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleStart}
+              disabled={!name.trim() || !gameCode.trim()}
+              sx={{ py: 1.5 }}
+              fullWidth
+            >
+              Start Quiz
+            </Button>
+          </Stack>
+        </Box>
+      )}
+
       {step === "quiz" && (
         <>
-          <div style={{ width: "100%", maxWidth: 600, marginBottom: 8, textAlign: "right", color: "gray" }}>
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 600,
+              mb: 1,
+              textAlign: "right",
+              color: "gray",
+            }}
+          >
             Time left: {timeLeft}s
-          </div>
+          </Box>
           <QuizCard
             question={questions[current].question}
             options={questions[current].options}
@@ -85,8 +138,13 @@ export default function PlayPage() {
           />
         </>
       )}
+
       {step === "result" && (
-        <ResultScreen score={score} total={questions.length} onRestart={handleRestart} />
+        <ResultScreen
+          score={score}
+          total={questions.length}
+          onRestart={handleRestart}
+        />
       )}
     </CenteredContainer>
   );

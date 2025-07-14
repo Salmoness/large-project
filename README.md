@@ -1,41 +1,62 @@
-# Untitled Project
+# Trivia Game
 
-A competitive online trivia web app.
+A competitive online trivia game.
 
 ## Features
 
-- Secure accounts with email validation and password recovery!
-- Generate quizzes with the power of AI! Share quizzes by access code!
-- Play quizzes by access code! No account required!
-- View live scoreboard of quizzes!
+- Simple accounts with email validation and password recovery!
+- Generate quizzes with the power of AI!
+- Browse previously generated quizzes!
+- Host quizzes and share them with an access code!
+- Play quizzes with an access code! No account required!
+- View live quiz scoreboards!
 
-## Getting Started
+## Web Application
 
-Untitled Project uses the MERN stack.
+Trivia Game uses the MERN stack.
 
 ### Environment File
 
-Create a file named `.env` in the root directory of the project and fill in the following required parameters: 
+Create a file named `.env` in the root directory of the project and fill in the following required parameters:
 
 ```
 MONGODB_URI=
 JWT_SECRET=
-OPENAI_API_KEY=
+EMAIL_USER=
+EMAIL_PASSWORD=
 ```
 
-### Command-line (Deployment)
-
-Run `cd /frontend && npm run build` and copy the contents of `/frontend/dist` to `/var/www/html` on a web server of your choice.
-
-To start the backend server: `cd /backend && npm start`
-
-### Command-line (Development)
+### Deployment Instructions
 
 From the root directory of the project:
 
-To start the backend server: `cd /backend && npm start`
+Run `cd /frontend && npm install && npm run build` and copy the contents of `/frontend/dist` to `/var/www/html` on a web server of your choice.
 
-To start the frontend server: `cd /frontend && npm run dev`
+To start the backend server: `cd /backend && npm install && npm start`
+
+### Development Instructions
+
+From the root directory of the project:
+
+To start the backend server: `cd /backend && npm install && npm start`
+
+To start the frontend server: `cd /frontend && npm install && npm run dev`
+
+## Mobile Application
+
+Trivia Game uses Flutter for its mobile application.
+
+### Deployment Instructions
+
+From the root directory of the project:
+
+Run `cd /mobile && flutter pub get && flutter build apk` to create an APK.
+
+### Development Instructions
+
+From the root directory of the project:
+
+Run `cd /mobile && flutter pub get && flutter run -d chrome` to emulate the mobile application in Chrome. You can replace `chrome` with a device from `flutter devices`.
 
 ## Technologies Used
 
@@ -45,13 +66,15 @@ To start the frontend server: `cd /frontend && npm run dev`
 - SwaggerHub (API Testing)
 - MongoDB (Database)
 - React (Web UI)
+- Material Design (UI Components)
 - ExpressJS (API)
 - NodeJS (Web Server)
 - OpenAI (AI Integration)
 - Heroku (Hosting and Domain)
 - Flutter (Mobile UI)
 - Figma (UI Prototyping)
-- SendGrid (Email Service)
+- NodeMailer (Email Component)
+- Gmail (Email Provider)
 - NPM (NodeJS Package Manager)
 
 ## Contributors

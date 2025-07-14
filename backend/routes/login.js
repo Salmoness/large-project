@@ -1,30 +1,26 @@
 const jwtutils = require("../jwt-utils.js");
 
-async function login(req, res, next) {
+module.exports.doLogin = async function (req, res, next) {
   const { username, password } = req.body;
-
-  // TODO: verify request
 
   const result = await req.app.locals.mongodb
     .collection("Users")
-    .findOne({ Username: username, Password: password });
+    .findOne({ username: username, password: password });
 
   let error = "";
   let token = null;
 
-  if (result) {
+  if (!result) {
+    error = "Username/Password incorrect";
+  } else if (!result.email_validated) {
+    error = "Email not verified";
+  } else {
     token = jwtutils.createJWT({
       userId: result._id,
-      username: result.Username,
-      firstName: result.FirstName,
-      lastName: result.LastName,
+      username: result.username, // lowercase
     });
-  } else {
-    error = "Username/Password incorrect";
   }
 
   ret = { error: error, jwt: token };
   res.status(200).json(ret);
-}
-
-module.exports = login;
+};

@@ -10,44 +10,26 @@ export default function IndexPage() {
     <CenteredContainer>
       <ProjectHeader />
 
-      {/* Buttons in a grid */}
-      <Grid container spacing={2}>
-        {/* Top full-width button */}
-        <Grid size={{ xs: 12 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="success"
-            onClick={() => navigate("/play")}
-            sx={{ py: 2 }}
-          >
-            Play
-          </Button>
-        </Grid>
+      <Grid container spacing={2} sx={{ mt: 4 }}>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/play")}
+          sx={{ py: 2 }}
+        >
+          Play
+        </Button>
 
-        {/* Two side-by-side buttons */}
-        <Grid size={{ xs: 6 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/login")}
-            sx={{ py: 2 }}
-          >
-            Log In
-          </Button>
-        </Grid>
-        <Grid size={{ xs: 6 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="secondary"
-            onClick={() => navigate("/register")}
-            sx={{ py: 2 }}
-          >
-            Register
-          </Button>
-        </Grid>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/login")}
+          sx={{ py: 2 }}
+        >
+          Host
+        </Button>
       </Grid>
     </CenteredContainer>
   );
