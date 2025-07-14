@@ -1,0 +1,68 @@
+// https://dbdiagram.io/d
+
+Table Users {
+  _id String
+  username String
+  password String
+  email String
+  email_validated Boolean
+  email_validation_token String
+  password_reset_token String
+}
+
+Table Quizzes {
+  _id String
+  title String
+  summary String
+  topic String
+}
+
+Table QuizGames {
+  _id String
+  quiz_id String
+  created_by_user_id String
+  is_started Boolean
+  access_code String
+  time_started Date
+}
+
+Table QuizQuestions {
+  _id String
+  question_number Integer
+  quiz_id String
+  question_text String
+}
+
+Table QuizAnswers {
+  _id String
+  question_id Integer
+  answer_text String
+  is_correct Boolean
+}
+
+Table QuizSessions {
+  _id String
+  user_id String
+  guest_username String
+  quiz_session_id String
+  is_finished Boolean
+  time_started Date
+  time_finished Date
+}
+
+Table QuizAttemptResponses {
+  _id String
+  quiz_attempt_id Integer
+  question_id Integer
+  selected_answer_id Integer
+}
+
+Ref: QuizQuestions.quiz_id > Quizzes._id
+Ref: QuizAnswers.question_id > QuizQuestions._id
+Ref: QuizSessions.user_id > Users._id
+Ref: QuizSessions.quiz_session_id > QuizGames._id
+Ref: QuizGames.created_by_user_id > Users._id
+Ref: QuizAttemptResponses.quiz_attempt_id > QuizSessions._id
+Ref: QuizAttemptResponses.question_id > QuizQuestions._id
+Ref: QuizAttemptResponses.selected_answer_id > QuizAnswers._id
+Ref: QuizGames.quiz_id > Quizzes._id

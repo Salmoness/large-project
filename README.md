@@ -73,7 +73,7 @@ Run `cd /mobile && flutter pub get && flutter run -d chrome` to emulate the mobi
 - Heroku (Hosting and Domain)
 - Flutter (Mobile UI)
 - Figma (UI Prototyping)
-- NodeEmailer (Email Component)
+- NodeMailer (Email Component)
 - Gmail (Email Provider)
 - NPM (NodeJS Package Manager)
 
