@@ -13,6 +13,12 @@ const SYSTEM_PROMPT = `
 
     The entire response must be a valid JSON array of 10 such question objects.
 
+    If the topic is too broad or complex, generate questions that are simple and straightforward.
+    Increase the level of difficulty gradually towards the final questions.
+    If the topic is inaprioriate or explicit, return an empty array.
+    Questions and answers should not contain sensitive or explicit content, or content that may have sensitive contexts or interpretations.
+    All questions and answers should be appropriate for a college classroom.
+
     Example input:
     "Photosynthesis"
 
@@ -37,7 +43,7 @@ export async function prompt(req, res, next) {
     // Expects a topic in the request body
     const { topic } = req.body;
     if (!topic) {
-        res.status(400).json({ questions: topic, error: "Topic is required" });
+        res.status(400).json({ questions: "", error: "Topic is required" });
     }
 
     const messages = [
@@ -46,10 +52,16 @@ export async function prompt(req, res, next) {
     ];
 
     try {
-        const response = await model.invoke(messages);
-        // Parse the response as JSON 
-        const parsedResponse = JSON.parse(response.content);
-        res.status(200).json({ questions: parsedResponse, error: ""});
+        const response = await model.invoke(messages); 
+        const responseParsed = JSON.parse(response.content);
+
+        if (!Array.isArray(responseParsed) || responseParsed.length !== 10) {
+            throw new Error("Invalid Topic, Try again with a different topic.");
+        }
+
+        const responseString = JSON.stringify(responseParsed);
+        
+        res.status(200).json({ questions: responseString, error: ""});
     } 
     catch (error) {
         res.status(400).json({ questions: "", error: "Error: " + error.message });
