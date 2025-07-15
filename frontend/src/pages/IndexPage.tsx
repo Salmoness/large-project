@@ -25,7 +25,7 @@ export default function IndexPage() {
           fullWidth
           variant="contained"
           color="secondary"
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/host")}
           sx={{ py: 2 }}
         >
           Host

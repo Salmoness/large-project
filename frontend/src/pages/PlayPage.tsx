@@ -15,12 +15,12 @@ const questions: Question[] = [
   {
     question: "What is the capital of Japan?",
     options: ["Tokyo", "Beijing", "Seoul", "Bangkok"],
-    correct: "Tokyo",
+    correctAnswer: "Tokyo",
   },
   {
     question: "2 + 2 = ?",
     options: ["3", "4", "5", "6"],
-    correct: "4",
+    correctAnswer: "4",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function PlayPage() {
   };
 
   const handleAnswer = (answer: string) => {
-    if (answer !== "timeout" && answer === questions[current].correct) {
+    if (answer !== "timeout" && answer === questions[current].correctAnswer) {
       setScore((prev) => prev + 1);
     }
 
