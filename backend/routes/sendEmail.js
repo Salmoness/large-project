@@ -12,7 +12,7 @@ async function sendEmail(to, subject, html) {
   });
 
   const mailOptions = {
-    from: "Your App Name <verified-sender@example.com>", // use your verified email here
+    from: "projectehopethisworks@gmail.com", // use your verified email here
     to: to,
     subject: subject,
     html: html,
