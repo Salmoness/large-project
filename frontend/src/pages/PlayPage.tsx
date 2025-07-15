@@ -22,6 +22,21 @@ const questions: Question[] = [
     options: ["3", "4", "5", "6"],
     correctAnswer: "4",
   },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Saturn"],
+    correctAnswer: "Mars",
+  },
+  {
+    question: "Who wrote 'Romeo and Juliet'?",
+    options: ["William Shakespeare", "Mark Twain", "Jane Austen", "Charles Dickens"],
+    correctAnswer: "William Shakespeare",
+  },
+  {
+    question: "What is the chemical symbol for water?",
+    options: ["O2", "H2O", "CO2", "NaCl"],
+    correctAnswer: "H2O",
+  },
 ];
 
 export default function PlayPage() {
@@ -84,7 +99,7 @@ export default function PlayPage() {
       {step === "start" && (
         <Box sx={{ maxWidth: 400, mx: "auto", textAlign: "center" }}>
           <Typography variant="h5" gutterBottom>
-            Enter your Name and Game Code
+            Player Name and Game Access Code
           </Typography>
           <Stack spacing={2} sx={{ mt: 2 }}>
             <TextField
