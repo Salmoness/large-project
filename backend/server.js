@@ -1,31 +1,41 @@
-// Make variables in .env accessible globally (use process.env.VARIABLE)
+// Load environment variables
 require("dotenv").config({ path: "../.env" });
 
 const express = require("express");
 const cors = require("cors");
-const app = express();
-const apiRouter = require("./apiRouter.js");
+const { MongoClient } = require("mongodb");
+const router = require("./apiRouter.js");
 
+const app = express();
+const PORT = 5000;
+
+// Middleware
+app.use(cors({
+  origin: "*", // You can restrict to specific domain later
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
-app.use(cors({
-  origin: [ "http://localhost:5173", "http://hopethiswork.com" ], // your allowed frontend URLs
-  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
-  credentials: true,
-}));
-
-// start Node + Express server on port 5000
-app.listen(5000, () => {
-  console.log("Server listening on port 5000");
-});
-
-// Connect to MongoDB
-const MongoClient = require("mongodb").MongoClient;
+// MongoDB connection
 const url = process.env.MONGODB_URI;
 const client = new MongoClient(url);
-client.connect();
-app.locals.mongodb = client.db("COP4331Cards");
 
-// Set up API routes
-app.use("/api", apiRouter);
+client.connect()
+  .then(() => {
+    app.locals.mongodb = client.db("COP4331Cards");
+    console.log("Connected to MongoDB");
+
+    // Set up routes
+    app.use("/api", router);
+
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("MongoDB connection failed:", err);
+  });
+
+  

@@ -38,8 +38,9 @@ module.exports.doRegister = async function (req, res, next) {
 
       try {
         await sendEmail(email, "Verify your email", emailHtml);
+        console.log("Email sent successfully");
       } catch (e) {
-        error = "Failed to send verification email: " + e;
+        console.error("Email sending error:", e);
       }
     }
   }
