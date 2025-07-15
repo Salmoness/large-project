@@ -4,11 +4,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 async function sendEmail(to, subject, html) {
   const msg = {
     to,
-    from: "garryborn23@gmail.com", // must match a verified sender or domain
+    from: "garryborn23@gmail.com",
     subject,
     html,
   };
-
   try {
     await sgMail.send(msg);
     console.log("✅ Email sent successfully");
@@ -19,3 +18,6 @@ async function sendEmail(to, subject, html) {
     }
   }
 }
+
+
+module.exports = sendEmail;
