@@ -12,7 +12,7 @@ async function sendEmail(to, subject, html) {
   });
 
   const mailOptions = {
-    from: "projectehopethisworks@gmail.com", // use your verified email here
+    from: "garryborn23@gmail.com", // use your verified email here
     to: to,
     subject: subject,
     html: html,
