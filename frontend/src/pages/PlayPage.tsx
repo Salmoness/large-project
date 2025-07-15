@@ -25,17 +25,17 @@ const questions: Question[] = [
   {
     question: "Which planet is known as the Red Planet?",
     options: ["Earth", "Mars", "Jupiter", "Saturn"],
-    correct: "Mars",
+    correctAnswer: "Mars",
   },
   {
     question: "Who wrote 'Romeo and Juliet'?",
     options: ["William Shakespeare", "Mark Twain", "Jane Austen", "Charles Dickens"],
-    correct: "William Shakespeare",
+    correctAnswer: "William Shakespeare",
   },
   {
     question: "What is the chemical symbol for water?",
     options: ["O2", "H2O", "CO2", "NaCl"],
-    correct: "H2O",
+    correctAnswer: "H2O",
   },
 ];
 
