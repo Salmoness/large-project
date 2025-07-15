@@ -6,21 +6,14 @@ const cors = require("cors");
 const app = express();
 const apiRouter = require("./apiRouter.js");
 
-app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
-  );
-  next();
-});
+app.use(cors({
+  origin: [ "http://localhost:5173", "http://hopethiswork.com" ], // your allowed frontend URLs
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+  credentials: true,
+}));
 
 // start Node + Express server on port 5000
 app.listen(5000, () => {
