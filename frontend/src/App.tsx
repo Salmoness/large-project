@@ -18,6 +18,7 @@ import PlayPage from "./pages/PlayPage.tsx";
 import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
 import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage.tsx";
 import HostPage from "./pages/HostPage.tsx";
+import PlaygroundPage from "./pages/PlaygroundPage.tsx";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/cards" element={<CardPage />} />
           <Route path="/host" element={<HostPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/playground" element={<PlaygroundPage />} />
           <Route
             path="/account/registration-email-sent"
             element={<ConfirmEmailTokenSentPage />}

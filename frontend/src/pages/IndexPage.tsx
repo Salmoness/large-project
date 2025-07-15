@@ -30,6 +30,16 @@ export default function IndexPage() {
         >
           Host
         </Button>
+
+        <Button
+          fullWidth
+          variant="contained"
+          color="error"
+          onClick={() => navigate("/playground")}
+          sx={{ py: 2 }}
+        >
+          Playground
+        </Button>
       </Grid>
     </CenteredContainer>
   );

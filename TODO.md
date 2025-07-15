@@ -13,7 +13,7 @@
 - [x] API for Account Login
 - [ ] API for Quiz Scoreboard
 - [ ] API for Quiz Browser
-- [ ] API for Quiz Generation with AI
+- [x] API for Quiz Generation with AI
 - [ ] API for Quiz Game (Questions and Answers)
 - [ ] Frontend for Account Password Recovery
 - [ ] Frontend for Quiz Browser
