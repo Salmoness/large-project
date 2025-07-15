@@ -45,7 +45,6 @@ export default function PlaygroundPage(){
     }
 
     function createQuestionArray(quiz: string): Question[] {
-        let cleanedQuiz = "";
         const questions: Question[] = [];
         try{
             let quizList = JSON.parse(quiz);
@@ -59,7 +58,6 @@ export default function PlaygroundPage(){
             } 
         } catch (error) {
             console.error("Error parsing quiz string:", error);
-            cleanedQuiz = "Error creating Questions array data. Please try again.";
         }
         return questions;
     }   
