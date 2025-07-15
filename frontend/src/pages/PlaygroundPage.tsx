@@ -53,7 +53,7 @@ export default function PlaygroundPage(){
                 let question: Question = {
                     question: quizList[i].question,
                     options: quizList[i].options,
-                    correct: quizList[i].correctAnswer,
+                    correctAnswer: quizList[i].correctAnswer,
                 };
                 questions.push(question);
             } 
@@ -87,7 +87,7 @@ export default function PlaygroundPage(){
                                 </li> ))}
                             </ul>
                             <Typography variant="caption" color="text.secondary">
-                            Correct Answer: {item.correct}
+                            Correct Answer: {item.correctAnswer}
                             </Typography>
                         </Box> ))}
                     </Box>
