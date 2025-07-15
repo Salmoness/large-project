@@ -2,10 +2,10 @@ import { useState } from "react";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import type { Question } from "../types";
-// import type { Question } from "../types";
 // import QuizCard from "../components/QuizCard";
 // import ResultScreen from "../components/ResultsScreen";
 // import CenteredContainer from "../components/CenteredContainer";
+
 import {
   Box,
   Button,
