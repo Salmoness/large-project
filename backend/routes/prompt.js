@@ -55,7 +55,7 @@ export async function prompt(req, res, next) {
         const response = await model.invoke(messages); 
         const responseParsed = JSON.parse(response.content);
 
-        if (!Array.isArray(responseParsed) || responseParsed.length !== 10) {
+        if ( responseParsed.length < 5 ) {
             throw new Error("Invalid Topic, Try again with a different topic.");
         }
 
