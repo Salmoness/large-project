@@ -76,8 +76,17 @@
 
 `:quiz_game_id` is `_id` from the database `QuizGames` table. When a quiz is hosted, it is stored in this table. It contains an access code. This makes it so that a single generated quiz can be hosted more than once.
 
-Guests can provide their own username for each quiz. No uniquenes check required. This is `guest_username` in the database `QuizSessions` table.
+Guests can provide their own username for each quiz. No uniqueness for usernames is required. This is `guest_username` in the database `QuizSessions` table.
 
-Guests must also use JWTs. Ideally, a JWT is generated when the guest starts playing a new quiz. The JWT should use `uuidv4` for uniqueneses. This is `guest_session_id` in the database `QuizSessions` table.
+Quizzes will NOT have a time limit, per-user OR globally. Instead, TIME-STARTED is recorded when someone first begins a quiz, and TIME-FINISHED is recorded once the last question is submitted.
 
-Quizzes will NOT have a time limit, per-user OR globally. Instead, TIME-STARTED is recorded when someone first begins a quiz, and TIME-FINISHED is recorded when the last question si submitted. A "TIME PASSED SO FAR" in the frontend could be nice.
+#### JWT Structure
+
+There will be a single JWT per browsing session. This JWT is used to authenticate requests to the API. The general flow is as follows: after a successful login, becomes `User`. After logging out, becomes `None`. If starts a quiz WITHOUT BEING LOGGED IN, becomes `Guest`.
+
+| Authentication Type     | JWT Payload JSON Structure |
+| ------------- | ------- |
+| None  | (none)    |
+| User | {"userId": (`_id` from the database `Users` table)}    |
+| Guest    | {"guestId": (a random `uuidv4`, used in the database `QuizSessions` table, the field is called `guest_session_id`)}    |
+
