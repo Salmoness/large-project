@@ -9,11 +9,10 @@ class PlayView extends StatefulWidget {
 }
 
 class PlayViewState extends State<PlayView> {
+  final playForm = GlobalKey<FormState>();
   AuthType? authType;
-
-  final TextEditingController displaynameController = TextEditingController();
+  final TextEditingController displayNameController = TextEditingController();
   final TextEditingController accessCodeController = TextEditingController();
-
   String statusMessage = '';
 
   @override
@@ -30,25 +29,19 @@ class PlayViewState extends State<PlayView> {
   }
 
   void handlePlay() {
-    final displayname = displaynameController.text.trim();
+    if (!playForm.currentState!.validate()) {
+      debugPrint('Play form is invalid');
+      return;
+    }
+
+    // TODO(Aaron): API
+    final displayName = displayNameController.text.trim();
     final accessCode = accessCodeController.text.trim();
-
-    if ((authType == AuthType.guest || authType == AuthType.none) &&
-        displayname.isEmpty) {
-      setState(() {
-        statusMessage = 'Please provide a display name';
-      });
-      return;
-    }
-
-    if (accessCode.isEmpty) {
-      setState(() {
-        statusMessage = 'You must provide an access code';
-      });
-      return;
-    }
-
-    // NEED API TO PROGRESS HERE
+    debugPrint(
+      'Trying to join quiz session with displayName=$displayName and accessCode=$accessCode',
+    );
+    final quizGameId = "abc123";
+    Navigator.pushNamed(context, "/game", arguments: quizGameId);
   }
 
   @override
@@ -68,19 +61,38 @@ class PlayViewState extends State<PlayView> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            if (notLoggedIn)
-              TextField(
-                controller: displaynameController,
-                decoration: InputDecoration(labelText: 'Display Name'),
+            Form(
+              key: playForm,
+              child: Column(
+                children: [
+                  if (notLoggedIn)
+                    TextFormField(
+                      controller: displayNameController,
+                      decoration: InputDecoration(labelText: 'Display Name'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'You must provide a display name';
+                        }
+                        return null;
+                      },
+                    ),
+                  TextFormField(
+                    controller: accessCodeController,
+                    decoration: InputDecoration(labelText: 'Access Code'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'You must provide an access code';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 24),
+                  Text(statusMessage),
+                  SizedBox(height: 24),
+                  ElevatedButton(onPressed: handlePlay, child: Text('Play')),
+                ],
               ),
-            TextField(
-              controller: accessCodeController,
-              decoration: InputDecoration(labelText: 'Access Code'),
             ),
-            SizedBox(height: 24),
-            Text(statusMessage),
-            SizedBox(height: 24),
-            ElevatedButton(onPressed: handlePlay, child: Text('Play')),
             SizedBox(height: 24),
             if (notLoggedIn)
               Row(

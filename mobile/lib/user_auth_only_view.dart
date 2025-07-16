@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'jwt_auth_service.dart';
 
-class UserAuthOnly extends StatefulWidget {
+class UserAuthOnlyView extends StatefulWidget {
   final Widget child;
+  final AppBar appBar;
 
-  const UserAuthOnly({super.key, required this.child});
+  const UserAuthOnlyView({
+    super.key,
+    required this.child,
+    required this.appBar,
+  });
 
   @override
   UserOnlyAuthState createState() => UserOnlyAuthState();
 }
 
-class UserOnlyAuthState extends State<UserAuthOnly> {
+class UserOnlyAuthState extends State<UserAuthOnlyView> {
   bool isLoading = true;
-  bool isAuthorized = false;
 
   @override
   void initState() {
@@ -29,7 +33,6 @@ class UserOnlyAuthState extends State<UserAuthOnly> {
       Navigator.pushReplacementNamed(context, '/login');
     } else if (mounted) {
       setState(() {
-        isAuthorized = true;
         isLoading = false;
       });
     }
@@ -38,9 +41,12 @@ class UserOnlyAuthState extends State<UserAuthOnly> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        appBar: widget.appBar,
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
-    return widget.child;
+    return Scaffold(appBar: widget.appBar, body: widget.child);
   }
 }
