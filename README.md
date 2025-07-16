@@ -1,6 +1,6 @@
-# Trivia Game
+# TrivAI
 
-A competitive online trivia game.
+A competitive online trivia game powered by AI.
 
 ## Features
 
@@ -13,7 +13,7 @@ A competitive online trivia game.
 
 ## Web Application
 
-Trivia Game uses the MERN stack.
+TrivAI uses the MERN stack.
 
 ### Environment File
 
@@ -22,8 +22,8 @@ Create a file named `.env` in the root directory of the project and fill in the 
 ```
 MONGODB_URI=
 JWT_SECRET=
-EMAIL_USER=
-EMAIL_PASSWORD=
+SENDGRID_API_KEY=
+OPENAI_API_KEY=
 ```
 
 ### Deployment Instructions
@@ -44,7 +44,7 @@ To start the frontend server: `cd /frontend && npm install && npm run dev`
 
 ## Mobile Application
 
-Trivia Game uses Flutter for its mobile application.
+TrivAI uses Flutter for its mobile application.
 
 ### Deployment Instructions
 
@@ -73,8 +73,7 @@ Run `cd /mobile && flutter pub get && flutter run -d chrome` to emulate the mobi
 - Heroku (Hosting and Domain)
 - Flutter (Mobile UI)
 - Figma (UI Prototyping)
-- NodeMailer (Email Component)
-- Gmail (Email Provider)
+- SendGrid (Email Component)
 - NPM (NodeJS Package Manager)
 
 ## Contributors

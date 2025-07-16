@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-class IndexPage extends StatelessWidget {
+class IndexView extends StatelessWidget {
+  const IndexView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Welcome')),
+      appBar: AppBar(title: Text('TrivAI')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -16,7 +18,7 @@ class IndexPage extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               child: Text('Host'),
-              onPressed: () => Navigator.pushNamed(context, '/host'),
+              onPressed: () => Navigator.pushNamed(context, '/home'),
             ),
           ],
         ),
