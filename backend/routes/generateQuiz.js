@@ -71,11 +71,11 @@ export async function generateQuiz(req, res, next) {
         .insertOne({
             title: topic,
             summary: summaryString,
-            questions: responseParsed.questions,
-            //created_by_id: USER ID from JWT 
+            questions: responseParsed.questions, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
+            created_by_id: "1" // USER ID from JWT 
         });
 
-        res.status(200).json({ questions: questionsString, error: ""});
+        res.status(200).json({ questions: questionsString, summary: summaryString, error: ""});
     } 
     catch (error) {
         res.status(400).json({ questions: "", summary: "", error: "Error: " + error.message });
