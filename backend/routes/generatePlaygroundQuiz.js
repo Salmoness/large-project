@@ -27,6 +27,8 @@ Rules:
   - An "options" field (array of 4 answer choices)
   - A "correctAnswer" field (must match one of the options exactly)
 - The "summary" field must be a single string with at most 10 words.
+- Don't mention anything about "increasing difficulty" on the summary. Just describe the topic.
+- Don't include any helper text or explanations.
 - The entire response must be valid JSON.
 - If the topic is too broad or complex, generate simple and straightforward questions.
 - Increase difficulty gradually from question 1 to 10.

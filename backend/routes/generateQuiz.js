@@ -47,7 +47,7 @@ export async function generateQuiz(req, res, next) {
     // Expects a topic in the request body
     const { topic } = req.body;
     if (!topic) {
-        res.status(400).json({ questions: "", error: "Topic is required" });
+        res.status(400).json({ questions: "", summary: "", error: "Topic is required" });
     }
 
     const messages = [
@@ -69,12 +69,15 @@ export async function generateQuiz(req, res, next) {
         const result = await req.app.locals.mongodb
         .collection("Quizzes")
         .insertOne({
-          title: topic,
-          summary: summaryString,
+            title: topic,
+            summary: summaryString,
+            questions: responseParsed.questions,
+            //created_by_id: USER ID from JWT 
         });
+
         res.status(200).json({ questions: questionsString, error: ""});
     } 
     catch (error) {
-        res.status(400).json({ questions: "", error: "Error: " + error.message });
+        res.status(400).json({ questions: "", summary: "", error: "Error: " + error.message });
     }
 }
