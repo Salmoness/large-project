@@ -12,11 +12,16 @@ module.exports.doRegister = async function (req, res, next) {
   } else if (password.length < 3) {
     error = "Password must be at least 3 characters long";
   } else {
-    const existingUser = await req.app.locals.mongodb
+    const existingUsername = await req.app.locals.mongodb
       .collection("Users")
       .findOne({ Username: username });
+    const existingEmail = await req.app.locals.mongodb
+      .collection("Users")
+      .findOne({ Email: email });
     if (existingUser) {
       error = "Username taken";
+    } else if (existingEmail) {
+      error = "Email already registered";
     } else {
       const verificationToken = uuidv4(); // Random token used for account verification
 
