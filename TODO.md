@@ -1,9 +1,9 @@
 # TODO
 
-- [ ] Figma Website Prototype
-- [ ] Figma Mobile Prototype
-- [ ] Decide on Project Theme (Figma Prototype)
-- [ ] Decide on Project Name (Figma Prototype)
+- [x] Figma Website Prototype
+- [x] Figma Mobile Prototype
+- [x] Decide on Project Theme (Figma Prototype)
+- [x] Decide on Project Name (Figma Prototype)
 - [x] Gantt Chart
 - [x] Entity Relationship Diagram for Database
 - [x] Activity Diagram
