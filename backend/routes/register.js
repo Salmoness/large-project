@@ -1,6 +1,6 @@
 const jwtutils = require("../jwt-utils.js");
 const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
-const sendEmail = require("./sendEmail.js");
+const sendEmail = require("../sendEmail.js");
 
 module.exports.doRegister = async function (req, res, next) {
   const { username, email, password } = req.body;

@@ -12,7 +12,6 @@ import {
 
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
-import CardPage from "./pages/CardsPage.tsx";
 import IndexPage from "./pages/IndexPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
@@ -30,7 +29,6 @@ function App() {
           <Route path="/" element={<IndexPage />} />
           <Route path="/play" element={<PlayPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/cards" element={<CardPage />} />
           <Route path="/create" element={<CreatePage />} />
           <Route path="/host" element={<HostPage />} />
           <Route path="/browse" element={<BrowsePage />} />
