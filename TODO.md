@@ -37,7 +37,7 @@
 - [ ] NodeMailer does not work on DigitalOcean
 - [ ] Logged in users are not redirected from /login to /home
 - [ ] Logged out users are not redirected from /home to /login
-- [ ] Username should be unique for registration 
+- [ ] Username should be unique for registration
 - [ ] Email should be unique for registration
 
 ## Master Plan
@@ -68,7 +68,7 @@
 
 `/history`: Protected page, must be logged in. A scrollable table of quizzes this user has previously played. Each table entry has a QUIZ NAME. Each table entry also has a `scoreboard` button (redirects to `/:quiz_game_id/scoreboard`).
 
-`/:quiz_id/host`: Protected page, must be logged in. displays QUIZ NAME, QUIZ TOPIC, and QUIZ SUMMARY description. Contains a button `launch`. When this button is pressed, a new quiz game is started. An `access code`is displayed, alongside a new button `play` (redirects to `/:quiz_game_id/play`). 
+`/:quiz_id/host`: Protected page, must be logged in. displays QUIZ NAME, QUIZ TOPIC, and QUIZ SUMMARY description. Contains a button `launch`. When this button is pressed, a new quiz game is started. An `access code`is displayed, alongside a new button `play` (redirects to `/:quiz_game_id/play`).
 
 ### Clarifications
 
@@ -84,9 +84,10 @@ Quizzes will NOT have a time limit, per-user OR globally. Instead, TIME-STARTED 
 
 There will be a single JWT per browsing session. This JWT is used to authenticate requests to the API. The general flow is as follows: after a successful login, becomes `User`. After logging out, becomes `None`. If starts a quiz WITHOUT BEING LOGGED IN, becomes `Guest`.
 
-| Authentication Type     | JWT Payload JSON Structure |
-| ------------- | ------- |
-| None  | (none)    |
-| User | {"userId": (`_id` from the database `Users` table)}    |
-| Guest    | {"guestId": (a random `uuidv4`, used in the database `QuizSessions` table, the field is called `guest_session_id`)}    |
+| Authentication Type | JWT Payload JSON Structure                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| None                | (none)                                                                                                              |
+| User                | {"userId": (`_id` from the database `Users` table)}                                                                 |
+| Guest               | {"guestId": (a random `uuidv4`, used in the database `QuizSessions` table, the field is called `guest_session_id`)} |
 
+NOTE: JWTs are essentially JSON objects once decoded. There is extra information in JWTs that we don't need to touch. All data we do need to touch is in the key `payload`. For example, use `jwt.payload.userId`!
