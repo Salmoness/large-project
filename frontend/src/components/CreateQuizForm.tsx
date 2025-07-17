@@ -1,20 +1,12 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  MenuItem,
-  Stack,
-} from "@mui/material";
+import { Box, Button, TextField, Typography, Stack } from "@mui/material";
 
 type Props = {
-  onGenerate: (topic: string, questionCount: number) => void;
+  onGenerate: (topic: string) => void;
 };
 
 export default function CreateQuizForm({ onGenerate }: Props) {
   const [topic, setTopic] = useState("");
-  const [questionCount, setQuestionCount] = useState(5);
 
   return (
     <Box
@@ -29,7 +21,7 @@ export default function CreateQuizForm({ onGenerate }: Props) {
       }}
     >
       <Typography variant="h5" fontWeight={600} gutterBottom>
-        Create a New Quiz
+        Generate a New Quiz
       </Typography>
 
       <Stack spacing={3}>
@@ -41,27 +33,15 @@ export default function CreateQuizForm({ onGenerate }: Props) {
           onChange={(e) => setTopic(e.target.value)}
         />
 
-        <TextField
-          select
-          label="Number of Questions"
-          value={questionCount}
-          onChange={(e) => setQuestionCount(Number(e.target.value))}
-        >
-          {[...Array(16)].map((_, i) => {
-            const val = i + 5;
-            return (
-              <MenuItem key={val} value={val}>
-                {val}
-              </MenuItem>
-            );
-          })}
-        </TextField>
+        <Typography>
+          Number of questions: 10 
+        </Typography>
 
         <Button
           variant="contained"
           color="primary"
-          disabled={!topic || questionCount < 5}
-          onClick={() => onGenerate(topic, questionCount)}
+          disabled={!topic}
+          onClick={() => onGenerate(topic)}
         >
           Generate Quiz
         </Button>

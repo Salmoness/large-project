@@ -20,6 +20,7 @@ import HostPage from "./pages/HostPage.tsx";
 import PlaygroundPage from "./pages/PlaygroundPage.tsx";
 import CreatePage from "./pages/CreatePage.tsx";
 import BrowsePage from "./pages/BrowsePage.tsx";
+import QuizPreviewPage from "./pages/QuizPreviewPage.tsx";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/browse" element={<BrowsePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/playground" element={<PlaygroundPage />} />
+          <Route path="/preview" element={<QuizPreviewPage />} />
           <Route
             path="/account/registration-email-sent"
             element={<ConfirmEmailTokenSentPage />}

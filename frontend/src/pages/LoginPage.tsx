@@ -91,7 +91,7 @@ export default function Login() {
                 onClick={doLogin}
                 sx={{ py: 2 }}
               >
-                Log In
+                Login
               </Button>
 
               <Link
