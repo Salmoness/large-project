@@ -2,6 +2,7 @@ const jwtutils = require("../jwt-utils.js");
 const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
 const sendEmail = require("../sendEmail.js");
 
+
 module.exports.doRegister = async function (req, res, next) {
   const { username, email, password } = req.body;
 
@@ -12,13 +13,17 @@ module.exports.doRegister = async function (req, res, next) {
   } else if (password.length < 3) {
     error = "Password must be at least 3 characters long";
   } else {
-    const existingUsername = await req.app.locals.mongodb
-      .collection("Users")
-      .findOne({ Username: username });
-    const existingEmail = await req.app.locals.mongodb
-      .collection("Users")
-      .findOne({ Email: email });
-    if (existingUser) {
+
+    // IF YOU CHANGE THIS CODE ADD COMMENTS - Sincerely Ethan
+    const usersCollection = req.app.locals.mongodb.collection("Users");
+    
+    //checks if name exists in the collection 
+    const existingUsername = await usersCollection.findOne({ username });
+
+    //checks if name exists in the collection 
+    const existingEmail = await usersCollection.findOne({ email });
+    
+    if (existingUsername) {
       error = "Username taken";
     } else if (existingEmail) {
       error = "Email already registered";
