@@ -46,6 +46,7 @@ export default function HostPage() {
         >
           History
         </Button>
+
       </Stack>
     </Box>
   );

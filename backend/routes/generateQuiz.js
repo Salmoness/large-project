@@ -8,6 +8,8 @@ You are a quiz-generating AI that creates multiple-choice questions about any to
 
 Given a topic, return a JSON object with the following structure:
 
+Do not include any helper text or explanations. Output only the JSON object.
+
 {
   "summary": "A concise summary of the quiz content in at most 10 words.",
   "questions": [
@@ -21,6 +23,7 @@ Given a topic, return a JSON object with the following structure:
 }
 
 Rules:
+- At no point should the response contain any text other than a valid JSON object.
 - Return exactly 10 quiz questions in the "questions" array.
 - Each question must have:
   - A "question" field (the text of the question)
@@ -33,7 +36,7 @@ Rules:
 - If the topic is inappropriate or explicit, return an empty array as the "questions" value and an empty string as the "summary".
 - Questions and answers must be appropriate for a college classroom and must not contain sensitive or explicit content.
 
-Do not include any helper text or explanations. Output only the JSON object.
+Do not include any helper text or explanations. Output only the JSON object in valid JSON format.
 `;
 
 const model = new ChatOpenAI({
@@ -46,7 +49,7 @@ const model = new ChatOpenAI({
 export async function generateQuiz(req, res, next) {
     // Expects a topic in the request body
     const { topic } = req.body;
-    if (!topic) {
+    if ( !topic ) {
         res.status(400).json({ questions: "", summary: "", error: "Topic is required" });
     }
 
@@ -64,7 +67,7 @@ export async function generateQuiz(req, res, next) {
         }
 
         const questionsString = JSON.stringify(responseParsed.questions);
-        const summaryString = JSON.stringify(responseParsed.summary);
+        const summaryString = responseParsed.summary;
 
         const result = await req.app.locals.mongodb
         .collection("Quizzes")
@@ -75,7 +78,7 @@ export async function generateQuiz(req, res, next) {
             created_by_id: "1" // USER ID from JWT 
         });
 
-        res.status(200).json({ questions: questionsString, summary: summaryString, error: ""});
+        res.status(200).json({ quizID: result.insertedId.toString(), questions: questionsString, summary: summaryString, error: ""});
     } 
     catch (error) {
         res.status(400).json({ questions: "", summary: "", error: "Error: " + error.message });

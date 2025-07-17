@@ -19,7 +19,7 @@ export default function PlaygroundPage(){
     const [quiz, setQuiz] = useState<Question[]>([]); // Assuming quiz is a string for simplicity
     const [message, setMessage] = useState("");
     
-    async function handleGenerateQuiz(): Promise<void>{
+    async function handleGenerateQuiz(): Promise<void>{ 
         // contacts the prompt API to generate a quiz based on the topic and displays the content
         setMessage("ChatGPT doing its magic pls wait...");
 

@@ -34,7 +34,7 @@
 
 ## Known Issues
 
-- [ ] Quiz API's do not validate JWT yet ()
+- [ ] JWT are not validated in most functions (IMPORTANT)
 - [ ] NodeMailer does not work on DigitalOcean
 - [ ] Logged in users are not redirected from /login to /home
 - [ ] Logged out users are not redirected from /home to /login

@@ -16,11 +16,13 @@ import IndexPage from "./pages/IndexPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
 import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage.tsx";
-import HostPage from "./pages/HostPage.tsx";
+import HostDashboardPage from "./pages/HostDashboardPage.tsx";
 import PlaygroundPage from "./pages/PlaygroundPage.tsx";
 import CreatePage from "./pages/CreatePage.tsx";
 import BrowsePage from "./pages/BrowsePage.tsx";
 import QuizPreviewPage from "./pages/QuizPreviewPage.tsx";
+import GenerationSuccessPage from "./pages/GenerationSuccessPage.tsx";
+import HostQuizPage from "./pages/HostQuizPage.tsx";
 
 function App() {
   return (
@@ -31,11 +33,14 @@ function App() {
           <Route path="/play" element={<PlayPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/create" element={<CreatePage />} />
-          <Route path="/host" element={<HostPage />} />
+          <Route path="/host_dashboard" element={<HostDashboardPage />} />
+          <Route path="/host" element={<HostQuizPage />} />
           <Route path="/browse" element={<BrowsePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/playground" element={<PlaygroundPage />} />
           <Route path="/preview" element={<QuizPreviewPage />} />
+          <Route path="/generation_success" element={<GenerationSuccessPage/>}/>
+
           <Route
             path="/account/registration-email-sent"
             element={<ConfirmEmailTokenSentPage />}
