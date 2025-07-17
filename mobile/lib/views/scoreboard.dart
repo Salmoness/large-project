@@ -1,8 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mobile/api_base_url.dart';
-import 'package:mobile/snackbars.dart';
 
 class ScoreboardView extends StatefulWidget {
   final String quizGameId;
@@ -24,27 +20,19 @@ class ScoreboardViewState extends State<ScoreboardView> {
   }
 
   Future<void> fetchScoreboard() async {
-    // use widget.quizId to access
-    final url = Uri.parse('$getAPIBaseURL()/TODO');
+    /*
+    // use widget.quizGameId to access quizGameId
+    do api here
+    */
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        debugPrint("Received data from scoreboard endpoint: ${response.body}");
-        final data = jsonDecode(response.body) as List;
-        setState(() {
-          entries = data.map((e) => Map<String, dynamic>.from(e)).toList();
-          isLoading = false;
-        });
-      } else {
-        setState(() => isLoading = false);
-        if (mounted) context.notifyServerError();
-      }
-    } catch (e) {
-      setState(() => isLoading = false);
-      if (mounted) context.notifyServerError();
-      debugPrint('Error fetching scorebard: $e');
-    }
+    // TODO(Aaron): API
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+      entries = [
+        {"username": "Username", "score": "100", "time_taken": "1m"},
+      ];
+    });
   }
 
   @override

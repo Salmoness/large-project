@@ -1,8 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mobile/api_base_url.dart';
-import 'package:mobile/snackbars.dart';
 
 class GameView extends StatefulWidget {
   const GameView({super.key, required String quizGameId});
@@ -26,31 +22,24 @@ class GameViewState extends State<GameView> {
   Future<void> fetchQuestion() async {
     setState(() => isLoading = true);
 
-    final response = await http.get(Uri.parse('$getAPIBaseURL()/TODO'));
+    /*
+    do api here
+    */
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      if (data['end'] == true) {
-        if (mounted) Navigator.pushReplacementNamed(context, '/scoreboard');
-        return;
-      }
-
-      setState(() {
-        questionText = data['question'];
-        answers = List<String>.from(data['answers']);
-        questionId = data['id'];
-        isLoading = false;
-      });
-    } else {
-      setState(() => isLoading = false);
-      if (mounted) context.notifyServerError();
-    }
+    // TODO(Aaron): API
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      questionText = "Question";
+      answers = ["Answer 1", "Answer 2", "Answer 3", "Answer 4"];
+      questionId = 0;
+      isLoading = false;
+    });
   }
 
   Future<void> handleSubmitAnswer(String selectedAnswer) async {
     setState(() => isLoading = true);
 
+    /*
     final response = await http.post(
       Uri.parse('https://your-api.com/submit-answer'),
       headers: {'Content-Type': 'application/json'},
@@ -66,6 +55,14 @@ class GameViewState extends State<GameView> {
       setState(() => isLoading = false);
       if (mounted) context.notifyServerError();
     }
+    */
+
+    // TODO(Aaron): API
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+    });
+    await fetchQuestion();
   }
 
   @override

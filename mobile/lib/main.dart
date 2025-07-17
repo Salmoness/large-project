@@ -5,6 +5,10 @@ import 'views/login.dart';
 import 'views/home.dart';
 import 'views/play.dart';
 import 'views/game.dart';
+import 'views/browse.dart';
+import 'views/create.dart';
+import 'views/history.dart';
+import 'views/host.dart';
 
 void main() => runApp(TrivAIMobileApp());
 
@@ -31,6 +35,13 @@ class TrivAIMobileApp extends StatelessWidget {
               ModalRoute.of(context)!.settings.arguments as String;
           return ScoreboardView(quizGameId: quizGameId);
         },
+        '/create': (context) => CreateView(),
+        '/host': (context) {
+          final quizId = ModalRoute.of(context)!.settings.arguments as String;
+          return HostView(quizId: quizId);
+        },
+        '/browse': (context) => BrowseView(),
+        '/history': (context) => HistoryView(),
       },
     );
   }

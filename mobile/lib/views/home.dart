@@ -19,14 +19,36 @@ class HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnly(
-      child: Scaffold(
-        appBar: AppBar(title: Text('Home')),
-        body: Center(
-          child: ElevatedButton(
-            child: Text('Log out'),
-            onPressed: () => handleLogout(context),
-          ),
+    return UserAuthOnlyView(
+      appBar: AppBar(title: Text('TrivAI')),
+      child: Center(
+        child: Column(
+          children: [
+            ElevatedButton(
+              child: Text('Log out'),
+              onPressed: () => handleLogout(context),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('Play'),
+              onPressed: () => Navigator.pushNamed(context, '/play'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('Create New Quiz'),
+              onPressed: () => Navigator.pushNamed(context, '/create'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('Browse Quizzes'),
+              onPressed: () => Navigator.pushNamed(context, '/browse'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('View my Quiz History'),
+              onPressed: () => Navigator.pushNamed(context, '/history'),
+            ),
+          ],
         ),
       ),
     );

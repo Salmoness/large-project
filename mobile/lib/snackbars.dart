@@ -14,6 +14,6 @@ extension ContextNotifications on BuildContext {
   }
 
   void notifyServerError() {
-    notifyFailed("Server connection lost, try again");
+    notifyFailed("Server connection lost, try again later");
   }
 }

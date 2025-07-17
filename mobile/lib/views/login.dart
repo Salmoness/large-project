@@ -14,12 +14,17 @@ class LoginView extends StatefulWidget {
 }
 
 class LoginViewState extends State<LoginView> {
+  final loginForm = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   String statusMessage = '';
 
   Future<void> handleLogin() async {
+    if (!loginForm.currentState!.validate()) {
+      debugPrint('Login form invalid');
+      return;
+    }
+
     try {
       final response = await http.post(
         Uri.parse('${getAPIBaseURL()}/users/login'),
@@ -68,17 +73,36 @@ class LoginViewState extends State<LoginView> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+            Form(
+              key: loginForm,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: InputDecoration(labelText: 'Username'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'You must provide a username';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Password'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'You must provide a password';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 24),
+                  ElevatedButton(onPressed: handleLogin, child: Text('Log in')),
+                ],
+              ),
             ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(onPressed: handleLogin, child: Text('Log in')),
             SizedBox(height: 16),
             Text(statusMessage),
             SizedBox(height: 32),
