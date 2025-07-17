@@ -18,7 +18,7 @@ export default function QuizThumbnail({
   return (
     <Card
       sx={{
-        width: 300,
+        width: 250,
         height: 180,
         display: "flex",
         flexDirection: "column",
