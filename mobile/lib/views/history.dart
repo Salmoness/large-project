@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../user_auth_only_view.dart';
-import '../list_item_card.dart';
+import '../utils/user_auth_only_view.dart';
+import '../utils/list_item_card.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -32,7 +32,7 @@ class HistoryViewState extends State<HistoryView> {
         {
           "title": "Title",
           "description": "Description",
-          "quiz_game_id": "abc123",
+          "quiz_game_id": "5ecd3bbf875e60b4166f6699",
         },
       ];
     });

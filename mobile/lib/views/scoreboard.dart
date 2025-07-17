@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/debug_mode_print.dart';
 
 class ScoreboardView extends StatefulWidget {
   final String quizGameId;
@@ -10,7 +15,7 @@ class ScoreboardView extends StatefulWidget {
 }
 
 class ScoreboardViewState extends State<ScoreboardView> {
-  List<Map<String, dynamic>> entries = [];
+  List<dynamic> scoreboard = [];
   bool isLoading = true;
 
   @override
@@ -20,19 +25,29 @@ class ScoreboardViewState extends State<ScoreboardView> {
   }
 
   Future<void> fetchScoreboard() async {
-    /*
-    // use widget.quizGameId to access quizGameId
-    do api here
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      entries = [
-        {"username": "Username", "score": "100", "time_taken": "1m"},
-      ];
-    });
+    try {
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/leaderboard',
+        body: {'quizGameID': widget.quizGameId},
+      );
+      debugModePrint('Received: $responseTEXT');
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
+      setState(() {
+        scoreboard = responseJSON['leaderboard'] ?? [];
+      });
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -41,7 +56,7 @@ class ScoreboardViewState extends State<ScoreboardView> {
       appBar: AppBar(title: Text('Scoreboard')),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : entries.isEmpty
+          : scoreboard.isEmpty
           ? Center(child: Text("No scores available yet!"))
           : SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -51,7 +66,7 @@ class ScoreboardViewState extends State<ScoreboardView> {
                   DataColumn(label: Text('Score')),
                   DataColumn(label: Text('Time Taken')),
                 ],
-                rows: entries.map((entry) {
+                rows: scoreboard.map((entry) {
                   return DataRow(
                     cells: [
                       DataCell(Text(entry['username'].toString())),

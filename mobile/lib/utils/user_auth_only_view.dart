@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'debug_mode_print.dart';
 import 'jwt_auth_service.dart';
 
 class UserAuthOnlyView extends StatefulWidget {
@@ -26,9 +27,7 @@ class UserOnlyAuthState extends State<UserAuthOnlyView> {
 
   Future<void> checkAuthorization() async {
     final authType = await AuthService.getAuthType();
-
-    debugPrint("Authorization check requested. AuthType is $authType");
-
+    debugModePrint("Authorization check requested. AuthType is $authType");
     if (authType != AuthType.user && mounted) {
       Navigator.pushReplacementNamed(context, '/login');
     } else if (mounted) {
