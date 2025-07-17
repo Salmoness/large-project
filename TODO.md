@@ -13,12 +13,12 @@
 - [x] API for Registration Email Verification
 - [x] API for Account Registration
 - [x] API for Account Login
-- [ ] API for Quiz Scoreboard
+- [x] API for Quiz Scoreboard
 - [x] API for Quiz Browser
 - [x] API for Quiz Generation with AI
-- [ ] API for Quiz Game (Start Quiz Session)
-- [ ] API for Quiz Game (Fetch Next Question) // NOT NEEDED
-- [ ] API for Quiz Game (Submit Answer)
+- [x] API for Quiz Game (Start Quiz Session)
+- [x] API for Quiz Game (Join Quiz Session) 
+- [x] API for Quiz Game (Submit Answer)
 - [ ] Frontend for Account Password Recovery
 - [ ] Frontend for Quiz Browser
 - [ ] Frontend for Quiz Scoreboard
@@ -34,7 +34,7 @@
 
 ## Known Issues
 
-- [ ] Quiz API's do not validate JWT yet
+- [ ] Quiz API's do not validate JWT yet ()
 - [ ] NodeMailer does not work on DigitalOcean
 - [ ] Logged in users are not redirected from /login to /home
 - [ ] Logged out users are not redirected from /home to /login
