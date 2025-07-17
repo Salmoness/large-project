@@ -1,6 +1,6 @@
 import jwtutils from "../jwt-utils.js";
 
-const { ObjectId } = require("mongodb");
+import { ObjectId } from "mongodb";
 
 export async function guestJoinQuiz(req, res, next) {
     // Expects a search term and JWT in the request body
@@ -30,23 +30,31 @@ export async function guestJoinQuiz(req, res, next) {
         else {
             // Insert guest into the game
             let displayName = username.trim(); // Validate JWT wether its a user or guest
-            let userid = "0"; // Guest user ID, validate JWT wether its a user or guest
+            let userID = "0"; // Guest user ID, validate JWT wether its a user or guest
 
             const result = await req.app.locals.mongodb
                 .collection("QuizzSessions")
                 .insertOne({
                     quiz_game_id: quizGame._id,
+                    user_id: userID, // Guest user ID
                     username: displayName, 
                     joined_at: new Date(),
+                    finished_at: null // This will be set when the user ends the quiz
                 });
             
+            const quiz = await req.app.locals.mongodb
+                .collection("Quizzes")
+                .findOne({
+                    _id: quizGame.quiz_id
+                });
+
+            const questions = JSON.stringify(quiz.questions);
+            const questionsArray = JSON.parse(questions);
+            res.status(200).json({ questions: questionsArray, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
         }
-    } catch {
+    } catch (error) {
         console.error("Error joining quiz:", error);
         res.status(500).json({ error: "Failed to join quiz" });
         return;
     }
-    
-    
-    res.status(200).json({ accessCode: code, gameID: quizGame.insertedId, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
 }
