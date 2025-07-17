@@ -1,6 +1,7 @@
 const jwtutils = require("../jwt-utils.js");
 const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
 const sendEmail = require("../sendEmail.js");
+const md5 = require("./md5.js");
 
 
 module.exports.doRegister = async function (req, res, next) {
@@ -22,7 +23,7 @@ module.exports.doRegister = async function (req, res, next) {
 
     //checks if name exists in the collection 
     const existingEmail = await usersCollection.findOne({ email });
-    
+
     if (existingUsername) {
       error = "Username taken";
     } else if (existingEmail) {
@@ -30,11 +31,15 @@ module.exports.doRegister = async function (req, res, next) {
     } else {
       const verificationToken = uuidv4(); // Random token used for account verification
 
+
+      // hash password
+      let hash = md5(password);
+
       const result = await req.app.locals.mongodb
         .collection("Users")
         .insertOne({
           username: username,
-          password: password,
+          password: hash,
           email: email,
           email_validated: false,
           email_verification_token: verificationToken,

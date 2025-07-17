@@ -1,11 +1,17 @@
 const jwtutils = require("../jwt-utils.js");
+const md5 = require("./md5.js");
+
+
 
 module.exports.doLogin = async function (req, res, next) {
   const { username, password } = req.body;
 
+  // hash password
+  let hash = md5(password);
+
   const result = await req.app.locals.mongodb
     .collection("Users")
-    .findOne({ username: username, password: password });
+    .findOne({ username: username, password: hash });
 
   let error = "";
   let token = null;
