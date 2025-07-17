@@ -9,6 +9,7 @@ import 'views/browse.dart';
 import 'views/create.dart';
 import 'views/history.dart';
 import 'views/host.dart';
+import 'dark_theme.dart';
 
 void main() => runApp(TrivAIMobileApp());
 
@@ -20,6 +21,7 @@ class TrivAIMobileApp extends StatelessWidget {
     return MaterialApp(
       title: 'TrivAI Mobile Application',
       initialRoute: '/',
+      theme: darkTheme,
       routes: {
         '/': (context) => IndexView(),
         '/play': (context) => PlayView(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 import '../utils/jwt_auth_service.dart';
 import '../utils/debug_mode_print.dart';
 
@@ -58,58 +59,55 @@ class PlayViewState extends State<PlayView> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Play')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Form(
-              key: playForm,
-              child: Column(
-                children: [
-                  if (notLoggedIn)
-                    TextFormField(
-                      controller: displayNameController,
-                      decoration: InputDecoration(labelText: 'Display Name'),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'You must provide a display name';
-                        }
-                        return null;
-                      },
-                    ),
+      body: CenteredView(
+        children: [
+          Form(
+            key: playForm,
+            child: Column(
+              children: [
+                if (notLoggedIn)
                   TextFormField(
-                    controller: accessCodeController,
-                    decoration: InputDecoration(labelText: 'Access Code'),
+                    controller: displayNameController,
+                    decoration: InputDecoration(labelText: 'Display Name'),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'You must provide an access code';
+                        return 'You must provide a display name';
                       }
                       return null;
                     },
                   ),
-                  SizedBox(height: 24),
-                  Text(statusMessage),
-                  SizedBox(height: 24),
-                  ElevatedButton(onPressed: handlePlay, child: Text('Play')),
-                ],
-              ),
+                TextFormField(
+                  controller: accessCodeController,
+                  decoration: InputDecoration(labelText: 'Access Code'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'You must provide an access code';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 24),
+                Text(statusMessage),
+                SizedBox(height: 24),
+                ElevatedButton(onPressed: handlePlay, child: Text('Play')),
+              ],
             ),
-            SizedBox(height: 24),
-            if (notLoggedIn)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Want a permanent display name?"),
+          ),
+          SizedBox(height: 24),
+          if (notLoggedIn)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Want a permanent display name?"),
 
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushReplacementNamed(context, '/login'),
-                    child: Text('Log in'),
-                  ),
-                ],
-              ),
-          ],
-        ),
+                ElevatedButton(
+                  onPressed: () =>
+                      Navigator.pushReplacementNamed(context, '/login'),
+                  child: Text('Log in'),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }

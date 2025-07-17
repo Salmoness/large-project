@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/snackbars.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/list_item_card.dart';
-import '../utils/user_auth_only_view.dart';
+import '../utils/user_auth_only_widget.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
 
@@ -55,52 +55,57 @@ class BrowseViewState extends State<BrowseView> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnlyView(
-      appBar: AppBar(title: Text('Browse Quizzes')),
-      child: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : quizzes.isEmpty
-          ? Center(child: Text("No quizzes have been made yet!"))
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
-                    "Browse quizzes you or others have created",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: quizzes.length,
-                      itemBuilder: (context, index) {
-                        final quiz = quizzes[index];
-                        return ItemListCard(
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                quiz['title'],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(quiz['description']),
-                            ],
-                          ),
-                          actions: ElevatedButton(
-                            onPressed: () => handleHost(quiz['quiz_id']),
-                            child: Text('Host'),
-                          ),
-                        );
-                      },
+    return UserAuthOnly(
+      child: Scaffold(
+        appBar: AppBar(title: Text('Browse Quizzes')),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : quizzes.isEmpty
+            ? Center(child: Text("No quizzes have been made yet!"))
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Browse quizzes you or others have created",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 12),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: quizzes.length,
+                        itemBuilder: (context, index) {
+                          final quiz = quizzes[index];
+                          return ItemListCard(
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  quiz['title'],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(quiz['description']),
+                              ],
+                            ),
+                            actions: ElevatedButton(
+                              onPressed: () => handleHost(quiz['quiz_id']),
+                              child: Text('Host'),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

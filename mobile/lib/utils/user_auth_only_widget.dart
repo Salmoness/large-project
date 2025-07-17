@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 import 'debug_mode_print.dart';
 import 'jwt_auth_service.dart';
 
-class UserAuthOnlyView extends StatefulWidget {
+class UserAuthOnly extends StatefulWidget {
   final Widget child;
-  final AppBar appBar;
 
-  const UserAuthOnlyView({
-    super.key,
-    required this.child,
-    required this.appBar,
-  });
+  const UserAuthOnly({super.key, required this.child});
 
   @override
   UserOnlyAuthState createState() => UserOnlyAuthState();
 }
 
-class UserOnlyAuthState extends State<UserAuthOnlyView> {
+class UserOnlyAuthState extends State<UserAuthOnly> {
   bool isLoading = true;
 
   @override
@@ -41,11 +37,9 @@ class UserOnlyAuthState extends State<UserAuthOnlyView> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: widget.appBar,
-        body: Center(child: CircularProgressIndicator()),
+        body: CenteredView(children: [CircularProgressIndicator()]),
       );
     }
-
-    return Scaffold(appBar: widget.appBar, body: widget.child);
+    return widget.child;
   }
 }

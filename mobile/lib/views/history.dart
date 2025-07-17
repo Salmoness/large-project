@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/user_auth_only_view.dart';
+import '../utils/user_auth_only_widget.dart';
 import '../utils/list_item_card.dart';
 
 class HistoryView extends StatefulWidget {
@@ -44,53 +44,58 @@ class HistoryViewState extends State<HistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnlyView(
-      appBar: AppBar(title: Text('Quiz History')),
-      child: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : quizzes.isEmpty
-          ? Center(child: Text("You have not played any quizzes yet!"))
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
-                    "Browse quizzes you've played previously",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: quizzes.length,
-                      itemBuilder: (context, index) {
-                        final quiz = quizzes[index];
-                        return ItemListCard(
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                quiz['title'],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(quiz['description']),
-                            ],
-                          ),
-                          actions: ElevatedButton(
-                            onPressed: () =>
-                                handleScoreboard(quiz['quiz_game_id']),
-                            child: Text('View Scoreboard'),
-                          ),
-                        );
-                      },
+    return UserAuthOnly(
+      child: Scaffold(
+        appBar: AppBar(title: Text('Quiz History')),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : quizzes.isEmpty
+            ? Center(child: Text("You have not played any quizzes yet!"))
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Browse quizzes you've played previously",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 12),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: quizzes.length,
+                        itemBuilder: (context, index) {
+                          final quiz = quizzes[index];
+                          return ItemListCard(
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  quiz['title'],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(quiz['description']),
+                              ],
+                            ),
+                            actions: ElevatedButton(
+                              onPressed: () =>
+                                  handleScoreboard(quiz['quiz_game_id']),
+                              child: Text('View Scoreboard'),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

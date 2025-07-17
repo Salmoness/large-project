@@ -1,5 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
 import 'dart:convert';
 import '../utils/api_fetcher.dart';
@@ -65,78 +66,74 @@ class LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Form(
-              key: loginForm,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: usernameController,
-                    decoration: InputDecoration(labelText: 'Username'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'You must provide a username';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'You must provide a password';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 24),
-                  isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                          onPressed: handleLogin,
-                          child: Text('Log in'),
-                        ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(statusMessage),
-            SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: CenteredView(
+        children: [
+          Form(
+            key: loginForm,
+            child: Column(
               children: [
-                Text("Don't have an account?"),
-                TextButton(
-                  child: Text('Register'),
-                  onPressed: () {
-                    launchUrl(Uri.parse('http://hopethiswork.com/register'));
+                TextFormField(
+                  controller: usernameController,
+                  decoration: InputDecoration(labelText: 'Username'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'You must provide a username';
+                    }
+                    return null;
                   },
                 ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Forgot your password?"),
-                TextButton(
-                  child: Text('Forgot Password'),
-                  onPressed: () {
-                    launchUrl(
-                      Uri.parse(
-                        'http://hopethiswork.com/account/password-reset',
+                SizedBox(height: 24),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: 'Password'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'You must provide a password';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 24),
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                        onPressed: handleLogin,
+                        child: Text('Log in'),
                       ),
-                    );
-                  },
-                ),
               ],
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 16),
+          Text(statusMessage),
+          SizedBox(height: 32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Don't have an account?"),
+              TextButton(
+                child: Text('Register'),
+                onPressed: () {
+                  launchUrl(Uri.parse('http://hopethiswork.com/register'));
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Forgot your password?"),
+              TextButton(
+                child: Text('Forgot Password'),
+                onPressed: () {
+                  launchUrl(
+                    Uri.parse('http://hopethiswork.com/account/password-reset'),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

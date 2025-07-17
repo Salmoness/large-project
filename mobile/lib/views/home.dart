@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
 import '../utils/jwt_storage.dart';
-import '../utils/user_auth_only_view.dart';
+import '../utils/user_auth_only_widget.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -19,10 +20,10 @@ class HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnlyView(
-      appBar: AppBar(title: Text('TrivAI')),
-      child: Center(
-        child: Column(
+    return UserAuthOnly(
+      child: Scaffold(
+        appBar: AppBar(title: Text('TrivAI')),
+        body: CenteredView(
           children: [
             ElevatedButton(
               child: Text('Log out'),

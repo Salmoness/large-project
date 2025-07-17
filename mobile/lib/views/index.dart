@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/center_widget.dart';
+
 class IndexView extends StatelessWidget {
   const IndexView({super.key});
 
@@ -7,21 +9,18 @@ class IndexView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('TrivAI')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: Text('Play'),
-              onPressed: () => Navigator.pushNamed(context, '/play'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              child: Text('Host'),
-              onPressed: () => Navigator.pushNamed(context, '/home'),
-            ),
-          ],
-        ),
+      body: CenteredView(
+        children: [
+          ElevatedButton(
+            child: Text('Play'),
+            onPressed: () => Navigator.pushNamed(context, '/play'),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            child: Text('Host'),
+            onPressed: () => Navigator.pushNamed(context, '/home'),
+          ),
+        ],
       ),
     );
   }
