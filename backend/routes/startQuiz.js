@@ -1,9 +1,8 @@
 import jwtutils from "../jwt-utils.js";
-
-const { ObjectId } = require("mongodb");
+import { ObjectId } from "mongodb";
 
 export async function startQuiz(req, res, next) {
-    // Expects a search term and JWT in the request body
+    
     const { quizID, jwt } = req.body;
 
     // implement JWT verification
@@ -21,16 +20,15 @@ export async function startQuiz(req, res, next) {
         const result = await req.app.locals.mongodb
         .collection("QuizzGames")
         .insertOne({
-            quiz_id: quizID,
+            quiz_id: new ObjectId(quizID),
             in_progress: true,
             access_code: code, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
             created_by_id: "1" // USER ID from JWT 
         });
+        res.status(200).json({ accessCode: code, gameID: result.insertedId, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
     } catch (error) {
         console.error("Error starting quiz:", error);
         res.status(500).json({ error: "Failed to start quiz" });
         return;
     }
-    
-    res.status(200).json({ accessCode: code, gameID: result.insertedId, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
 }
