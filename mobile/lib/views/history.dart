@@ -32,7 +32,7 @@ class HistoryViewState extends State<HistoryView> {
         {
           "title": "Title",
           "description": "Description",
-          "quiz_game_id": "abc123",
+          "quiz_game_id": "5ecd3bbf875e60b4166f6699",
         },
       ];
     });

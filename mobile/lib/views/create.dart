@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../snackbars.dart';
+import '../api_base_url.dart';
+import '../api_fetcher.dart';
+import '../debug_mode_print.dart';
 import '../user_auth_only_view.dart';
 
 class CreateView extends StatefulWidget {
@@ -22,17 +26,23 @@ class CreateViewState extends State<CreateView> {
     setState(() {
       isLoading = true;
     });
-
-    /*
-    do api here
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      quizId = "abc123";
-    });
+    try {
+      final json = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/generate',
+        body: {'topic': topicController.text},
+      );
+      debugModePrint('Received: $json');
+      setState(() {
+        quizId = json['quizId'] ?? [];
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyServerError();
+      });
+    }
   }
 
   void handleHost() {

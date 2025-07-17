@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/snackbars.dart';
+import '../debug_mode_print.dart';
 import '../list_item_card.dart';
 import '../user_auth_only_view.dart';
+import '../api_base_url.dart';
+import '../api_fetcher.dart';
 
 class BrowseView extends StatefulWidget {
   const BrowseView({super.key});
@@ -10,7 +14,7 @@ class BrowseView extends StatefulWidget {
 }
 
 class BrowseViewState extends State<BrowseView> {
-  List<Map<String, dynamic>> quizzes = [];
+  List<dynamic> quizzes = [];
   bool isLoading = true;
 
   @override
@@ -20,18 +24,23 @@ class BrowseViewState extends State<BrowseView> {
   }
 
   Future<void> fetchAllQuizzes() async {
-    /*
-    do api here
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      quizzes = [
-        {"title": "Title", "description": "Description", "quiz_id": "abc123"},
-      ];
-    });
+    try {
+      final json = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/search',
+        body: {'search': ''},
+      );
+      debugModePrint('Received: $json');
+      setState(() {
+        quizzes = json['quizzes'] ?? [];
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyServerError();
+      });
+    }
   }
 
   void handleHost(String quizId) {
