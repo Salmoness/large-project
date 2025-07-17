@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<Map<String, dynamic>> fetchAPI({
+Future<String> fetchAPI({
   required String url,
   required Map<String, dynamic> body,
 }) async {
@@ -13,13 +13,7 @@ Future<Map<String, dynamic>> fetchAPI({
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> json = jsonDecode(response.body);
-
-      if (json['error'] == null || json['error'].isEmpty) {
-        return json;
-      } else {
-        throw Exception(json['error']);
-      }
+      return response.body;
     } else {
       throw Exception('HTTP ${response.statusCode}: ${response.reasonPhrase}');
     }

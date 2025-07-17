@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 extension ContextNotifications on BuildContext {
-  void notifyFailed(String message) {
+  void notifyUserOfError(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
-  void notifySuccess(String message) {
+  void notifyUserOfSuccess(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.green),
     );
   }
 
-  void notifyServerError() {
-    notifyFailed("Server connection lost, try again later");
+  void notifyUserOfServerError() {
+    notifyUserOfError("Server connection lost, try again later");
   }
 }

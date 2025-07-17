@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../snackbars.dart';
-import '../api_base_url.dart';
-import '../api_fetcher.dart';
-import '../debug_mode_print.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/debug_mode_print.dart';
 
 class ScoreboardView extends StatefulWidget {
   final String quizGameId;
@@ -25,20 +26,26 @@ class ScoreboardViewState extends State<ScoreboardView> {
 
   Future<void> fetchScoreboard() async {
     try {
-      final json = await fetchAPI(
+      final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/leaderboard',
         body: {'quizGameID': widget.quizGameId},
       );
-      debugModePrint('Received: $json');
+      debugModePrint('Received: $responseTEXT');
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
       setState(() {
-        scoreboard = json['leaderboard'] ?? [];
-        isLoading = false;
+        scoreboard = responseJSON['leaderboard'] ?? [];
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
         debugModePrint('Exception: $e');
-        if (mounted) context.notifyServerError();
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }

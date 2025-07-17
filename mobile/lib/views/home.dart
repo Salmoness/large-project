@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/snackbars.dart';
-import '../jwt_storage.dart';
-import '../user_auth_only_view.dart';
+import 'package:mobile/utils/snackbars.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/user_auth_only_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -12,7 +12,7 @@ class HomeView extends StatefulWidget {
 
 class HomeViewState extends State<HomeView> {
   Future<void> handleLogout(BuildContext context) async {
-    context.notifySuccess("Logged out");
+    context.notifyUserOfSuccess("Logged out");
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     await TokenStorage.deleteToken();
   }

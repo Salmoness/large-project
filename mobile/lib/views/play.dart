@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../jwt_auth_service.dart';
+import '../utils/jwt_auth_service.dart';
+import '../utils/debug_mode_print.dart';
 
 class PlayView extends StatefulWidget {
   const PlayView({super.key});
@@ -30,14 +31,14 @@ class PlayViewState extends State<PlayView> {
 
   void handlePlay() {
     if (!playForm.currentState!.validate()) {
-      debugPrint('Play form is invalid');
+      debugModePrint('Play form is invalid');
       return;
     }
 
     // TODO(Aaron): API
     final displayName = displayNameController.text.trim();
     final accessCode = accessCodeController.text.trim();
-    debugPrint(
+    debugModePrint(
       'Trying to join quiz session with displayName=$displayName and accessCode=$accessCode',
     );
     final quizGameId = "abc123";

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../user_auth_only_view.dart';
-import '../list_item_card.dart';
+import '../utils/user_auth_only_view.dart';
+import '../utils/list_item_card.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});

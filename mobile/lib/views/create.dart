@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../snackbars.dart';
-import '../api_base_url.dart';
-import '../api_fetcher.dart';
-import '../debug_mode_print.dart';
-import '../user_auth_only_view.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/debug_mode_print.dart';
+import '../utils/user_auth_only_view.dart';
 
 class CreateView extends StatefulWidget {
   const CreateView({super.key});
@@ -20,27 +22,31 @@ class CreateViewState extends State<CreateView> {
 
   Future<void> _handleSubmit() async {
     if (!createForm.currentState!.validate()) {
-      debugPrint('Create form invalid');
+      debugModePrint('Create form invalid');
       return;
     }
     setState(() {
       isLoading = true;
     });
     try {
-      final json = await fetchAPI(
+      final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/generate',
         body: {'topic': topicController.text},
       );
-      debugModePrint('Received: $json');
+      debugModePrint('Received: $responseTEXT');
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
       setState(() {
-        quizId = json['quizId'] ?? [];
+        quizId = responseJSON['quizId'] ?? [];
         isLoading = false;
       });
     } catch (e) {
       setState(() {
         isLoading = false;
         debugModePrint('Exception: $e');
-        if (mounted) context.notifyServerError();
+        if (mounted) context.notifyUserOfServerError();
       });
     }
   }

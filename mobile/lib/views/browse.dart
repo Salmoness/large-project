@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:mobile/snackbars.dart';
-import '../debug_mode_print.dart';
-import '../list_item_card.dart';
-import '../user_auth_only_view.dart';
-import '../api_base_url.dart';
-import '../api_fetcher.dart';
+import 'package:mobile/utils/snackbars.dart';
+import '../utils/debug_mode_print.dart';
+import '../utils/list_item_card.dart';
+import '../utils/user_auth_only_view.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
 
 class BrowseView extends StatefulWidget {
   const BrowseView({super.key});
@@ -25,20 +27,26 @@ class BrowseViewState extends State<BrowseView> {
 
   Future<void> fetchAllQuizzes() async {
     try {
-      final json = await fetchAPI(
+      final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/search',
         body: {'search': ''},
       );
-      debugModePrint('Received: $json');
+      debugModePrint('Received: $responseTEXT');
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
       setState(() {
-        quizzes = json['quizzes'] ?? [];
-        isLoading = false;
+        quizzes = responseJSON['quizzes'] ?? [];
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
         debugModePrint('Exception: $e');
-        if (mounted) context.notifyServerError();
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }

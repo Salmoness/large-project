@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../user_auth_only_view.dart';
+import '../utils/user_auth_only_view.dart';
 
 class HostView extends StatefulWidget {
   final String quizId;

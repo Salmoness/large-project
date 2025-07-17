@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/snackbars.dart';
+import 'package:mobile/utils/snackbars.dart';
 import 'dart:convert';
-import '../jwt_storage.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/jwt_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../api_base_url.dart';
+import '../utils/api_base_url.dart';
+import '../utils/debug_mode_print.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,50 +20,45 @@ class LoginViewState extends State<LoginView> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String statusMessage = '';
+  bool isLoading = false;
 
   Future<void> handleLogin() async {
     if (!loginForm.currentState!.validate()) {
-      debugPrint('Login form invalid');
+      debugModePrint('Login form invalid');
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
 
     try {
-      final response = await http.post(
-        Uri.parse('${getAPIBaseURL()}/users/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/users/login',
+        body: {
           'username': usernameController.text,
           'password': passwordController.text,
-        }),
+        },
       );
-
-      if (response.statusCode == 200) {
-        debugPrint('Received data from login endpoint: ${response.body}');
-        final json = jsonDecode(response.body);
-        if (json['error'] != null && json['error'] != '') {
-          setState(() {
-            statusMessage = json['error'];
-          });
-        } else {
-          TokenStorage.saveToken(json['jwt'].toString());
-          if (mounted) {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (route) => false,
-            );
-            context.notifySuccess("Logged in");
-          }
-        }
+      debugModePrint('Received: $responseTEXT');
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        statusMessage = responseJSON['error'];
       } else {
-        debugPrint(
-          'Login failed with response status code ${response.statusCode}',
-        );
-        if (mounted) context.notifyServerError();
+        TokenStorage.saveToken(responseJSON['jwt'].toString());
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          context.notifyUserOfSuccess("Logged in");
+        }
       }
     } catch (e) {
-      debugPrint('Login failed with exception: $e');
-      if (mounted) context.notifyServerError();
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -99,7 +96,12 @@ class LoginViewState extends State<LoginView> {
                     },
                   ),
                   SizedBox(height: 24),
-                  ElevatedButton(onPressed: handleLogin, child: Text('Log in')),
+                  isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                          onPressed: handleLogin,
+                          child: Text('Log in'),
+                        ),
                 ],
               ),
             ),
