@@ -76,6 +76,7 @@ class PlayViewState extends State<PlayView> {
                       return null;
                     },
                   ),
+                if (notLoggedIn) SizedBox(height: 24),
                 TextFormField(
                   controller: accessCodeController,
                   decoration: InputDecoration(labelText: 'Access Code'),
@@ -87,9 +88,9 @@ class PlayViewState extends State<PlayView> {
                   },
                 ),
                 SizedBox(height: 24),
+                ElevatedButton(onPressed: handlePlay, child: Text('Play')),
                 Text(statusMessage),
                 SizedBox(height: 24),
-                ElevatedButton(onPressed: handlePlay, child: Text('Play')),
               ],
             ),
           ),
@@ -100,7 +101,7 @@ class PlayViewState extends State<PlayView> {
               children: [
                 Text("Want a permanent display name?"),
 
-                ElevatedButton(
+                TextButton(
                   onPressed: () =>
                       Navigator.pushReplacementNamed(context, '/login'),
                   child: Text('Log in'),
