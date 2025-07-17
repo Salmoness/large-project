@@ -1,6 +1,6 @@
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'jwt_storage.dart';
-import 'package:flutter/material.dart';
+import 'debug_mode_print.dart';
 
 enum AuthType {
   guest, // Temporary authentication for a single quiz
@@ -26,7 +26,7 @@ class AuthService {
       if (payload == null || payload.isEmpty) return null;
       return payload;
     } catch (e) {
-      debugPrint('Failed to decode JWT: $e');
+      debugModePrint('Failed to decode JWT: $e');
     }
     return null;
   }

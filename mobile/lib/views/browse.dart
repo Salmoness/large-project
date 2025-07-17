@@ -1,7 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/snackbars.dart';
+import '../utils/snackbars.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/list_item_card.dart';
 import '../utils/user_auth_only_view.dart';
@@ -31,7 +30,6 @@ class BrowseViewState extends State<BrowseView> {
         url: '${getAPIBaseURL()}/quiz/search',
         body: {'search': ''},
       );
-      debugModePrint('Received: $responseTEXT');
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);

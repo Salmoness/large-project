@@ -1,6 +1,6 @@
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mobile/utils/snackbars.dart';
+import '../utils/snackbars.dart';
 import 'dart:convert';
 import '../utils/api_fetcher.dart';
 import '../utils/jwt_storage.dart';
@@ -32,14 +32,13 @@ class LoginViewState extends State<LoginView> {
     });
 
     try {
+      final username = usernameController.text.trim();
+      final password = passwordController.text.trim();
+      final hashedPassword = md5.convert(utf8.encode(password)).toString();
       final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/users/login',
-        body: {
-          'username': usernameController.text,
-          'password': passwordController.text,
-        },
+        body: {'username': username, 'password': hashedPassword},
       );
-      debugModePrint('Received: $responseTEXT');
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/snackbars.dart';
+import '../utils/snackbars.dart';
 import '../utils/jwt_storage.dart';
 import '../utils/user_auth_only_view.dart';
 

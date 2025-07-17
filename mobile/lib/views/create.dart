@@ -29,11 +29,11 @@ class CreateViewState extends State<CreateView> {
       isLoading = true;
     });
     try {
+      final topic = topicController.text.trim();
       final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/generate',
-        body: {'topic': topicController.text},
+        body: {'topic': topic},
       );
-      debugModePrint('Received: $responseTEXT');
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);

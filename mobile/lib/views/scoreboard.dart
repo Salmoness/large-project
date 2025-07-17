@@ -30,7 +30,6 @@ class ScoreboardViewState extends State<ScoreboardView> {
         url: '${getAPIBaseURL()}/quiz/leaderboard',
         body: {'quizGameID': widget.quizGameId},
       );
-      debugModePrint('Received: $responseTEXT');
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
