@@ -56,6 +56,9 @@ export default function Login() {
     });
 
     const res = await response.json();
+    if (res.error) {
+        setMessage(res.error);
+    }
 
     // Treat success or failure the same to avoid leaking info
     setEmailSent(true);
