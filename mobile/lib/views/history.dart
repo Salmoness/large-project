@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:mobile/utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/debug_mode_print.dart';
 import '../utils/user_auth_only_widget.dart';
 import '../utils/list_item_card.dart';
 
@@ -10,32 +16,38 @@ class HistoryView extends StatefulWidget {
 }
 
 class HistoryViewState extends State<HistoryView> {
-  List<Map<String, dynamic>> quizzes = [];
+  List<Map<String, dynamic>> playedQuizzes = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchAllQuizzes();
+    fetchPlayedQuizzes();
   }
 
-  Future<void> fetchAllQuizzes() async {
-    /*
-   do api here
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      quizzes = [
-        {
-          "title": "Title",
-          "description": "Description",
-          "quiz_game_id": "5ecd3bbf875e60b4166f6699",
-        },
-      ];
-    });
+  Future<void> fetchPlayedQuizzes() async {
+    try {
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/history',
+        body: {},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
+      setState(() {
+        playedQuizzes = responseJSON['history'] ?? [];
+      });
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void handleScoreboard(String quizGameId) {
@@ -44,57 +56,55 @@ class HistoryViewState extends State<HistoryView> {
 
   @override
   Widget build(BuildContext context) {
+    final history = Expanded(
+      child: ListView.builder(
+        itemCount: playedQuizzes.length,
+        itemBuilder: (context, index) {
+          final quiz = playedQuizzes[index];
+          return ItemListCard(
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  quiz['title'],
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text(quiz['summary']),
+              ],
+            ),
+            actions: ElevatedButton(
+              onPressed: () => handleScoreboard(quiz['quizGameId']),
+              child: Text('View Scoreboard'),
+            ),
+          );
+        },
+      ),
+    );
+
     return UserAuthOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Quiz History')),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : quizzes.isEmpty
-            ? Center(child: Text("You have not played any quizzes yet!"))
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      "Browse quizzes you've played previously",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: quizzes.length,
-                        itemBuilder: (context, index) {
-                          final quiz = quizzes[index];
-                          return ItemListCard(
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  quiz['title'],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(quiz['description']),
-                              ],
-                            ),
-                            actions: ElevatedButton(
-                              onPressed: () =>
-                                  handleScoreboard(quiz['quiz_game_id']),
-                              child: Text('View Scoreboard'),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              SizedBox(height: 12),
+              Text(
+                "Browse quizzes that you've previously completed",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 12),
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : playedQuizzes.isEmpty
+                  ? Center(
+                      child: Text("You have not completed any quizzes yet!"),
+                    )
+                  : history,
+            ],
+          ),
+        ),
       ),
     );
   }

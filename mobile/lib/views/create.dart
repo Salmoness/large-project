@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/user_auth_only_widget.dart';
@@ -24,12 +28,29 @@ class CreateViewState extends State<CreateView> {
     setState(() {
       isLoading = true;
     });
-    // TODO(Aaron):  API here
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      quizId = 'abc123';
-    });
+    try {
+      final topic = topicController.text.trim();
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/generate',
+        body: {'topic': topic},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
+      setState(() {
+        quizId = responseJSON['quizID'] ?? [];
+      });
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void handleHost() {
