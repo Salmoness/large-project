@@ -37,7 +37,7 @@ class UserOnlyAuthState extends State<UserAuthOnly> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        body: CenteredView(children: [CircularProgressIndicator()]),
+        body: SuperCentered(children: [CircularProgressIndicator()]),
       );
     }
     return widget.child;

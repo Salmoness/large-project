@@ -23,7 +23,7 @@ class HomeViewState extends State<HomeView> {
     return UserAuthOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('TrivAI')),
-        body: CenteredView(
+        body: SuperCentered(
           children: [
             ElevatedButton(
               child: Text('Log out'),

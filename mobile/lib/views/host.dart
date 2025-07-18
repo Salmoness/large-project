@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 import '../utils/user_auth_only_widget.dart';
 
 class HostView extends StatefulWidget {
@@ -79,57 +80,58 @@ class HostViewState extends State<HostView> {
     return UserAuthOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Host Quiz')),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (title != null)
-                      Text(
-                        title!,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    if (topic != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          'Topic: $topic',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    if (description != null) Text(description!),
-                    SizedBox(height: 24),
-                    if (accessCode == null) ...[
-                      if (isHosting)
-                        Center(child: CircularProgressIndicator())
-                      else
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: handleHost,
-                            child: Text('Host'),
+        body: SuperCentered(
+          children: [
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (title != null)
+                        Text(
+                          title!,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                    ] else ...[
-                      Center(
-                        child: Text(
-                          'Success! Here’s the access code: $accessCode',
+                      if (topic != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            'Topic: $topic',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 12),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: handlePlay,
-                          child: Text('Play'),
+                      if (description != null) Text(description!),
+                      SizedBox(height: 24),
+                      if (accessCode == null) ...[
+                        if (isHosting)
+                          Center(child: CircularProgressIndicator())
+                        else
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: handleHost,
+                              child: Text('Host'),
+                            ),
+                          ),
+                      ] else ...[
+                        Center(
+                          child: Text(
+                            'Success! Here’s the access code: $accessCode',
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 12),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: handlePlay,
+                            child: Text('Play'),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
+                  ),
+          ],
         ),
       ),
     );
