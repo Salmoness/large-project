@@ -7,18 +7,19 @@ Future<String> fetchAPI({
   required Map<String, dynamic> body,
 }) async {
   try {
-    debugModePrint('Sending API request with body: $body');
+    debugModePrint('Sending API request to $url with body: $body');
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    if (response.statusCode == 200) {
-      debugModePrint('Received API response with body: ${response.body}');
-      return response.body;
-    } else {
-      throw Exception('HTTP ${response.statusCode}: ${response.reasonPhrase}');
+    debugModePrint(
+      'Received API response with code ${response.statusCode} with body: ${response.body}',
+    );
+    if (response.statusCode == 500) {
+      throw Exception("Server error");
     }
+    return response.body;
   } catch (e) {
     throw Exception('Request failed: $e');
   }

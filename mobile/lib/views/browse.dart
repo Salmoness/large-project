@@ -69,11 +69,11 @@ class BrowseViewState extends State<BrowseView> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4),
-                Text(quiz['description']),
+                Text(quiz['summary']),
               ],
             ),
             actions: ElevatedButton(
-              onPressed: () => handleHost(quiz['quiz_id']),
+              onPressed: () => handleHost(quiz['_id']),
               child: Text('Host'),
             ),
           );

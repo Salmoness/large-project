@@ -9,11 +9,22 @@
 
 import { ObjectId } from "mongodb";
 import { COLLECTIONS } from "../dbConstants.js";
+import {
+  BAD_REQUEST,
+  INTERNAL_ERROR,
+  SUCCESS,
+} from "../responseCodeConstants.js";
 
 export async function quizHistory(req, res, next) {
   const { jwt } = req.body;
 
   // todo: get userId from JWT
+
+  const userId = "abc";
+
+  if (!userId) {
+    return res.status(BAD_REQUEST).json({ error: "Missing required field" });
+  }
 
   try {
     const db = req.app.locals.mongodb;
@@ -26,7 +37,7 @@ export async function quizHistory(req, res, next) {
     ];
 
     if (quizIds.length === 0) {
-      return res.status(200).json({ error: "", history: [] });
+      return res.status(SUCCESS).json({ error: "", history: [] });
     }
 
     const quizzes = await db
@@ -53,9 +64,9 @@ export async function quizHistory(req, res, next) {
       topic: q.topic,
     }));
 
-    res.status(200).json({ error: "", hisory: response });
+    res.status(SUCCESS).json({ error: "", hisory: response });
   } catch (err) {
     console.log("Internal error for /api/quiz/history: " + err);
-    res.status(200).json({ error: "Internal error" });
+    res.status(INTERNAL_ERROR).json({ error: "Internal error" });
   }
 }

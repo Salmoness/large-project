@@ -12,39 +12,33 @@ class GameViewState extends State<GameView> {
   String questionText = '';
   List<String> answers = [];
   int questionId = 0;
-  bool isLoading = true;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    fetchQuestion();
+    handleLoadQuestion();
   }
 
-  Future<void> fetchQuestion() async {
+  Future<void> handleLoadQuestion() async {
     setState(() => isLoading = true);
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      questionText = "Question";
-      answers = ["Answer 1", "Answer 2", "Answer 3", "Answer 4"];
-      questionId = 0;
-      isLoading = false;
-    });
+    // TODO(Aaron): add logic for this
+    setState(() => isLoading = false);
   }
 
-  Future<void> handleSubmitAnswer(String selectedAnswer) async {
+  Future<void> handleSelectAnswer(String selectedAnswer) async {
     setState(() => isLoading = true);
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-    });
-    await fetchQuestion();
+    // TODO(Aaron): add logic for this
+    setState(() => isLoading = false);
   }
 
-  Future<void> requestUserConfirmation() async {
+  Future<void> handleSubmitQuiz() async {
+    setState(() => isLoading = true);
+    // TODO(Aaron): add logic for this (the entire quiz is done, submit it)
+    setState(() => isLoading = false);
+  }
+
+  Future<void> requestUserExitConfirmation() async {
     bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -85,7 +79,7 @@ class GameViewState extends State<GameView> {
           crossAxisSpacing: 12,
           children: answers.map((answer) {
             return ElevatedButton(
-              onPressed: () => handleSubmitAnswer(answer),
+              onPressed: () => handleSelectAnswer(answer),
               child: Text(answer, textAlign: TextAlign.center),
             );
           }).toList(),
@@ -97,7 +91,7 @@ class GameViewState extends State<GameView> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => requestUserConfirmation(),
+          onPressed: () => requestUserExitConfirmation(),
         ),
         title: const Text('Playing Quiz'),
       ),

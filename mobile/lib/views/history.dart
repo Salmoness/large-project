@@ -1,7 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/snackbars.dart';
+import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
 import '../utils/debug_mode_print.dart';
@@ -16,7 +15,7 @@ class HistoryView extends StatefulWidget {
 }
 
 class HistoryViewState extends State<HistoryView> {
-  List<Map<String, dynamic>> playedQuizzes = [];
+  List<dynamic> playedQuizzes = [];
   bool isLoading = true;
 
   @override

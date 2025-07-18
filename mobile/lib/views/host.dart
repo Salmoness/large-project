@@ -32,7 +32,7 @@ class HostViewState extends State<HostView> {
     try {
       final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/info',
-        body: {'quizId': widget.quizId},
+        body: {'quizID': widget.quizId},
       );
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {

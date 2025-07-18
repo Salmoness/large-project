@@ -8,12 +8,17 @@
 
 import { ObjectId } from "mongodb";
 import { COLLECTIONS } from "../dbConstants.js";
+import {
+  BAD_REQUEST,
+  INTERNAL_ERROR,
+  SUCCESS,
+} from "../responseCodeConstants.js";
 
 export async function quizInfo(req, res, next) {
   const { quizID } = req.body;
 
   if (!quizID) {
-    return res.status(200).json({ error: "Missing required field" });
+    return res.status(BAD_REQUEST).json({ error: "Missing required field" });
   }
 
   try {
@@ -32,10 +37,10 @@ export async function quizInfo(req, res, next) {
     );
 
     if (!result) {
-      res.status(200).json({ error: "No quiz with that ID was found" });
+      res.status(BAD_REQUEST).json({ error: "No quiz with that ID was found" });
     }
 
-    res.status(200).json({
+    res.status(SUCCESS).json({
       error: "",
       topic: result["topic"],
       title: result["title"],
@@ -43,7 +48,7 @@ export async function quizInfo(req, res, next) {
     });
   } catch (err) {
     console.log("Internal error for /api/quiz/info: " + err);
-    res.status(200).json({ error: "Internal error" });
+    res.status(INTERNAL_ERROR).json({ error: "Internal error" });
     return;
   }
 }

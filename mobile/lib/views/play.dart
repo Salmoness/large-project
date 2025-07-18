@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
 import '../utils/jwt_auth_service.dart';
 import '../utils/debug_mode_print.dart';
@@ -16,6 +20,7 @@ class PlayViewState extends State<PlayView> {
   final TextEditingController displayNameController = TextEditingController();
   final TextEditingController accessCodeController = TextEditingController();
   String statusMessage = '';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,20 +35,44 @@ class PlayViewState extends State<PlayView> {
     });
   }
 
-  void handlePlay() {
+  Future<void> handlePlay() async {
     if (!playForm.currentState!.validate()) {
       debugModePrint('Play form is invalid');
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      await Future.delayed(Duration(seconds: 2));
 
-    // TODO(Aaron): API
-    final displayName = displayNameController.text.trim();
-    final accessCode = accessCodeController.text.trim();
-    debugModePrint(
-      'Trying to join quiz session with displayName=$displayName and accessCode=$accessCode',
-    );
-    final quizGameId = "abc123";
-    Navigator.pushNamed(context, "/game", arguments: quizGameId);
+      final displayName = displayNameController.text.trim();
+      final accessCode = accessCodeController.text.trim();
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/join',
+        body: {'username': displayName, 'accessCode': accessCode},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        statusMessage = responseJSON['error'];
+      } else {
+        if (mounted) {
+          // TODO(Aaron)
+          // responseJSON should contain the entire quiz data. Push
+          // the quiz data to the game page.
+          Navigator.pushNamed(context, "/game");
+        }
+      }
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -88,7 +117,13 @@ class PlayViewState extends State<PlayView> {
                   },
                 ),
                 SizedBox(height: 24),
-                ElevatedButton(onPressed: handlePlay, child: Text('Play')),
+                isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: handlePlay,
+                        child: Text('Play'),
+                      ),
+                SizedBox(height: 24),
                 Text(statusMessage),
                 SizedBox(height: 24),
               ],
