@@ -1,6 +1,5 @@
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import { hostQuiz } from "../components/hostQuiz.tsx";
 
 export default function GenerationSuccessPage() {

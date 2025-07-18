@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from "@mui/material";
-import { getAPIBaseURL } from "./APIBaseURL";
 
 type Props = {
   score: number;
