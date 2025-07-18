@@ -1,4 +1,3 @@
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
@@ -35,10 +34,9 @@ class LoginViewState extends State<LoginView> {
     try {
       final username = usernameController.text.trim();
       final password = passwordController.text.trim();
-      final hashedPassword = md5.convert(utf8.encode(password)).toString();
       final responseTEXT = await fetchAPI(
         url: '${getAPIBaseURL()}/users/login',
-        body: {'username': username, 'password': hashedPassword},
+        body: {'username': username, 'password': password},
       );
       final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
@@ -66,7 +64,7 @@ class LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
-      body: CenteredView(
+      body: SuperCentered(
         children: [
           Form(
             key: loginForm,

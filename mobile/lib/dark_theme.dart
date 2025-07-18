@@ -28,7 +28,7 @@ ThemeData darkTheme = ThemeData(
   // Inputs
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: Color(0xFF1F1F1F), // Dark fill for input
+    fillColor: Color(0xFF1F1F1F),
     labelStyle: TextStyle(color: Colors.white38),
     hintStyle: TextStyle(color: Colors.white54),
     border: OutlineInputBorder(

@@ -59,7 +59,7 @@ class PlayViewState extends State<PlayView> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Play')),
-      body: CenteredView(
+      body: SuperCentered(
         children: [
           Form(
             key: playForm,

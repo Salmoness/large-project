@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/center_widget.dart';
 
 class GameView extends StatefulWidget {
   const GameView({super.key, required String quizGameId});
@@ -22,10 +23,6 @@ class GameViewState extends State<GameView> {
   Future<void> fetchQuestion() async {
     setState(() => isLoading = true);
 
-    /*
-    do api here
-    */
-
     // TODO(Aaron): API
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -39,24 +36,6 @@ class GameViewState extends State<GameView> {
   Future<void> handleSubmitAnswer(String selectedAnswer) async {
     setState(() => isLoading = true);
 
-    /*
-    final response = await http.post(
-      Uri.parse('https://your-api.com/submit-answer'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'questionId': questionId,
-        'selectedAnswer': selectedAnswer,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      await fetchQuestion();
-    } else {
-      setState(() => isLoading = false);
-      if (mounted) context.notifyServerError();
-    }
-    */
-
     // TODO(Aaron): API
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -65,42 +44,65 @@ class GameViewState extends State<GameView> {
     await fetchQuestion();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        appBar: AppBar(title: Text('Quiz')),
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: Text('Quiz')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              questionText,
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
+  Future<void> requestUserConfirmation() async {
+    bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text('You won\'t be able to come back to this quiz'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Exit quiz'),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
-            SizedBox(height: 24),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                children: answers.map((answer) {
-                  return ElevatedButton(
-                    onPressed: () => handleSubmitAnswer(answer),
-                    child: Text(answer, textAlign: TextAlign.center),
-                  );
-                }).toList(),
-              ),
+            TextButton(
+              child: const Text('Continue playing'),
+              onPressed: () => Navigator.of(context).pop(false),
             ),
           ],
+        );
+      },
+    );
+    if (confirmed!) {
+      if (mounted) Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final content = [
+      Text(
+        questionText,
+        style: TextStyle(fontSize: 20),
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 24),
+      Expanded(
+        child: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          children: answers.map((answer) {
+            return ElevatedButton(
+              onPressed: () => handleSubmitAnswer(answer),
+              child: Text(answer, textAlign: TextAlign.center),
+            );
+          }).toList(),
         ),
+      ),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => requestUserConfirmation(),
+        ),
+        title: const Text('Playing Quiz'),
+      ),
+      body: SuperCentered(
+        children: isLoading ? [CircularProgressIndicator()] : content,
       ),
     );
   }

@@ -1,9 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../utils/center_widget.dart';
-import '../utils/snackbars.dart';
-import '../utils/api_base_url.dart';
-import '../utils/api_fetcher.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/user_auth_only_widget.dart';
 
@@ -28,27 +24,12 @@ class CreateViewState extends State<CreateView> {
     setState(() {
       isLoading = true;
     });
-    try {
-      final topic = topicController.text.trim();
-      final responseTEXT = await fetchAPI(
-        url: '${getAPIBaseURL()}/quiz/generate',
-        body: {'topic': topic},
-      );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
-      if (responseJSON['error'] != null && responseJSON['error'] != '') {
-        throw Exception(responseJSON['error']);
-      }
-      setState(() {
-        quizId = responseJSON['quizId'] ?? [];
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        debugModePrint('Exception: $e');
-        if (mounted) context.notifyUserOfServerError();
-      });
-    }
+    // TODO(Aaron):  API here
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+      quizId = 'abc123';
+    });
   }
 
   void handleHost() {
@@ -60,7 +41,7 @@ class CreateViewState extends State<CreateView> {
     return UserAuthOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Create Quiz')),
-        body: CenteredView(
+        body: SuperCentered(
           children: [
             isLoading
                 ? Center(child: CircularProgressIndicator())

@@ -26,7 +26,8 @@
 - [x] Frontend for Account Login
 - [x] Frontend for Account Registration
 - [x] Frontend for Registration Email Verification
-- [ ] Password Hashing
+- [ ] Improve scoring logic
+- [x] Password Hashing
 - [ ] 6 API Endpoint Unit Tests
 - [ ] 3 Mobile Application Unit Tests
 - [ ] Create Project Presentation
@@ -36,11 +37,11 @@
 
 - [ ] NO PAGES ARE STYLED YET
 - [ ] JWT are not validated in most functions (IMPORTANT)
-- [ ] NodeMailer does not work on DigitalOcean
+- [x] NodeMailer does not work on DigitalOcean
 - [ ] Logged in users are not redirected from /login to /home
 - [ ] Logged out users are not redirected from /home to /login
-- [ ] Username should be unique for registration
-- [ ] Email should be unique for registration
+- [x] Username should be unique for registration
+- [x] Email should be unique for registration
 
 ## Master Plan
 

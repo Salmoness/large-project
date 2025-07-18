@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CenteredView extends StatelessWidget {
+class SuperCentered extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry padding;
   final MainAxisSize mainAxisSize;
 
-  const CenteredView({
+  const SuperCentered({
     super.key,
     required this.children,
     this.padding = const EdgeInsets.all(32),
