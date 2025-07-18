@@ -16,6 +16,7 @@ import IndexPage from "./pages/IndexPage.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
 import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage.tsx";
+import ResetPasswordByTokenPage from "./pages/account/ResetPasswordByTokenPage.tsx";
 import HostDashboardPage from "./pages/HostDashboardPage.tsx";
 import PlaygroundPage from "./pages/PlaygroundPage.tsx";
 import CreatePage from "./pages/CreatePage.tsx";
@@ -39,7 +40,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/playground" element={<PlaygroundPage />} />
           <Route path="/preview" element={<QuizPreviewPage />} />
-          <Route path="/generation_success" element={<GenerationSuccessPage/>}/>
+          <Route path="/generation_success" element={<GenerationSuccessPage />} />
 
           <Route
             path="/account/registration-email-sent"
@@ -49,6 +50,12 @@ function App() {
             path="/account/registration-email-confirmation/:token"
             element={<ConfirmEmailByTokenPage />}
           />
+
+          <Route
+            path="/account/reset-password/:token"
+            element={<ResetPasswordByTokenPage />}
+          />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

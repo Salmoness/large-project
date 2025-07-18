@@ -42,16 +42,28 @@ export default function Login() {
     }
   }
 
-  function handleForgotPasswordSubmit() {
-    if (!email) {
-      setMessage("Please enter your email address.");
-      return;
-    }
+  async function handleForgotPasswordSubmit() {
+  if (!email) {
+    setMessage("Please enter your email address.");
+    return;
+  }
 
-    //TODO: API to send a reset email
+  try {
+    const response = await fetch(getAPIBaseURL() + "users/request-password-reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const res = await response.json();
+
+    // Treat success or failure the same to avoid leaking info
     setEmailSent(true);
     setMessage("If an account exists with that email, a reset link was sent.");
+  } catch (error) {
+    setMessage("Service unavailable. Try again later.");
   }
+}
 
   return (
     <CenteredContainer>
