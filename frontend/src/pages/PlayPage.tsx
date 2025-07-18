@@ -54,13 +54,13 @@ export default function PlayPage() {
   useEffect(() => {
     if (step !== "quiz") return;
 
-    setTimeLeft(10); // Reset timer on new question
+    setTimeLeft(20); // Reset timer on new question
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev === 1) {
           handleAnswer("timeout");
-          return 10;
+          return 20;
         }
         return prev - 1;
       });
@@ -90,8 +90,8 @@ export default function PlayPage() {
           console.error("Error joining quiz:", data.error);
           return;
         }
-      questions = data.questions; // Assuming the response contains the questions
-      setSessionID(data.quizSessionID); // Assuming the response contains the session ID
+      questions = data.questions; 
+      setSessionID(data.quizSessionID); 
       setStep("quiz");
       setScore(0);
       setCurrent(0);
@@ -111,7 +111,7 @@ export default function PlayPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          quizSessionID: sessionID, // Assuming gameCode is the session ID
+          quizSessionID: sessionID, 
           correctCount: score,
         }),
       });
