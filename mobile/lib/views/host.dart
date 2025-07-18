@@ -1,5 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
+import '../utils/debug_mode_print.dart';
 import '../utils/user_auth_only_widget.dart';
 
 class HostView extends StatefulWidget {
@@ -14,7 +19,7 @@ class HostView extends StatefulWidget {
 class HostViewState extends State<HostView> {
   bool isLoading = true;
   bool isHosting = false;
-  String? title, description, topic;
+  String? title, summary, topic;
   String? accessCode, quizGameId;
 
   @override
@@ -24,51 +29,54 @@ class HostViewState extends State<HostView> {
   }
 
   Future<void> fetchQuizInformation() async {
-    /*
-    final url = Uri.parse('https://your-api.com/quizzes/${widget.quizId}');
     try {
-      final resp = await http.get(url);
-      if (resp.statusCode == 200) {
-        final data = jsonDecode(resp.body);
-        setState(() {
-          title = data['title'];
-          description = data['description'];
-          topic = data['topic'];
-          isLoadingDetails = false;
-        });
-      } else {
-        setState(() => isLoadingDetails = false);
-        _showError('Failed to load quiz details');
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/info',
+        body: {'quizId': widget.quizId},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
       }
+      setState(() {
+        title = responseJSON['title'];
+        summary = responseJSON['summary'];
+        topic = responseJSON['topic'];
+        isLoading = false;
+      });
     } catch (e) {
-      setState(() => isLoadingDetails = false);
-      _showError('Error: $e');
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
     }
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      title = "Title";
-      description = 'Description';
-      topic = 'Topic';
-      isLoading = false;
-    });
   }
 
   Future<void> handleHost() async {
     setState(() => isHosting = true);
-
-    /*
-    do api here
-    */
-
-    // TODO(Aaron): API
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      accessCode = '12345';
-      quizGameId = 'abc123';
-    });
+    try {
+      final responseTEXT = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/start',
+        body: {'search': ''},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
+      setState(() {
+        // API return field is incorrectly named 'gameID', but it is
+        // correctly referring to quizGameId.
+        quizGameId = responseJSON['gameID'];
+        accessCode = responseJSON['accessCode'];
+      });
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() => isHosting = false);
+    }
   }
 
   void handlePlay() {
@@ -87,23 +95,17 @@ class HostViewState extends State<HostView> {
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (title != null)
-                        Text(
-                          title!,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        title!,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                      if (topic != null)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Topic: $topic',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      if (description != null) Text(description!),
+                      ),
+                      SizedBox(height: 8),
+                      Text('Topic: $topic', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 8),
+                      Text('Summary: $summary', style: TextStyle(fontSize: 16)),
                       SizedBox(height: 24),
                       if (accessCode == null) ...[
                         if (isHosting)

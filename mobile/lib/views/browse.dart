@@ -55,56 +55,53 @@ class BrowseViewState extends State<BrowseView> {
 
   @override
   Widget build(BuildContext context) {
+    final browser = Expanded(
+      child: ListView.builder(
+        itemCount: quizzes.length,
+        itemBuilder: (context, index) {
+          final quiz = quizzes[index];
+          return ItemListCard(
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  quiz['title'],
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text(quiz['description']),
+              ],
+            ),
+            actions: ElevatedButton(
+              onPressed: () => handleHost(quiz['quiz_id']),
+              child: Text('Host'),
+            ),
+          );
+        },
+      ),
+    );
+
     return UserAuthOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Browse Quizzes')),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : quizzes.isEmpty
-            ? Center(child: Text("No quizzes have been made yet!"))
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      "Browse quizzes you or others have created",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: quizzes.length,
-                        itemBuilder: (context, index) {
-                          final quiz = quizzes[index];
-                          return ItemListCard(
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  quiz['title'],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(quiz['description']),
-                              ],
-                            ),
-                            actions: ElevatedButton(
-                              onPressed: () => handleHost(quiz['quiz_id']),
-                              child: Text('Host'),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              SizedBox(height: 12),
+              Text(
+                "Browse quizzes that you or others have created",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 12),
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : quizzes.isEmpty
+                  ? Center(child: Text("No quizzes have been made yet!"))
+                  : browser,
+            ],
+          ),
+        ),
       ),
     );
   }
