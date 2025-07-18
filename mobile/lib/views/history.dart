@@ -81,7 +81,7 @@ class HistoryViewState extends State<HistoryView> {
       ),
     );
 
-    return UserAuthOnly(
+    return AuthedOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Quiz History')),
         body: Padding(

@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
+import '../utils/jwt_types.dart';
 import '../utils/center_widget.dart';
 import 'debug_mode_print.dart';
-import 'jwt_auth_service.dart';
+import 'jwt_service.dart';
 
-class UserAuthOnly extends StatefulWidget {
+class AuthedOnly extends StatefulWidget {
   final Widget child;
 
-  const UserAuthOnly({super.key, required this.child});
+  const AuthedOnly({super.key, required this.child});
 
   @override
   UserOnlyAuthState createState() => UserOnlyAuthState();
 }
 
-class UserOnlyAuthState extends State<UserAuthOnly> {
+class UserOnlyAuthState extends State<AuthedOnly> {
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    checkAuthorization();
+    checkAuth();
   }
 
-  Future<void> checkAuthorization() async {
-    final authType = await AuthService.getAuthType();
-    debugModePrint("Authorization check requested. AuthType is $authType");
-    if (authType != AuthType.user && mounted) {
+  Future<void> checkAuth() async {
+    final bool loggedIn = await AuthService.isJWTValid(JWTType.userAuth);
+    debugModePrint("Checking auth. User is logged in: $loggedIn");
+    if (loggedIn == false && mounted) {
       Navigator.pushReplacementNamed(context, '/login');
     } else if (mounted) {
       setState(() {

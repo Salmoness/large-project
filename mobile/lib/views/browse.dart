@@ -81,7 +81,7 @@ class BrowseViewState extends State<BrowseView> {
       ),
     );
 
-    return UserAuthOnly(
+    return AuthedOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Browse Quizzes')),
         body: Padding(

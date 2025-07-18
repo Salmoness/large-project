@@ -59,7 +59,7 @@ class CreateViewState extends State<CreateView> {
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnly(
+    return AuthedOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Create Quiz')),
         body: SuperCentered(

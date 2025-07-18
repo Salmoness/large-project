@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/center_widget.dart';
+import '../utils/jwt_types.dart';
 import '../utils/snackbars.dart';
 import 'dart:convert';
 import '../utils/api_fetcher.dart';
@@ -42,7 +43,10 @@ class LoginViewState extends State<LoginView> {
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
-        TokenStorage.saveToken(responseJSON['jwt'].toString());
+        TokenStorage.saveToken(
+          JWTType.userAuth,
+          responseJSON['jwt'].toString(),
+        );
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           context.notifyUserOfSuccess("Logged in");

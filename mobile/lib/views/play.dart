@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile/utils/jwt_types.dart';
+import '../utils/jwt_service.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
-import '../utils/jwt_auth_service.dart';
 import '../utils/debug_mode_print.dart';
 
 class PlayView extends StatefulWidget {
@@ -16,7 +17,7 @@ class PlayView extends StatefulWidget {
 
 class PlayViewState extends State<PlayView> {
   final playForm = GlobalKey<FormState>();
-  AuthType? authType;
+  bool? isLoggedIn;
   final TextEditingController displayNameController = TextEditingController();
   final TextEditingController accessCodeController = TextEditingController();
   String statusMessage = '';
@@ -29,9 +30,9 @@ class PlayViewState extends State<PlayView> {
   }
 
   Future<void> loadUserType() async {
-    AuthType type = await AuthService.getAuthType();
+    bool isLoggedInCheck = await AuthService.isJWTValid(JWTType.userAuth);
     setState(() {
-      authType = type;
+      isLoggedIn = isLoggedInCheck;
     });
   }
 
@@ -44,8 +45,6 @@ class PlayViewState extends State<PlayView> {
       isLoading = true;
     });
     try {
-      await Future.delayed(Duration(seconds: 2));
-
       final displayName = displayNameController.text.trim();
       final accessCode = accessCodeController.text.trim();
       final responseTEXT = await fetchAPI(
@@ -77,14 +76,12 @@ class PlayViewState extends State<PlayView> {
 
   @override
   Widget build(BuildContext context) {
-    if (authType == null) {
+    if (isLoggedIn == null) {
       return Scaffold(
         appBar: AppBar(title: Text('Play Quiz')),
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
-    final notLoggedIn = authType == AuthType.guest || authType == AuthType.none;
 
     return Scaffold(
       appBar: AppBar(title: Text('Play')),
@@ -94,7 +91,7 @@ class PlayViewState extends State<PlayView> {
             key: playForm,
             child: Column(
               children: [
-                if (notLoggedIn)
+                if (isLoggedIn == false)
                   TextFormField(
                     controller: displayNameController,
                     decoration: InputDecoration(labelText: 'Display Name'),
@@ -105,7 +102,7 @@ class PlayViewState extends State<PlayView> {
                       return null;
                     },
                   ),
-                if (notLoggedIn) SizedBox(height: 24),
+                if (isLoggedIn == false) SizedBox(height: 24),
                 TextFormField(
                   controller: accessCodeController,
                   decoration: InputDecoration(labelText: 'Access Code'),
@@ -130,7 +127,7 @@ class PlayViewState extends State<PlayView> {
             ),
           ),
           SizedBox(height: 24),
-          if (notLoggedIn)
+          if (isLoggedIn == false)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

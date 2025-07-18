@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/jwt_types.dart';
 import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
 import '../utils/jwt_storage.dart';
@@ -15,12 +16,12 @@ class HomeViewState extends State<HomeView> {
   Future<void> handleLogout(BuildContext context) async {
     context.notifyUserOfSuccess("Logged out");
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-    await TokenStorage.deleteToken();
+    await TokenStorage.deleteToken(JWTType.userAuth);
   }
 
   @override
   Widget build(BuildContext context) {
-    return UserAuthOnly(
+    return AuthedOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('TrivAI')),
         body: SuperCentered(
