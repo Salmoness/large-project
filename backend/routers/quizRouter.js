@@ -13,7 +13,7 @@ quizRouter.post("/generate", generateQuiz);
 quizRouter.post("/generatePlayground", generatePlaygroundQuiz);
 quizRouter.post("/search", searchQuiz);
 quizRouter.post("/start", startQuiz);
-quizRouter.post("/guestJoin", guestJoinQuiz);
+quizRouter.post("/join", guestJoinQuiz);
 quizRouter.post("/submit", submitQuiz);
 quizRouter.post("/leaderboard", getQuizLeaderboard);
 
