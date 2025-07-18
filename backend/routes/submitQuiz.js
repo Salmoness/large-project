@@ -50,5 +50,6 @@ export async function submitQuiz(req, res, next) {
         res.status(500).json({ error: "Failed to submit quiz" });
         return;
     }    
+    
     res.status(200).json({ error: "" }); //jwt: jwtutils.refreshJWT(payload) });
 }
