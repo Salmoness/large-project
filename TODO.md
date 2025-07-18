@@ -41,6 +41,7 @@
 - [ ] Logged out users are not redirected from /home to /login
 - [x] Username should be unique for registration
 - [x] Email should be unique for registration
+- [ ] Email not recieved in user inbox
 
 ## Master Plan
 
