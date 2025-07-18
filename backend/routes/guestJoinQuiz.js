@@ -21,7 +21,7 @@ export async function guestJoinQuiz(req, res, next) {
         .collection("QuizzGames")
         .findOne({
             in_progress: true,
-            access_code: accessCode, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
+            access_code: parseInt(accessCode), // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
         });
         if (!quizGame) {
             res.status(404).json({ error: "Quiz not found or not in progress" });
@@ -50,7 +50,7 @@ export async function guestJoinQuiz(req, res, next) {
 
             const questions = JSON.stringify(quiz.questions);
             const questionsArray = JSON.parse(questions);
-            res.status(200).json({ questions: questionsArray, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
+            res.status(200).json({ questions: questionsArray, quizSessionID: result.insertedId, error: "" }); //jwt: jwtutils.refreshJWT(payload) });
         }
     } catch (error) {
         console.error("Error joining quiz:", error);

@@ -34,14 +34,16 @@ export async function submitQuiz(req, res, next) {
 
         const sessions = await req.app.locals.mongodb
             .collection("QuizzSessions")
-            .find({quiz_game_id: currSession.quiz_game_id, finished_at: null})
-
+            .find({quiz_game_id: new ObjectId(currSession.quiz_game_id), finished_at: null})
+            .toArray();
+                
+        console.log("Sessions found:", sessions.length);
         if (sessions.length === 0) {
         // All sessions are finished, mark the quiz game as finished
         await req.app.locals.mongodb
             .collection("QuizzGames")
             .updateOne({_id: currSession.quiz_game_id}, {$set: {in_progress: false}});
-    }
+        }
         
     } catch (error) {
         console.error("Error starting quiz:", error);
