@@ -63,6 +63,7 @@ export default function BrowsePage() {
         questions: quiz.questions,
         summary: quiz.summary,
         title: quiz.title,
+        quizID: quiz._id,
       },
     });
   };
@@ -107,7 +108,7 @@ export default function BrowsePage() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => navigate("/host")}
+        onClick={() => navigate("/host_dashboard")}
         sx={{ mt: 4 }}
       >
         Back

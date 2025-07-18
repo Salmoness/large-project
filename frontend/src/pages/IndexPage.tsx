@@ -35,7 +35,7 @@ export default function IndexPage() {
           fullWidth
           variant="contained"
           color="secondary"
-          onClick={() => navigate("/host")}
+          onClick={() => navigate("/host_dashboard")}
           sx={{ py: 2 }}
         >
           Host

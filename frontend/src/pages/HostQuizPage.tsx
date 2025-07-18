@@ -5,6 +5,7 @@ export default function HostPage() {
     //const navigate = useNavigate();
     const location = useLocation();
     const { accessCode, summary, quizID } = location.state || {};
+    
 
   return (
     <Box

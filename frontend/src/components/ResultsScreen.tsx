@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
+import { getAPIBaseURL } from "./APIBaseURL";
 
 type Props = {
   score: number;
@@ -7,6 +8,7 @@ type Props = {
 };
 
 export default function ResultScreen({ score, total, onRestart }: Props) {
+
   return (
     <Box textAlign="center" mt={10}>
       <Typography variant="h4">Finished!</Typography>

@@ -3,6 +3,7 @@ import type { Question } from "../types";
 import QuizCard from "../components/QuizCard";
 import ResultScreen from "../components/ResultsScreen";
 import CenteredContainer from "../components/CenteredContainer";
+import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import {
   Box,
   Button,
@@ -12,7 +13,7 @@ import {
 } from "@mui/material";
 
 //TODO: change to API fetch call
-const questions: Question[] = [
+let questions: Question[] = [
   {
     question: "What is the capital of Japan?",
     options: ["Tokyo", "Beijing", "Seoul", "Bangkok"],
@@ -47,6 +48,7 @@ export default function PlayPage() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [name, setName] = useState("");
   const [gameCode, setGameCode] = useState("");
+  const [sessionID, setSessionID] = useState("");
 
   // Timer logic
   useEffect(() => {
@@ -67,13 +69,63 @@ export default function PlayPage() {
     return () => clearInterval(timer);
   }, [step, current]);
 
-  const handleStart = () => {
+  async function handleStart() {
+    console.log("Starting quiz with name:", name, "and game code:", gameCode);
+    
     if (name.trim() && gameCode.trim()) {
+      const username = name.trim();
+      const accessCode = gameCode.trim();
+      const payload = JSON.stringify({username, accessCode})
+      try {
+        const response = await fetch(getAPIBaseURL() + "quiz/join", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: payload,
+        });
+        const data = await response.json();
+        if (data.error) {
+          alert(data.error);
+          console.error("Error joining quiz:", data.error);
+          return;
+        }
+      questions = data.questions; // Assuming the response contains the questions
+      setSessionID(data.quizSessionID); // Assuming the response contains the session ID
       setStep("quiz");
       setScore(0);
       setCurrent(0);
+
+    } catch (error) {
+      console.error("Error starting quiz:", error);
+      alert("Failed to start the quiz. Please check your inputs.");
     }
-  };
+  }
+}
+
+  async function handleSubmit() {
+    try {
+      const response = await fetch(getAPIBaseURL() + "quiz/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quizSessionID: sessionID, // Assuming gameCode is the session ID
+          correctCount: score,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        console.error("Error submitting results:", data.error);
+      } else {
+        console.log("Results submitted successfully:", data);
+      }
+    } catch (error) {
+      console.error("Error submitting results:", error);
+    }
+  }
 
   const handleAnswer = (answer: string) => {
     if (answer !== "timeout" && answer === questions[current].correctAnswer) {
@@ -83,6 +135,7 @@ export default function PlayPage() {
     if (current + 1 < questions.length) {
       setCurrent((prev) => prev + 1);
     } else {
+      handleSubmit();
       setStep("result");
     }
   };
@@ -118,7 +171,7 @@ export default function PlayPage() {
               value={gameCode}
               onChange={(e) => setGameCode(e.target.value.toUpperCase())}
               inputProps={{ maxLength: 6, style: { textTransform: "uppercase" } }}
-              placeholder="e.g. ABC123"
+              placeholder="e.g. 12345"
             />
             <Button
               variant="contained"
@@ -156,6 +209,7 @@ export default function PlayPage() {
       )}
 
       {step === "result" && (
+        
         <ResultScreen
           score={score}
           total={questions.length}

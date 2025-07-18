@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { hostQuiz } from "../components/hostQuiz";
 import {
   Box,
   Typography,
@@ -14,7 +15,7 @@ export default function PreviewPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { questions, summary, title } = location.state || {};
+  const { questions, summary, quizID, title } = location.state || {};
 
   if (!questions || !summary) {
     return (
@@ -26,8 +27,16 @@ export default function PreviewPage() {
     );
   }
 
-  const handlePlay = () => {
-    navigate("/play", { state: { questions, title } });
+  const handleHost = () => {
+    hostQuiz(quizID)
+      .then((accessCode) => {
+        // Navigate to the host page with access code and quiz details
+        navigate("/host", { state: { questions, accessCode, summary, quizID } });
+      })
+      .catch((error) => {
+        console.error("Error hosting quiz:", error);
+        alert("Failed to host the quiz. Please try again.");
+      });
   };
 
   const handleBack = () => {
@@ -74,9 +83,9 @@ export default function PreviewPage() {
         <Button
           variant="contained"
           color="success"
-          onClick={handlePlay}
+          onClick={handleHost}
         >
-          Play
+          Host Quiz
         </Button>
       </Stack>
     </Box>
