@@ -20,12 +20,13 @@
 - [x] API for Quiz Game (Join Quiz Session) 
 - [x] API for Quiz Game (Submit Answer)
 - [ ] Frontend for Account Password Recovery
-- [ ] Frontend for Quiz Browser
+- [x] Frontend for Quiz Browser
 - [ ] Frontend for Quiz Scoreboard
-- [ ] Frontend for Quiz Game (Questions and Answers)
+- [x] Frontend for Quiz Game (Questions and Answers)
 - [x] Frontend for Account Login
 - [x] Frontend for Account Registration
 - [x] Frontend for Registration Email Verification
+- [ ] Improve scoring logic
 - [x] Password Hashing
 - [ ] 6 API Endpoint Unit Tests
 - [ ] 3 Mobile Application Unit Tests
