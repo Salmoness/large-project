@@ -17,7 +17,7 @@
 - [x] API for Quiz Browser
 - [x] API for Quiz Generation with AI
 - [x] API for Quiz Game (Start Quiz Session)
-- [x] API for Quiz Game (Join Quiz Session) 
+- [x] API for Quiz Game (Join Quiz Session)
 - [x] API for Quiz Game (Submit Answer)
 - [ ] Frontend for Account Password Recovery
 - [x] Frontend for Quiz Browser
@@ -84,14 +84,21 @@ Guests can provide their own username for each quiz. No uniqueness for usernames
 
 Quizzes will NOT have a time limit, per-user OR globally. Instead, TIME-STARTED is recorded when someone first begins a quiz, and TIME-FINISHED is recorded once the last question is submitted.
 
-#### JWT Structure
+#### JWT Clarification
 
-There will be a single JWT per browsing session. This JWT is used to authenticate requests to the API. The general flow is as follows: after a successful login, becomes `User`. After logging out, becomes `None`. If starts a quiz WITHOUT BEING LOGGED IN, becomes `Guest`.
+There are two separate JWTs. One for user authentication and another for quiztaking.
 
-| Authentication Type | JWT Payload JSON Structure                                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| None                | (none)                                                                                                              |
-| User                | {"userId": (`_id` from the database `Users` table)}                                                                 |
-| Guest               | {"guestId": (a random `uuidv4`, used in the database `QuizSessions` table, the field is called `guest_session_id`)} |
+| JWT            | Field                                                          |
+| -------------- | -------------------------------------------------------------- |
+| authedUserJWT  | `authUserJWT.payload.userId` (`_id` from `Users`)              |
+| quizSessionJWT | `quizSessionJWT.payload.sessionId` (`_id` from `QuizSessions`) |
 
-NOTE: JWTs are essentially JSON objects once decoded. There is extra information in JWTs that we don't need to touch. All data we do need to touch is in the key `payload`. For example, use `jwt.payload.userId`!
+`authedUserJWT` is used for: `generateQuiz`, `quizHistory`, `searchQuiz`, and `hostQuiz`.
+
+`quizSessionJWT` is used for: `joinQuiz`, `playQuiz`, and `submitQuiz`.
+
+No JWT is needed for `login`, `register`, `confirmEmail`, `recoverPassword`, `quizInfo`, and `viewQuizScoreboard`.
+
+Why do it like this? This way, users and guests are treated the exact same while playing a quiz.
+
+Currently undecided on if we should store `username`/`displayname`/other information inside the JWT. Technically, this information can be fetched from an API when needed, like the scoreboard.
