@@ -37,9 +37,12 @@ export default function QuizThumbnail({
           {description}
         </Typography>
         <Box>
-          <Typography variant="caption" color="text.secondary">
+          {
+            createdBy && 
+            <Typography variant="caption" color="text.secondary">
             Created by: {createdBy}
-          </Typography>
+            </Typography>
+          }
           <br />
           <Typography variant="caption" color="text.secondary">
             Date: {createdAt}
