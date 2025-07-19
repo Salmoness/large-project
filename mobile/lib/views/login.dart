@@ -35,18 +35,15 @@ class LoginViewState extends State<LoginView> {
     try {
       final username = usernameController.text.trim();
       final password = passwordController.text.trim();
-      final responseTEXT = await fetchAPI(
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/users/login',
         body: {'username': username, 'password': password},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
-        TokenStorage.saveToken(
-          JWTType.userAuth,
-          responseJSON['jwt'].toString(),
-        );
+        JWTStorage.saveJWT(JWTType.userAuth, responseJSON['jwt'].toString());
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           context.notifyUserOfSuccess("Logged in");

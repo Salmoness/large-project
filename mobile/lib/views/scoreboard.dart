@@ -26,11 +26,11 @@ class ScoreboardViewState extends State<ScoreboardView> {
 
   Future<void> fetchScoreboard() async {
     try {
-      final responseTEXT = await fetchAPI(
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/leaderboard',
         body: {'quizGameID': widget.quizGameId},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }

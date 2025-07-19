@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile/utils/jwt_storage.dart';
 import 'package:mobile/utils/jwt_types.dart';
 import '../utils/jwt_service.dart';
 import '../utils/snackbars.dart';
@@ -30,7 +31,7 @@ class PlayViewState extends State<PlayView> {
   }
 
   Future<void> loadUserType() async {
-    bool isLoggedInCheck = await AuthService.isJWTValid(JWTType.userAuth);
+    bool isLoggedInCheck = await JWTService.isJWTValid(JWTType.userAuth);
     setState(() {
       isLoggedIn = isLoggedInCheck;
     });
@@ -41,25 +42,38 @@ class PlayViewState extends State<PlayView> {
       debugModePrint('Play form is invalid');
       return;
     }
+    if (isLoggedIn == null) return;
     setState(() {
       isLoading = true;
     });
     try {
-      final displayName = displayNameController.text.trim();
+      final displayName = isLoggedIn! ? "" : displayNameController.text.trim();
       final accessCode = accessCodeController.text.trim();
-      final responseTEXT = await fetchAPI(
+      final jwtStr = isLoggedIn!
+          ? await JWTStorage.getJWT(JWTType.userAuth)
+          : "";
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/join',
-        body: {'username': displayName, 'accessCode': accessCode},
+        body: {
+          'username': displayName,
+          'accessCode': accessCode,
+          'jwt': jwtStr,
+        },
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      await JWTStorage.saveJWT(JWTType.quizSession, responseJSON['jwt']);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
         if (mounted) {
-          // TODO(Aaron)
-          // responseJSON should contain the entire quiz data. Push
-          // the quiz data to the game page.
-          Navigator.pushNamed(context, "/game");
+          // This is not ideal. It would be better if I could just pass
+          // the gameQuizId to the game page, and then fetch the
+          // questions as I need them.
+          Navigator.pushNamed(
+            context,
+            "/game",
+            arguments: responseJSON['questions'],
+          );
         }
       }
     } catch (e) {
@@ -78,7 +92,7 @@ class PlayViewState extends State<PlayView> {
   Widget build(BuildContext context) {
     if (isLoggedIn == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Play Quiz')),
+        appBar: AppBar(title: Text('Play')),
         body: Center(child: CircularProgressIndicator()),
       );
     }
