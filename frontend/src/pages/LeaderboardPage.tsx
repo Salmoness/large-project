@@ -119,7 +119,7 @@ export default function LeaderboardPage() {
                         <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
                             <ListItemText
                                 primary={`#${index + 1}: ${p.username}`}
-                                secondary={`Correct Answers: ${p.correctCount}`}
+                                secondary={`Score: ${p.correctCount}`}
                             />
                         </ListItem>
                         ))}
