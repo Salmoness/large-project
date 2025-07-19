@@ -9,7 +9,7 @@
 - [x] Activity Diagram
 - [ ] Mobile Application Class Diagram
 - [ ] Mobile Application
-- [ ] API for Account Password Recovery
+- [x] API for Account Password Recovery
 - [x] API for Registration Email Verification
 - [x] API for Account Registration
 - [x] API for Account Login
@@ -19,7 +19,7 @@
 - [x] API for Quiz Game (Start Quiz Session)
 - [x] API for Quiz Game (Join Quiz Session)
 - [x] API for Quiz Game (Submit Answer)
-- [ ] Frontend for Account Password Recovery
+- [x] Frontend for Account Password Recovery
 - [x] Frontend for Quiz Browser
 - [ ] Frontend for Quiz Scoreboard
 - [x] Frontend for Quiz Game (Questions and Answers)
@@ -42,7 +42,7 @@
 - [ ] Logged out users are not redirected from /home to /login
 - [x] Username should be unique for registration
 - [x] Email should be unique for registration
-- [ ] Email not recieved in user inbox
+- [ ] Email not recieved in user inbox :  this is unfixable cause we arent secure https or a company i think - ethan
 
 ## Master Plan
 
