@@ -11,6 +11,7 @@ import {
   Typography,
   Stack,
   LinearProgress,
+  CircularProgress,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -138,7 +139,7 @@ export default function PlayPage() {
       setStep("result");
     }
 
-    setTimeout(() => setScoreFlash(false), 400); // reset animation
+    setTimeout(() => setScoreFlash(false), 400);
   };
 
   const handleRestart = () => {
@@ -156,7 +157,7 @@ export default function PlayPage() {
       {step === "start" && (
         <Box sx={{ maxWidth: 400, mx: "auto", textAlign: "center" }}>
           <Typography variant="h5" gutterBottom>
-            Player Name and Game Access Code
+            Join Quiz
           </Typography>
           <Stack spacing={2} sx={{ mt: 2 }}>
             <TextField
@@ -186,10 +187,14 @@ export default function PlayPage() {
               color="primary"
               onClick={handleStart}
               disabled={!name.trim() || !gameCode.trim() || loading}
-              sx={{ py: 1.5 }}
+              sx={{ py: 1.5, height: 48 }}
               fullWidth
             >
-              {loading ? "Loading..." : "Start Quiz"}
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Start Quiz"
+              )}
             </Button>
           </Stack>
         </Box>
@@ -217,10 +222,6 @@ export default function PlayPage() {
           </Box>
 
           <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "left", color: "gray" }}>
-            <Typography variant="body2">
-              Question {current + 1} of {questions.length}
-            </Typography>
-
             <AnimatePresence>
               <motion.div
                 key={score}
@@ -228,7 +229,7 @@ export default function PlayPage() {
                 animate={scoreFlash ? { scale: 1.25 } : { scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <Typography variant="body2">Total Score: {score}</Typography>
+                <Typography variant="body2">Score: {score}</Typography>
               </motion.div>
             </AnimatePresence>
           </Box>
@@ -240,6 +241,10 @@ export default function PlayPage() {
               onAnswer={handleAnswer}
             />
           )}
+
+          <Typography variant="body2">
+            Question {current + 1} of {questions.length}
+          </Typography>
         </>
       )}
 
