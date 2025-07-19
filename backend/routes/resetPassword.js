@@ -11,10 +11,10 @@ module.exports.resetPassword = async function (req, res) {
   try {
     const result = await db.collection("Users").findOneAndUpdate(
       { password_reset_token: token },
-      {$set: { password: "", password_reset_token: "" } }
+      {$set: { password: md5(password), password_reset_token: "" } }
     );
 
-    if (!result.value) {
+    if (!result) {
       return res.status(400).json({ error: "Invalid or expired token." });
     }
 
