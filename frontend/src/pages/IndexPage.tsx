@@ -41,6 +41,7 @@ export default function IndexPage() {
           Host
         </Button>
 
+        
         {/* <Button
           fullWidth
           variant="contained"
@@ -51,7 +52,7 @@ export default function IndexPage() {
           Playground
         </Button> */}
 
-      </Stack>
+      </Stack> 
     </CenteredContainer>
   );
 }
