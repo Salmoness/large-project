@@ -1,8 +1,14 @@
-const jwtutils = require("../jwt-utils.js");
-const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
-const sendEmail = require("../sendEmail.js");
-const md5 = require("./md5.js");
+/* This is the /api/user/register endpoint.
+ *
+ * Its purpose is to register a new user.
+ *
+ * userAuthJWT authorization is NOT required for this endpoint.
+ */
 
+const { v4: uuidv4 } = require("uuid"); // this is for generating uuidv4
+const sendEmail = require("../utils/sendEmail.js");
+const md5 = require("../utils/md5.js");
+const { SUCCESS } = require("../utils/responseCodeConstants.js");
 
 module.exports.doRegister = async function (req, res, next) {
   const { username, email, password } = req.body;
@@ -14,14 +20,13 @@ module.exports.doRegister = async function (req, res, next) {
   } else if (password.length < 3) {
     error = "Password must be at least 3 characters long";
   } else {
-
     // IF YOU CHANGE THIS CODE ADD COMMENTS - Sincerely Ethan
     const usersCollection = req.app.locals.mongodb.collection("Users");
-    
-    //checks if name exists in the collection 
+
+    //checks if name exists in the collection
     const existingUsername = await usersCollection.findOne({ username });
 
-    //checks if name exists in the collection 
+    //checks if name exists in the collection
     const existingEmail = await usersCollection.findOne({ email });
 
     if (existingUsername) {
@@ -30,7 +35,6 @@ module.exports.doRegister = async function (req, res, next) {
       error = "Email already registered";
     } else {
       const verificationToken = uuidv4(); // Random token used for account verification
-
 
       // hash password
       let hash = md5(password);
@@ -60,5 +64,5 @@ module.exports.doRegister = async function (req, res, next) {
     }
   }
 
-  res.status(200).json({ error: error });
+  res.status(SUCCESS).json({ error: error });
 };

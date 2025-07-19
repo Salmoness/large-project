@@ -3,60 +3,69 @@
 // It will check if all other sessions are finished
 // If all sessions are finished, it will mark the quiz game as finished
 
-import jwtutils from "../jwt-utils.js";
 import { ObjectId } from "mongodb";
+import { verifyAndRefreshJWT } from "../utils/jwtService.js";
+import {
+  UNAUTHORIZED,
+  SUCCESS,
+  INTERNAL_ERROR,
+} from "../utils/responseCodeConstants.js";
 
 export async function submitQuiz(req, res, next) {
-    const { quizSessionID, correctCount, jwt } = req.body;
-    
-    // implement JWT verification
-    // try {
-    //     jwtutils.verifyJWT(jwt);
-    // } catch (e) {
-    //     console.log(e);
-    //     res.status(200).json({ results: [], error: "Session invalid", jwt: "" });
-    //     return;
-    // }
-    // const payload = jwtutils.decodeJWT(jwt).payload;
+  const { correctCount, jwt } = req.body;
 
-    try {
-        await req.app.locals.mongodb
+  // quizSessionJWT
+  // note: no reason to send the jwtRefreshStr back, the session is over!
+  const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
+  if (!jwtVerified)
+    return res.status(UNAUTHORIZED).json({ error: "JWT invalid or expired" });
+  quizSessionID = jwtPayload.sessionId;
+
+  try {
+    await req.app.locals.mongodb.collection("QuizzSessions").updateOne(
+      { _id: new ObjectId(quizSessionID) },
+      {
+        $set: {
+          finished_at: new Date(),
+          correct_count: correctCount,
+        },
+      }
+    );
+
+    const currSession = await req.app.locals.mongodb
+      .collection("QuizzSessions")
+      .findOne({ _id: new ObjectId(quizSessionID) });
+
+    const sessions = await req.app.locals.mongodb
+      .collection("QuizzSessions")
+      .find({
+        quiz_game_id: new ObjectId(currSession.quiz_game_id),
+        finished_at: null,
+      })
+      .toArray();
+
+    console.log("Sessions found:", sessions.length);
+    if (sessions.length === 0) {
+      // All sessions are finished, mark the quiz game as finished
+      const sessionsFinished = await req.app.locals.mongodb
         .collection("QuizzSessions")
-        .updateOne({_id: new ObjectId(quizSessionID)}, 
-            {$set: {
-                finished_at: new Date(), 
-                correct_count: correctCount
-                }});
+        .find({ quiz_game_id: new ObjectId(currSession.quiz_game_id) })
+        .toArray();
 
-        const currSession = await req.app.locals.mongodb
-            .collection("QuizzSessions")
-            .findOne({_id: new ObjectId(quizSessionID)});
+      const playerCount = sessionsFinished.length;
 
-        const sessions = await req.app.locals.mongodb
-            .collection("QuizzSessions")
-            .find({quiz_game_id: new ObjectId(currSession.quiz_game_id), finished_at: null})
-            .toArray();
-                
-        console.log("Sessions found:", sessions.length);
-        if (sessions.length === 0) {
-            // All sessions are finished, mark the quiz game as finished
-            const sessionsFinished = await req.app.locals.mongodb
-                .collection("QuizzSessions")
-                .find({quiz_game_id: new ObjectId(currSession.quiz_game_id)})
-                .toArray();
+      await req.app.locals.mongodb
+        .collection("QuizzGames")
+        .updateOne(
+          { _id: currSession.quiz_game_id },
+          { $set: { in_progress: false, players: playerCount } }
+        );
+    }
+  } catch (error) {
+    console.error("Error starting quiz:", error);
+    res.status(INTERNAL_ERROR).json({ error: "Failed to submit quiz" });
+    return;
+  }
 
-            const playerCount = sessionsFinished.length;
-
-            await req.app.locals.mongodb
-                .collection("QuizzGames")
-                .updateOne({_id: currSession.quiz_game_id}, {$set: {in_progress: false, players: playerCount}});
-        }
-        
-    } catch (error) {
-        console.error("Error starting quiz:", error);
-        res.status(500).json({ error: "Failed to submit quiz" });
-        return;
-    }    
-    
-    res.status(200).json({ error: "" }); //jwt: jwtutils.refreshJWT(payload) });
+  res.status(SUCCESS).json({ error: "" });
 }

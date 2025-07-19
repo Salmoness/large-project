@@ -15,22 +15,22 @@ function createJWT(data) {
   return jwt.sign({ payload: data }, JWT_SECRET, { expiresIn: DURATION });
 }
 
-// returns the data used in createJWT, or false if
-// the given JWT is expired or invalid
+// returns [payload, success]
 function verifyAndDecodeJWT(tokenStr) {
+  if (tokenStr == null) return false;
   try {
-    return jwt.verify(tokenStr, JWT_SECRET).payload;
+    return [jwt.verify(tokenStr, JWT_SECRET).payload, true];
   } catch (e) {
-    return false;
+    return [null, false];
   }
 }
 
-// returns a brand new JWT from an existing JWT,
-// or false if the current JWT is expired or invalid
+// returns [payload, refreshedTokenStr, success]
 function verifyAndRefreshJWT(tokenStr) {
-  const payloadToCopy = verifyAndDecodeJWT(tokenStr);
-  if (payloadToCopy == false) return false;
-  return createJWT(payloadToCopy);
+  if (tokenStr == null) return [null, null, false];
+  const [payloadToCopy, success] = verifyAndDecodeJWT(tokenStr);
+  if (!success) return [null, null, false];
+  return [payloadToCopy, createJWT(payloadToCopy), true];
 }
 
 module.exports = {

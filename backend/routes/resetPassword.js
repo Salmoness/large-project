@@ -1,4 +1,4 @@
-const md5 = require("./md5.js");
+const md5 = require("../utils/md5.js");
 
 module.exports.resetPassword = async function (req, res) {
   const db = req.app.locals.mongodb;
@@ -9,10 +9,12 @@ module.exports.resetPassword = async function (req, res) {
   }
 
   try {
-    const result = await db.collection("Users").findOneAndUpdate(
-      { password_reset_token: token },
-      {$set: { password: md5(password), password_reset_token: "" } }
-    );
+    const result = await db
+      .collection("Users")
+      .findOneAndUpdate(
+        { password_reset_token: token },
+        { $set: { password: md5(password), password_reset_token: "" } }
+      );
 
     if (!result) {
       return res.status(400).json({ error: "Invalid or expired token." });
