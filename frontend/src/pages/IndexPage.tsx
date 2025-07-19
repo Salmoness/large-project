@@ -10,7 +10,7 @@ export default function IndexPage() {
     <CenteredContainer>
       <ProjectHeader />
 
-      <Stack spacing={2} sx={{ mt: 4, width: "60%" }}>
+      <Stack spacing={2} sx={{ mt: 4, width: "40%" }}>
         <Button
           fullWidth
           variant="contained"
@@ -31,7 +31,7 @@ export default function IndexPage() {
           Login
         </Button>
 
-        <Button
+        {/* <Button
           fullWidth
           variant="contained"
           color="secondary"
@@ -39,7 +39,7 @@ export default function IndexPage() {
           sx={{ py: 2 }}
         >
           Host
-        </Button>
+        </Button> */}
 
         
         {/* <Button

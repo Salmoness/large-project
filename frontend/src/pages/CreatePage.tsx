@@ -20,39 +20,44 @@ export default function CreatePage() {
   };
 
   async function handleGenerate(): Promise<void> {
-    setLoading(true);
-    try {
-      const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ topic }),
-      });
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("userAuthToken");
+    const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ topic, jwt: token }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.error) {
-        alert(data.error);
-        console.error("Error generating quiz:", data.error);
-        setLoading(false);
-        return;
-      }
-
-      const questions = JSON.parse(data.questions);
-      const summary = JSON.stringify(data.summary);
-      const quizID = data.quizID;
-
-      navigate("/generation_success", {
-        state: { quizID, questions, summary },
-      });
-
-    } catch (err) {
-      alert("Something went wrong generating the quiz.");
-    } finally {
-      setLoading(false);
+    if (data.jwt && data.jwt !== token) {
+      localStorage.setItem("userAuthToken", data.jwt);
     }
+
+    if (data.error) {
+      alert(data.error);
+      console.error("Error generating quiz:", data.error);
+      setLoading(false);
+      return;
+    }
+
+    const questions = JSON.parse(data.questions);
+    const summary = data.summary;  // it's already a string, no need for JSON.stringify
+    const quizID = data.quizID;
+
+    navigate("/generation_success", {
+      state: { quizID, questions, summary },
+    });
+  } catch (err) {
+    alert("Something went wrong generating the quiz.");
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
     <Box

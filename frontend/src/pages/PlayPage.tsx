@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Question } from "../types";
 import QuizCard from "../components/QuizCard";
+import ProjectHeader from "../components/ProjectHeader";
 import ResultScreen from "../components/ResultsScreen";
 import CenteredContainer from "../components/CenteredContainer";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
@@ -16,6 +17,15 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 const initialTime = 20; // seconds
+
+// Utility to save and retrieve QuizSessionJWT from localStorage
+function saveQuizSessionJWT(token: string) {
+  localStorage.setItem("QuizSessionJWT", token);
+}
+
+function getQuizSessionJWT() {
+  return localStorage.getItem("QuizSessionJWT") || "";
+}
 
 export default function PlayPage() {
   const [step, setStep] = useState<"start" | "quiz" | "result">("start");
@@ -53,53 +63,61 @@ export default function PlayPage() {
   }, [step, current]);
 
   async function handleStart() {
-    if (name.trim() && gameCode.trim()) {
-      setLoading(true);
-      const username = name.trim();
-      const accessCode = gameCode.trim();
-      const payload = JSON.stringify({ username, accessCode });
+    if (!name.trim() || !gameCode.trim()) return;
 
-      try {
-        const response = await fetch(getAPIBaseURL() + "quiz/join", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: payload,
-        });
+    setLoading(true);
+    const username = name.trim();
+    const accessCode = gameCode.trim();
 
-        const data = await response.json();
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
+    try {
+      const response = await fetch(getAPIBaseURL() + "quiz/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, accessCode }),
+      });
 
-        if (!data.questions || !Array.isArray(data.questions)) {
-          alert("Invalid question data from server.");
-          return;
-        }
+      const data = await response.json();
 
-        setQuestions(data.questions);
-        setSessionID(data.quizSessionID);
-        setStep("quiz");
-        setScore(0);
-        setCorrectCount(0);
-        setCurrent(0);
-      } catch (error) {
-        console.error("Error starting quiz:", error);
-        alert("Failed to start the quiz. Please check your inputs.");
-      } finally {
+      if (data.error) {
+        alert(data.error);
         setLoading(false);
+        return;
       }
+
+      if (!data.questions || !Array.isArray(data.questions)) {
+        alert("Invalid question data from server.");
+        setLoading(false);
+        return;
+      }
+
+      setQuestions(data.questions);
+      setSessionID(data.quizSessionID || "");
+      saveQuizSessionJWT(data.jwt);
+      setStep("quiz");
+      setScore(0);
+      setCorrectCount(0);
+      setCurrent(0);
+    } catch (error) {
+      alert("Failed to start the quiz. Please check your inputs.");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function handleSubmit() {
+    const jwt = getQuizSessionJWT();
+    if (!jwt) {
+      alert("Session expired or invalid.");
+      setStep("start");
+      return;
+    }
+
     try {
       const response = await fetch(getAPIBaseURL() + "quiz/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify({
           quizSessionID: sessionID,
@@ -108,6 +126,7 @@ export default function PlayPage() {
       });
 
       const data = await response.json();
+
       if (data.error) {
         console.error("Error submitting results:", data.error);
       } else {
@@ -150,15 +169,20 @@ export default function PlayPage() {
     setName("");
     setGameCode("");
     setQuestions([]);
+    localStorage.removeItem("QuizSessionJWT");
   };
 
   return (
     <CenteredContainer>
+      
       {step === "start" && (
         <Box sx={{ maxWidth: 400, mx: "auto", textAlign: "center" }}>
+
+          <ProjectHeader /> <br />
           <Typography variant="h5" gutterBottom>
             Join Quiz
           </Typography>
+    
           <Stack spacing={2} sx={{ mt: 2 }}>
             <TextField
               label="Name"
@@ -173,13 +197,8 @@ export default function PlayPage() {
               variant="outlined"
               fullWidth
               value={gameCode}
-              onChange={(e) =>
-                setGameCode(e.target.value.toUpperCase())
-              }
-              inputProps={{
-                maxLength: 6,
-                style: { textTransform: "uppercase" },
-              }}
+              onChange={(e) => setGameCode(e.target.value.toUpperCase())}
+              inputProps={{ maxLength: 6, style: { textTransform: "uppercase" } }}
               placeholder="e.g. 12345"
             />
             <Button
@@ -217,11 +236,15 @@ export default function PlayPage() {
             />
           </Box>
 
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "right", color: "gray" }}>
+          <Box
+            sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "right", color: "gray" }}
+          >
             Time left: {timeLeft}s
           </Box>
 
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "left", color: "gray" }}>
+          <Box
+            sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "left", color: "gray" }}
+          >
             <AnimatePresence>
               <motion.div
                 key={score}

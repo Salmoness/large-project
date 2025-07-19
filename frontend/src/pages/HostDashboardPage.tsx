@@ -1,5 +1,6 @@
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ProjectHeader from "../components/ProjectHeader";
 
 export default function HostPage() {
   const navigate = useNavigate();
@@ -9,8 +10,7 @@ export default function HostPage() {
   };
 
   return (
-    <Box
-      
+    <Box 
       sx={{
         height: "100vh",
         display: "flex",
@@ -21,6 +21,9 @@ export default function HostPage() {
         backgroundColor: "#f0f2f5",
       }}
     >
+
+      <ProjectHeader />
+
       <Typography variant="h4" fontWeight={700}>
         Host Dashboard
       </Typography>

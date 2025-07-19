@@ -28,24 +28,37 @@ export default function BrowsePage() {
   const navigate = useNavigate();
 
   const fetchQuizzes = async (term: string) => {
-    try {
-      const response = await fetch(getAPIBaseURL() + "quiz/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ search: term }),
-      });
+  try {
+    const token = localStorage.getItem("userAuthToken") || ""; // or quizSessionToken if needed
 
-      const data = await response.json();
-      if (data.error) {
-        console.error(data.error);
-        return;
-      }
+    const response = await fetch(getAPIBaseURL() + "quiz/search", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ search: term }),
+      
+    })
+    
 
-      setQuizzes(data.quizzes);
-    } catch (error) {
-      console.error("Error fetching quizzes:", error);
+    const data = await response.json();
+
+    // Update stored JWT if backend returns a refreshed one
+    if (data.jwt && data.jwt !== token) {
+      localStorage.setItem("userAuthToken", data.jwt);
     }
-  };
+
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
+
+    setQuizzes(data.quizzes);
+  } catch (error) {
+    console.error("Error fetching quizzes:", error);
+  }
+};
 
   useEffect(() => {
     fetchQuizzes(""); // Load all on mount
