@@ -10,13 +10,16 @@ import {
   TextField,
   Typography,
   Stack,
+  LinearProgress,
 } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 const initialTime = 20; // seconds
 
 export default function PlayPage() {
   const [step, setStep] = useState<"start" | "quiz" | "result">("start");
   const [score, setScore] = useState(0);
+  const [scoreFlash, setScoreFlash] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [current, setCurrent] = useState(0);
@@ -25,8 +28,10 @@ export default function PlayPage() {
   const [gameCode, setGameCode] = useState("");
   const [sessionID, setSessionID] = useState("");
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
 
-  // Timer logic
+  const timePercentage = (timeLeft / initialTime) * 100;
+
   useEffect(() => {
     if (step !== "quiz") return;
 
@@ -48,6 +53,7 @@ export default function PlayPage() {
 
   async function handleStart() {
     if (name.trim() && gameCode.trim()) {
+      setLoading(true);
       const username = name.trim();
       const accessCode = gameCode.trim();
       const payload = JSON.stringify({ username, accessCode });
@@ -81,6 +87,8 @@ export default function PlayPage() {
       } catch (error) {
         console.error("Error starting quiz:", error);
         alert("Failed to start the quiz. Please check your inputs.");
+      } finally {
+        setLoading(false);
       }
     }
   }
@@ -117,8 +125,10 @@ export default function PlayPage() {
       const timeTakenMs = Date.now() - questionStartTime;
       const deduction = (timeTakenMs / 1000) * 50;
       earnedPoints = Math.max(0, Math.floor(1000 - deduction));
+
       setScore((prev) => prev + earnedPoints);
       setCorrectCount((prev) => prev + 1);
+      setScoreFlash(true);
     }
 
     if (current + 1 < questions.length) {
@@ -127,6 +137,8 @@ export default function PlayPage() {
       handleSubmit();
       setStep("result");
     }
+
+    setTimeout(() => setScoreFlash(false), 400); // reset animation
   };
 
   const handleRestart = () => {
@@ -173,11 +185,11 @@ export default function PlayPage() {
               variant="contained"
               color="primary"
               onClick={handleStart}
-              disabled={!name.trim() || !gameCode.trim()}
+              disabled={!name.trim() || !gameCode.trim() || loading}
               sx={{ py: 1.5 }}
               fullWidth
             >
-              Start Quiz
+              {loading ? "Loading..." : "Start Quiz"}
             </Button>
           </Stack>
         </Box>
@@ -185,33 +197,40 @@ export default function PlayPage() {
 
       {step === "quiz" && (
         <>
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: 600,
-              mb: 1,
-              textAlign: "right",
-              color: "gray",
-            }}
-          >
+          <Box sx={{ width: "100%", maxWidth: 600, mb: 2 }}>
+            <LinearProgress
+              variant="determinate"
+              value={timePercentage}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+                [`& .MuiLinearProgress-bar`]: {
+                  backgroundColor:
+                    timeLeft < 5 ? "error.main" : "primary.main",
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "right", color: "gray" }}>
             Time left: {timeLeft}s
           </Box>
 
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: 600,
-              mb: 1,
-              textAlign: "left",
-              color: "gray",
-            }}
-          >
+          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "left", color: "gray" }}>
             <Typography variant="body2">
               Question {current + 1} of {questions.length}
             </Typography>
-            <Typography variant="body2">
-              Total Score: {score}
-            </Typography>
+
+            <AnimatePresence>
+              <motion.div
+                key={score}
+                initial={{ scale: 1 }}
+                animate={scoreFlash ? { scale: 1.25 } : { scale: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Typography variant="body2">Total Score: {score}</Typography>
+              </motion.div>
+            </AnimatePresence>
           </Box>
 
           {questions.length > 0 && (

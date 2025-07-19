@@ -35,7 +35,7 @@ export default function Login() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/host");
+        navigate("/host_dashboard", );
       }
     } catch (error: any) {
       setMessage("Service unavailable. Try again later!");
