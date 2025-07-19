@@ -35,7 +35,9 @@ export async function quizHistory(req, res, next) {
     ];
 
     if (quizIds.length === 0) {
-      return res.status(SUCCESS).json({ error: "", history: [] });
+      return res
+        .status(SUCCESS)
+        .json({ error: "", history: [], jwt: jwtRefreshStr });
     }
 
     const quizzes = await db

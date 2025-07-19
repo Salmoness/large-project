@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'debug_mode_print.dart';
 
-Future<String> fetchAPI({
+Future<http.Response> fetchAPI({
   required String url,
   required Map<String, dynamic> body,
 }) async {
@@ -19,7 +19,7 @@ Future<String> fetchAPI({
     if (response.statusCode == 500) {
       throw Exception("Server error");
     }
-    return response.body;
+    return response;
   } catch (e) {
     throw Exception('Request failed: $e');
   }

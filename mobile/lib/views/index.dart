@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../utils/center_widget.dart';
 
 class IndexView extends StatelessWidget {

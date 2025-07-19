@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/jwt_api.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/jwt_types.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
@@ -26,11 +29,18 @@ class HistoryViewState extends State<HistoryView> {
 
   Future<void> fetchPlayedQuizzes() async {
     try {
-      final responseTEXT = await fetchAPI(
+      final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/history',
-        body: {},
+        body: {'jwt': jwtStr},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      handleAPIJWTAndRefresh(
+        state: this,
+        response: response,
+        type: JWTType.userAuth,
+        refresh: responseJSON['jwt'],
+      );
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }

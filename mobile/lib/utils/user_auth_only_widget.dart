@@ -23,7 +23,7 @@ class UserOnlyAuthState extends State<AuthedOnly> {
   }
 
   Future<void> checkAuth() async {
-    final bool loggedIn = await AuthService.isJWTValid(JWTType.userAuth);
+    final bool loggedIn = await JWTService.isJWTValid(JWTType.userAuth);
     debugModePrint("Checking auth. User is logged in: $loggedIn");
     if (loggedIn == false && mounted) {
       Navigator.pushReplacementNamed(context, '/login');

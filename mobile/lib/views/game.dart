@@ -1,17 +1,29 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/snackbars.dart';
+import '../utils/api_base_url.dart';
+import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
+import '../utils/debug_mode_print.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/jwt_types.dart';
 
 class GameView extends StatefulWidget {
-  const GameView({super.key, required String quizGameId});
+  final List<dynamic> questions;
+
+  const GameView({super.key, required this.questions});
 
   @override
   GameViewState createState() => GameViewState();
 }
 
 class GameViewState extends State<GameView> {
-  String questionText = '';
-  List<String> answers = [];
-  int questionId = 0;
+  // The entire design of this is not ideal. The user is given
+  // full access to the questions, their answers, and can return
+  // any "correctCount" they want to.
+  // (I will admit doing it this way simplifies the API, though.)
+  int currentQuestionIndex = 0;
+  int correctCount = 0;
   bool isLoading = false;
 
   @override
@@ -22,20 +34,45 @@ class GameViewState extends State<GameView> {
 
   Future<void> handleLoadQuestion() async {
     setState(() => isLoading = true);
-    // TODO(Aaron): add logic for this
+    if (currentQuestionIndex == widget.questions.length) {
+      handleSubmitQuiz();
+    }
     setState(() => isLoading = false);
   }
 
   Future<void> handleSelectAnswer(String selectedAnswer) async {
     setState(() => isLoading = true);
-    // TODO(Aaron): add logic for this
+    if (selectedAnswer ==
+        widget.questions[currentQuestionIndex].correctAnswer) {
+      correctCount++;
+    }
+    currentQuestionIndex++;
+    handleLoadQuestion();
     setState(() => isLoading = false);
   }
 
   Future<void> handleSubmitQuiz() async {
     setState(() => isLoading = true);
-    // TODO(Aaron): add logic for this (the entire quiz is done, submit it)
-    setState(() => isLoading = false);
+    try {
+      final jwtStr = await JWTStorage.getJWT(JWTType.quizSession);
+      final response = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/submit',
+        body: {'jwt': jwtStr, 'correctCount': correctCount},
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        throw Exception(responseJSON['error']);
+      }
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> requestUserExitConfirmation() async {
@@ -67,7 +104,7 @@ class GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     final content = [
       Text(
-        questionText,
+        widget.questions[currentQuestionIndex],
         style: TextStyle(fontSize: 20),
         textAlign: TextAlign.center,
       ),
@@ -77,7 +114,7 @@ class GameViewState extends State<GameView> {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          children: answers.map((answer) {
+          children: widget.questions[currentQuestionIndex].map((answer) {
             return ElevatedButton(
               onPressed: () => handleSelectAnswer(answer),
               child: Text(answer, textAlign: TextAlign.center),

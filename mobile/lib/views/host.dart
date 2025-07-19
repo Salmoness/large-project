@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/jwt_api.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/jwt_types.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
-import '../utils/api_fetcher.dart';
 import '../utils/center_widget.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/user_auth_only_widget.dart';
@@ -30,11 +33,11 @@ class HostViewState extends State<HostView> {
 
   Future<void> fetchQuizInformation() async {
     try {
-      final responseTEXT = await fetchAPI(
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/info',
         body: {'quizID': widget.quizId},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }
@@ -55,11 +58,18 @@ class HostViewState extends State<HostView> {
   Future<void> handleHost() async {
     setState(() => isHosting = true);
     try {
-      final responseTEXT = await fetchAPI(
+      final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/start',
-        body: {'search': ''},
+        body: {'search': '', 'jwt': jwtStr},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      handleAPIJWTAndRefresh(
+        state: this,
+        response: response,
+        type: JWTType.userAuth,
+        refresh: responseJSON['jwt'],
+      );
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }
