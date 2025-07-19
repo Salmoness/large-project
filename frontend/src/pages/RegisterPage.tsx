@@ -20,7 +20,7 @@ export default function Register() {
       email: email,
     });
 
-    try {
+    try {// Check if all fields are filled
       const response = await fetch(getAPIBaseURL() + "users/register", {
         method: "POST",
         body: payload,
