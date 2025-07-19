@@ -24,6 +24,8 @@ import BrowsePage from "./pages/BrowsePage.tsx";
 import QuizPreviewPage from "./pages/QuizPreviewPage.tsx";
 import GenerationSuccessPage from "./pages/GenerationSuccessPage.tsx";
 import HostQuizPage from "./pages/HostQuizPage.tsx";
+import HistoryPage from "./pages/HistoryPage.tsx";
+import LeaderboardPage from "./pages/LeaderboardPage.tsx";
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
           <Route path="/playground" element={<PlaygroundPage />} />
           <Route path="/preview" element={<QuizPreviewPage />} />
           <Route path="/generation_success" element={<GenerationSuccessPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
 
           <Route
             path="/account/registration-email-sent"

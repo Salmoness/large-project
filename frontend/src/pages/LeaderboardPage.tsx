@@ -1,0 +1,142 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getAPIBaseURL } from "../components/APIBaseURL";
+
+import {
+    Box,
+    Typography,
+    Button,
+    Divider,
+    List,
+    ListItem,
+    ListItemText,
+    Stack,
+    Paper
+} from "@mui/material";
+
+type LeaderboardData = {
+    username: String,
+    correctCount: Number,
+    finishedAt: String,
+};
+
+export default function LeaderboardPage() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([]);
+
+    const { questions, summary, title, gameID } = location.state || {};
+
+
+
+    if (!questions || !summary) {
+        return (
+            <Box p={4}>
+                <Typography variant="h6" color="error">
+                    No quiz data provided.
+                </Typography>
+            </Box>
+        );
+    }
+
+    const handleLeaderboard = async () => {
+        console.log(gameID);
+        const payload = JSON.stringify({quizGameID: gameID});
+        console.log(payload);
+        try {
+            const response = await fetch(getAPIBaseURL() + "quiz/leaderboard", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: payload,
+            });
+            const data = await response.json();
+            setLeaderboard(data.leaderboard);
+            console.log("Leaderboard: "+leaderboard);
+        } catch (error) {
+            console.error("error: " + error)
+        }
+    }
+
+    useEffect(() => {
+        if (!questions || !summary) {
+            return
+        } else{
+            handleLeaderboard(); 
+        }
+    }, []);
+
+    const handleBack = () => {
+        navigate(-1); // Go back to previous page
+    };
+
+    return (
+        <Box sx={{ px: 4, py: 6 }}>
+            <Box sx={{ display:"flex ", flexDirection: "column", alignItems:"center"}}>
+                <Typography variant="h4" fontWeight={600} gutterBottom>
+                    {title || "Quiz Preview"}
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                    {summary}
+                </Typography>
+            </Box>
+
+            <Divider sx={{ my: 3 }} />
+
+            <Box sx={{ p: 3, display:"flex ", flexDirection: "row", justifyContent:"center"}}>
+                <Paper elevation={3} sx={{ mx: "10px", display: "flex", flexDirection:"column", height:"", p: 2, justifyContent: "center", alignItems: "center"}}>
+                    <Typography variant="h5" fontWeight={600} gutterBottom>
+                        Questions
+                    </Typography>
+                    <List>
+                        {questions.map((q: any, index: number) => (
+                            <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
+                                <Box >
+                                    <Typography variant="body1">
+                                        {`Q${index + 1}: ${q.question}`}
+                                    </Typography>
+
+                                    <List>
+                                        {q.options.map((opt: string) => (
+                                            <Typography>
+                                                <ListItem divider dense key={opt} sx={{ color:"#696969ff" }}>{opt}</ListItem>
+                                            </Typography>
+                                        ))}
+                                    </List>
+                                </Box>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Paper>
+                <Paper elevation={3} sx={{ mx: "10px", display: "flex", flexDirection:"column", height:"", p: 2, justifyContent: "center", alignItems: "center"}}>
+                    <Typography variant="h5" fontWeight={600} gutterBottom>
+                        Leaderboard
+                    </Typography>
+                    <Box p={3}>
+                        {leaderboard.map((p: any, index: number) => (
+                        <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
+                            <ListItemText
+                                primary={`#${index + 1}: ${p.username}`}
+                                secondary={`Correct Answers: ${p.correctCount}`}
+                            />
+                        </ListItem>
+                        ))}
+                    </Box>
+                </Paper>
+            </Box>
+
+            <Stack direction="row" spacing={2} mt={4} sx={{justifyContent:"center"}}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleBack}
+                    fullWidth
+                >
+                    Back
+                </Button>
+            </Stack>
+        </Box>
+    );
+}
