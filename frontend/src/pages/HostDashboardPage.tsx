@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 export default function HostPage() {
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
   return (
     <Box
       
@@ -46,6 +50,15 @@ export default function HostPage() {
         >
           History
         </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBack}
+          fullWidth
+        >
+            Back
+        </Button>
+                
 
       </Stack>
     </Box>

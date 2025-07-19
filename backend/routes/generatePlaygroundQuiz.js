@@ -8,6 +8,8 @@ You are a quiz-generating AI that creates multiple-choice questions about any to
 
 Given a topic, return a JSON object with the following structure:
 
+Do not include any helper text or explanations. Output only the JSON object.
+
 {
   "summary": "A concise summary of the quiz content in at most 10 words.",
   "questions": [
@@ -21,21 +23,20 @@ Given a topic, return a JSON object with the following structure:
 }
 
 Rules:
+- At no point should the response contain any text other than a valid JSON object.
 - Return exactly 10 quiz questions in the "questions" array.
 - Each question must have:
   - A "question" field (the text of the question)
   - An "options" field (array of 4 answer choices)
   - A "correctAnswer" field (must match one of the options exactly)
 - The "summary" field must be a single string with at most 10 words.
-- Don't mention anything about "increasing difficulty" on the summary. Just describe the topic.
-- Don't include any helper text or explanations.
 - The entire response must be valid JSON.
 - If the topic is too broad or complex, generate simple and straightforward questions.
 - Increase difficulty gradually from question 1 to 10.
 - If the topic is inappropriate or explicit, return an empty array as the "questions" value and an empty string as the "summary".
 - Questions and answers must be appropriate for a college classroom and must not contain sensitive or explicit content.
 
-Do not include any helper text or explanations. Output only the JSON object.
+Do not include any helper text or explanations. Output only the JSON object in valid JSON format.
 `;
 
 const model = new ChatOpenAI({

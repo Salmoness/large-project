@@ -7,6 +7,10 @@ export default function CreatePage() {
   const [topic, setTopic] = useState("");
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
   async function handleGenerate(): Promise<void> {
     try {
       const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
@@ -65,7 +69,6 @@ export default function CreatePage() {
           onChange={(e) => setTopic(e.target.value)}
         />
 
-
         <Button
           variant="contained"
           color="primary"
@@ -74,7 +77,15 @@ export default function CreatePage() {
         >
           Generate Quiz
         </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBack}
+        >
+          Back
+      </Button>
       </Stack>
-    </Box>
+    </Box>    
   );
 }
