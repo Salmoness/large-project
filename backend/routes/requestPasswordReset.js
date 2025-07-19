@@ -13,15 +13,16 @@ module.exports.requestPasswordReset = async function (req, res) {
   try {
     const token = uuidv4();
 
-    const user = await db.collection("Users").findOneAndUpdate(
+    const result = await db.collection("Users").findOneAndUpdate(
       { email },
       { $set: { password_reset_token: token } }
     );
 
+    const user = result; 
+    const username = user?.username
 
-      console.log("dlspdlaspdlaspd");
       const resetUrl = `http://hopethiswork.com/account/reset-password/${token}`;
-      const emailHtml = `<p>Hi,</p>
+      const emailHtml = `<p>Hi, ${username}</p>
                          <p>You requested a password reset. Click below to reset your password:</p>
                          <a href="${resetUrl}">Reset Password</a>`;
 
