@@ -41,7 +41,7 @@ export default function IndexPage() {
           Host
         </Button>
 
-        <Button
+        {/* <Button
           fullWidth
           variant="contained"
           color="error"
@@ -49,7 +49,7 @@ export default function IndexPage() {
           sx={{ py: 2 }}
         >
           Playground
-        </Button>
+        </Button> */}
 
       </Stack>
     </CenteredContainer>
