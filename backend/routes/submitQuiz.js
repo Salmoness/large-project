@@ -39,10 +39,17 @@ export async function submitQuiz(req, res, next) {
                 
         console.log("Sessions found:", sessions.length);
         if (sessions.length === 0) {
-        // All sessions are finished, mark the quiz game as finished
-        await req.app.locals.mongodb
-            .collection("QuizzGames")
-            .updateOne({_id: currSession.quiz_game_id}, {$set: {in_progress: false}});
+            // All sessions are finished, mark the quiz game as finished
+            const sessionsFinished = await req.app.locals.mongodb
+                .collection("QuizzSessions")
+                .find({quiz_game_id: new ObjectId(currSession.quiz_game_id)})
+                .toArray();
+
+            const playerCount = sessionsFinished.length;
+
+            await req.app.locals.mongodb
+                .collection("QuizzGames")
+                .updateOne({_id: currSession.quiz_game_id}, {$set: {in_progress: false, players: playerCount}});
         }
         
     } catch (error) {

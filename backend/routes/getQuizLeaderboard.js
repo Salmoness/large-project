@@ -28,7 +28,7 @@ export async function getQuizLeaderboard(req, res, next) {
             leaderboard.push({
                 username: sessions[i].username,
                 correctCount: sessions[i].correct_count,
-                finishedAt: sessions[i].finished_at,
+                finishedAt: sessions[i].finished_at.toString(), // may be buggy?
             });
         } 
 
