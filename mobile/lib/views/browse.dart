@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/api_fetcher.dart';
-import 'package:mobile/utils/jwt_types.dart';
-import 'package:mobile/utils/jwt_api.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/jwt_types.dart';
+import '../utils/jwt_api.dart';
 import '../utils/jwt_storage.dart';
 import '../utils/snackbars.dart';
 import '../utils/debug_mode_print.dart';
@@ -36,7 +36,7 @@ class BrowseViewState extends State<BrowseView> {
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       handleAPIJWTAndRefresh(
-        context: context,
+        state: this,
         response: response,
         type: JWTType.userAuth,
         refresh: responseJSON['jwt'],

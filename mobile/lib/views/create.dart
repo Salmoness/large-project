@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/jwt_types.dart';
+import '../utils/jwt_types.dart';
 import '../utils/api_fetcher.dart';
 import '../utils/jwt_api.dart';
 import '../utils/jwt_storage.dart';
@@ -40,7 +40,7 @@ class CreateViewState extends State<CreateView> {
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       handleAPIJWTAndRefresh(
-        context: context,
+        state: this,
         response: response,
         type: JWTType.userAuth,
         refresh: responseJSON['jwt'],

@@ -36,7 +36,7 @@ class HistoryViewState extends State<HistoryView> {
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       handleAPIJWTAndRefresh(
-        context: context,
+        state: this,
         response: response,
         type: JWTType.userAuth,
         refresh: responseJSON['jwt'],

@@ -5,13 +5,14 @@ import 'package:mobile/utils/snackbars.dart';
 import 'jwt_types.dart';
 
 Future<void> handleAPIJWTAndRefresh({
-  required BuildContext context,
+  required State state,
   required http.Response response,
   required JWTType type,
   required String refresh,
 }) async {
   if (response.statusCode == 401) {
     await JWTStorage.deleteJWT(type);
+    BuildContext context = state.context;
     if (context.mounted) {
       context.notifyUserOfError("Session expired");
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);

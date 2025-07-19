@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/jwt_storage.dart';
-import 'package:mobile/utils/jwt_types.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/jwt_types.dart';
 import '../utils/jwt_service.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
