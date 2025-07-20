@@ -19,7 +19,7 @@ export async function submitQuiz(req, res, next) {
   const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
   if (!jwtVerified)
     return res.status(UNAUTHORIZED).json({ error: "JWT invalid or expired" });
-  quizSessionID = jwtPayload.sessionId;
+  var quizSessionID = jwtPayload.quizSessionId;
 
   try {
     await req.app.locals.mongodb.collection("QuizzSessions").updateOne(
@@ -31,7 +31,6 @@ export async function submitQuiz(req, res, next) {
         },
       }
     );
-
     const currSession = await req.app.locals.mongodb
       .collection("QuizzSessions")
       .findOne({ _id: new ObjectId(quizSessionID) });

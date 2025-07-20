@@ -7,15 +7,22 @@
  */
 
 import { ObjectId } from "mongodb";
-import { createQuizSessionJWT } from "../utils/jwtService.js";
-import { INTERNAL_ERROR } from "../utils/responseCodeConstants.js";
+import {
+  createQuizSessionJWT,
+  verifyAndRefreshJWT,
+} from "../utils/jwtService.js";
+import {
+  INTERNAL_ERROR,
+  SUCCESS,
+  BAD_REQUEST,
+} from "../utils/responseCodeConstants.js";
 
 export async function guestJoinQuiz(req, res, next) {
   const { username, accessCode, jwt } = req.body;
 
   // determine if a guest based on userAuthJWT
   // (don't bother refreshing it)
-  isGuest = false;
+  var isGuest = false;
   const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
   if (!jwtVerified) {
     isGuest = true;
@@ -29,7 +36,9 @@ export async function guestJoinQuiz(req, res, next) {
         access_code: parseInt(accessCode), // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
       });
     if (!quizGame) {
-      res.status(404).json({ error: "Quiz not found or not in progress" });
+      res
+        .status(BAD_REQUEST)
+        .json({ error: "Quiz not found or not in progress" });
       return;
     } else {
       let displayName = isGuest ? username.trim() : jwtPayload.username;
@@ -48,16 +57,13 @@ export async function guestJoinQuiz(req, res, next) {
         _id: quizGame.quiz_id,
       });
 
-      const questions = JSON.stringify(quiz.questions);
-      const questionsArray = JSON.parse(questions);
-
       const quizSessionJWTStr = createQuizSessionJWT(
         result.insertedId,
         displayName
       );
 
       res.status(SUCCESS).json({
-        questions: questionsArray,
+        questions: quiz.questions,
         jwt: quizSessionJWTStr,
         error: "",
       });

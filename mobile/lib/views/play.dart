@@ -65,15 +65,13 @@ class PlayViewState extends State<PlayView> {
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
+        final List<Map<String, dynamic>> questions =
+            List<Map<String, dynamic>>.from(responseJSON['questions']);
         if (mounted) {
           // This is not ideal. It would be better if I could just pass
           // the gameQuizId to the game page, and then fetch the
           // questions as I need them.
-          Navigator.pushNamed(
-            context,
-            "/game",
-            arguments: responseJSON['questions'],
-          );
+          Navigator.pushNamed(context, "/game", arguments: questions);
         }
       }
     } catch (e) {

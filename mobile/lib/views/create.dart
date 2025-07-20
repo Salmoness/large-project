@@ -21,6 +21,7 @@ class CreateViewState extends State<CreateView> {
   final createForm = GlobalKey<FormState>();
   final topicController = TextEditingController();
   bool isLoading = false;
+  bool generateFailed = false;
   String? quizId;
 
   Future<void> handleCreate() async {
@@ -63,12 +64,38 @@ class CreateViewState extends State<CreateView> {
     }
   }
 
+  void handleTryAgain() {
+    setState(() {
+      generateFailed = false;
+    });
+  }
+
   void handleHost() {
     Navigator.pushReplacementNamed(context, '/host', arguments: quizId);
   }
 
   @override
   Widget build(BuildContext context) {
+    final creationForm = Form(
+      key: createForm,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: topicController,
+            decoration: InputDecoration(labelText: 'Topic'),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'You must provide a topic';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(onPressed: handleCreate, child: Text('Create')),
+        ],
+      ),
+    );
+
     return AuthedOnly(
       child: Scaffold(
         appBar: AppBar(title: Text('Create Quiz')),
@@ -76,32 +103,23 @@ class CreateViewState extends State<CreateView> {
           children: [
             isLoading
                 ? Center(child: CircularProgressIndicator())
-                : quizId == null
-                ? Form(
-                    key: createForm,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextFormField(
-                          controller: topicController,
-                          decoration: InputDecoration(labelText: 'Topic'),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'You must provide a topic';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: handleCreate,
-                          child: Text('Create'),
-                        ),
-                      ],
-                    ),
-                  )
+                : quizId == null || quizId!.isEmpty
+                ? generateFailed
+                      ? Column(
+                          children: [
+                            Text(
+                              'Failed to generate',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: handleTryAgain,
+                              child: Text('Try again'),
+                            ),
+                          ],
+                        )
+                      : creationForm
                 : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text('Quiz generated!', style: TextStyle(fontSize: 18)),
                       SizedBox(height: 20),

@@ -24,6 +24,7 @@ class HostViewState extends State<HostView> {
   bool isHosting = false;
   String? title, summary, topic;
   String? accessCode, quizGameId;
+  String? statusMessage;
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class HostViewState extends State<HostView> {
       final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
       final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/start',
-        body: {'search': '', 'jwt': jwtStr},
+        body: {'quizID': widget.quizId, 'jwt': jwtStr},
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       handleAPIJWTAndRefresh(
@@ -77,7 +78,7 @@ class HostViewState extends State<HostView> {
         // API return field is incorrectly named 'gameID', but it is
         // correctly referring to quizGameId.
         quizGameId = responseJSON['gameID'];
-        accessCode = responseJSON['accessCode'];
+        accessCode = responseJSON['accessCode'].toString();
       });
     } catch (e) {
       setState(() {
@@ -89,8 +90,45 @@ class HostViewState extends State<HostView> {
     }
   }
 
-  void handlePlay() {
-    Navigator.pushNamed(context, '/game', arguments: quizGameId);
+  Future<void> handlePlay() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final displayName = "";
+      final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
+      final response = await fetchAPI(
+        url: '${getAPIBaseURL()}/quiz/join',
+        body: {
+          'username': displayName,
+          'accessCode': accessCode,
+          'jwt': jwtStr,
+        },
+      );
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      await JWTStorage.saveJWT(JWTType.quizSession, responseJSON['jwt']);
+      if (responseJSON['error'] != null && responseJSON['error'] != '') {
+        setState(() => statusMessage = responseJSON['error']);
+      } else {
+        final List<Map<String, dynamic>> questions =
+            List<Map<String, dynamic>>.from(responseJSON['questions']);
+        if (mounted) {
+          // This is not ideal. It would be better if I could just pass
+          // the gameQuizId to the game page, and then fetch the
+          // questions as I need them.
+          Navigator.pushNamed(context, "/game", arguments: questions);
+        }
+      }
+    } catch (e) {
+      setState(() {
+        debugModePrint('Exception: $e');
+        if (mounted) context.notifyUserOfServerError();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -103,7 +141,6 @@ class HostViewState extends State<HostView> {
             isLoading
                 ? Center(child: CircularProgressIndicator())
                 : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title!,
@@ -113,9 +150,7 @@ class HostViewState extends State<HostView> {
                         ),
                       ),
                       SizedBox(height: 8),
-                      Text('Topic: $topic', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 8),
-                      Text('Summary: $summary', style: TextStyle(fontSize: 16)),
+                      Text(summary!, style: TextStyle(fontSize: 16)),
                       SizedBox(height: 24),
                       if (accessCode == null) ...[
                         if (isHosting)
@@ -143,6 +178,8 @@ class HostViewState extends State<HostView> {
                       ],
                     ],
                   ),
+            if (statusMessage != null)
+              Column(children: [SizedBox(height: 12), Text(statusMessage!)]),
           ],
         ),
       ),

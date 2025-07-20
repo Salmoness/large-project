@@ -9,7 +9,7 @@ import '../utils/jwt_storage.dart';
 import '../utils/jwt_types.dart';
 
 class GameView extends StatefulWidget {
-  final List<dynamic> questions;
+  final List<Map<String, dynamic>> questions;
 
   const GameView({super.key, required this.questions});
 
@@ -34,25 +34,33 @@ class GameViewState extends State<GameView> {
 
   Future<void> handleLoadQuestion() async {
     setState(() => isLoading = true);
-    if (currentQuestionIndex == widget.questions.length) {
+    debugModePrint('Current question index: $currentQuestionIndex');
+    final isLastQuestion = currentQuestionIndex >= widget.questions.length - 1;
+    if (isLastQuestion) {
       handleSubmitQuiz();
+    } else {
+      setState(() {
+        currentQuestionIndex++;
+        isLoading = false;
+      });
     }
-    setState(() => isLoading = false);
   }
 
   Future<void> handleSelectAnswer(String selectedAnswer) async {
     setState(() => isLoading = true);
-    if (selectedAnswer ==
-        widget.questions[currentQuestionIndex].correctAnswer) {
-      correctCount++;
+    String correctAnswer =
+        widget.questions[currentQuestionIndex]['correctAnswer'];
+    debugModePrint('Selected answer: $selectedAnswer');
+    debugModePrint('Expected/correct answer: $correctAnswer');
+    if (selectedAnswer == correctAnswer) {
+      setState(() => correctCount++);
+      debugModePrint('Correct!');
     }
-    currentQuestionIndex++;
-    handleLoadQuestion();
     setState(() => isLoading = false);
+    handleLoadQuestion();
   }
 
   Future<void> handleSubmitQuiz() async {
-    setState(() => isLoading = true);
     try {
       final jwtStr = await JWTStorage.getJWT(JWTType.quizSession);
       final response = await fetchAPI(
@@ -67,10 +75,6 @@ class GameViewState extends State<GameView> {
       setState(() {
         debugModePrint('Exception: $e');
         if (mounted) context.notifyUserOfServerError();
-      });
-    } finally {
-      setState(() {
-        isLoading = false;
       });
     }
   }
@@ -104,7 +108,7 @@ class GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     final content = [
       Text(
-        widget.questions[currentQuestionIndex],
+        widget.questions[currentQuestionIndex]['question'],
         style: TextStyle(fontSize: 20),
         textAlign: TextAlign.center,
       ),
@@ -114,12 +118,15 @@ class GameViewState extends State<GameView> {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          children: widget.questions[currentQuestionIndex].map((answer) {
-            return ElevatedButton(
-              onPressed: () => handleSelectAnswer(answer),
-              child: Text(answer, textAlign: TextAlign.center),
-            );
-          }).toList(),
+          children:
+              List<String>.from(
+                widget.questions[currentQuestionIndex]['options'],
+              ).map((answer) {
+                return ElevatedButton(
+                  onPressed: () => handleSelectAnswer(answer),
+                  child: Text(answer, textAlign: TextAlign.center),
+                );
+              }).toList(),
         ),
       ),
     ];
