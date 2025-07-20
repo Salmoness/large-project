@@ -61,10 +61,10 @@ class PlayViewState extends State<PlayView> {
         },
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
-      await JWTStorage.saveJWT(JWTType.quizSession, responseJSON['jwt']);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
+        await JWTStorage.saveJWT(JWTType.quizSession, responseJSON['jwt']);
         final List<Map<String, dynamic>> questions =
             List<Map<String, dynamic>>.from(responseJSON['questions']);
         if (mounted) {

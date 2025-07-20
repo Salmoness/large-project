@@ -27,15 +27,10 @@ class HomeViewState extends State<HomeView> {
         body: SuperCentered(
           children: [
             ElevatedButton(
-              child: Text('Log out'),
-              onPressed: () => handleLogout(context),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
               child: Text('Play'),
               onPressed: () => Navigator.pushNamed(context, '/play'),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 32),
             ElevatedButton(
               child: Text('Create New Quiz'),
               onPressed: () => Navigator.pushNamed(context, '/create'),
@@ -49,6 +44,11 @@ class HomeViewState extends State<HomeView> {
             ElevatedButton(
               child: Text('View my Quiz History'),
               onPressed: () => Navigator.pushNamed(context, '/history'),
+            ),
+            SizedBox(height: 32),
+            ElevatedButton(
+              child: Text('Log out'),
+              onPressed: () => handleLogout(context),
             ),
           ],
         ),
