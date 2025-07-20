@@ -72,6 +72,7 @@ class LoginViewState extends State<LoginView> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('username'),
                   controller: usernameController,
                   decoration: InputDecoration(labelText: 'Username'),
                   validator: (value) {
@@ -83,6 +84,7 @@ class LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(height: 24),
                 TextFormField(
+                  key: const Key('password'),
                   controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
@@ -97,6 +99,7 @@ class LoginViewState extends State<LoginView> {
                 isLoading
                     ? Center(child: CircularProgressIndicator())
                     : ElevatedButton(
+                        key: const Key('login'),
                         onPressed: handleLogin,
                         child: Text('Log in'),
                       ),
