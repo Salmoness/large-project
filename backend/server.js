@@ -5,7 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
 const router = require("./routers/apiRouter.js");
-const { DB_NAME } = require("./dbConstants.js");
+const { DB_NAME } = require("./utils/dbConstants.js");
 
 const app = express();
 const PORT = 5000;

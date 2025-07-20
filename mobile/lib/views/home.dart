@@ -16,7 +16,7 @@ class HomeViewState extends State<HomeView> {
   Future<void> handleLogout(BuildContext context) async {
     context.notifyUserOfSuccess("Logged out");
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-    await TokenStorage.deleteToken(JWTType.userAuth);
+    await JWTStorage.deleteJWT(JWTType.userAuth);
   }
 
   @override

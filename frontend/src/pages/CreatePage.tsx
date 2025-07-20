@@ -1,10 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Box, Button, TextField, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 
 export default function CreatePage() {
   const [topic, setTopic] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -12,6 +20,7 @@ export default function CreatePage() {
   };
 
   async function handleGenerate(): Promise<void> {
+    setLoading(true);
     try {
       const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
         method: "POST",
@@ -23,11 +32,10 @@ export default function CreatePage() {
 
       const data = await response.json();
 
-      console.log("Response from server:", data);
-
       if (data.error) {
         alert(data.error);
         console.error("Error generating quiz:", data.error);
+        setLoading(false);
         return;
       }
 
@@ -35,14 +43,16 @@ export default function CreatePage() {
       const summary = JSON.stringify(data.summary);
       const quizID = data.quizID;
 
-      navigate("/generation_success", { 
+      navigate("/generation_success", {
         state: { quizID, questions, summary },
       });
 
     } catch (err) {
       alert("Something went wrong generating the quiz.");
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
     <Box
@@ -72,20 +82,22 @@ export default function CreatePage() {
         <Button
           variant="contained"
           color="primary"
-          disabled={!topic}
+          disabled={!topic || loading}
           onClick={handleGenerate}
+          startIcon={loading && <CircularProgress size={20} />}
         >
-          Generate Quiz
+          {loading ? "Generating..." : "Generate Quiz"}
         </Button>
 
         <Button
           variant="contained"
           color="primary"
           onClick={handleBack}
+          disabled={loading}
         >
           Back
-      </Button>
+        </Button>
       </Stack>
-    </Box>    
+    </Box>
   );
 }

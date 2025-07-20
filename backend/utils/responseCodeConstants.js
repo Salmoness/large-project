@@ -1,9 +1,11 @@
 const BAD_REQUEST = 400;
 const SUCCESS = 200;
 const INTERNAL_ERROR = 500;
+const UNAUTHORIZED = 401;
 
 module.exports = {
   BAD_REQUEST,
   SUCCESS,
   INTERNAL_ERROR,
+  UNAUTHORIZED,
 };

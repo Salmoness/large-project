@@ -35,18 +35,15 @@ class LoginViewState extends State<LoginView> {
     try {
       final username = usernameController.text.trim();
       final password = passwordController.text.trim();
-      final responseTEXT = await fetchAPI(
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/users/login',
         body: {'username': username, 'password': password},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         statusMessage = responseJSON['error'];
       } else {
-        TokenStorage.saveToken(
-          JWTType.userAuth,
-          responseJSON['jwt'].toString(),
-        );
+        JWTStorage.saveJWT(JWTType.userAuth, responseJSON['jwt'].toString());
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           context.notifyUserOfSuccess("Logged in");
@@ -75,6 +72,7 @@ class LoginViewState extends State<LoginView> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('username'),
                   controller: usernameController,
                   decoration: InputDecoration(labelText: 'Username'),
                   validator: (value) {
@@ -86,6 +84,7 @@ class LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(height: 24),
                 TextFormField(
+                  key: const Key('password'),
                   controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
@@ -100,6 +99,7 @@ class LoginViewState extends State<LoginView> {
                 isLoading
                     ? Center(child: CircularProgressIndicator())
                     : ElevatedButton(
+                        key: const Key('login'),
                         onPressed: handleLogin,
                         child: Text('Log in'),
                       ),

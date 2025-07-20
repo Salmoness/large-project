@@ -1,5 +1,20 @@
+/* This is the /api/quiz/generate endpoint.
+ *
+ * Its purpose is to generate a new quiz into the database using some
+ * external AI service given a simple text topic from a user.
+ *
+ * JWT authorization is required for this endpoint.
+ */
+
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { verifyAndRefreshJWT } from "../utils/jwtService.js";
+import {
+  BAD_REQUEST,
+  INTERNAL_ERROR,
+  SUCCESS,
+  UNAUTHORIZED,
+} from "../utils/responseCodeConstants.js";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -40,47 +55,63 @@ Do not include any helper text or explanations. Output only the JSON object in v
 `;
 
 const model = new ChatOpenAI({
-    openAIApiKey: OPENAI_API_KEY,
-    modelName: "gpt-4.1-mini",
-    temperature: 0.7,
+  openAIApiKey: OPENAI_API_KEY,
+  modelName: "gpt-4.1-mini",
+  temperature: 0.7,
 });
 
-
 export async function generateQuiz(req, res, next) {
-    // Expects a topic in the request body
-    const { topic } = req.body;
-    if ( !topic ) {
-        res.status(400).json({ questions: "", summary: "", error: "Topic is required" });
+  // Expects a topic in the request body
+  const { topic, jwt } = req.body;
+
+  const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
+  if (!jwtVerified)
+    return res.status(UNAUTHORIZED).json({ error: "JWT invalid or expired" });
+
+  if (!topic) {
+    res.status(BAD_REQUEST).json({
+      questions: "",
+      summary: "",
+      error: "Topic is required",
+      jwt: jwtRefreshStr,
+    });
+  }
+
+  const messages = [new SystemMessage(SYSTEM_PROMPT), new HumanMessage(topic)];
+
+  try {
+    const response = await model.invoke(messages);
+    const responseParsed = JSON.parse(response.content);
+
+    if (responseParsed.questions.length < 5) {
+      throw new Error("Invalid Topic, Try again with a different topic.");
     }
 
-    const messages = [
-        new SystemMessage(SYSTEM_PROMPT),
-        new HumanMessage(topic)
-    ];
+    const questionsString = JSON.stringify(responseParsed.questions);
+    const summaryString = responseParsed.summary;
 
-    try {
-        const response = await model.invoke(messages); 
-        const responseParsed = JSON.parse(response.content);
+    const result = await req.app.locals.mongodb
+      .collection("Quizzes")
+      .insertOne({
+        title: topic,
+        summary: summaryString,
+        questions: responseParsed.questions, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
+        created_by_id: jwtPayload.userId,
+      });
 
-        if ( responseParsed.questions.length < 5 ) {
-            throw new Error("Invalid Topic, Try again with a different topic.");
-        }
-
-        const questionsString = JSON.stringify(responseParsed.questions);
-        const summaryString = responseParsed.summary;
-
-        const result = await req.app.locals.mongodb
-        .collection("Quizzes")
-        .insertOne({
-            title: topic,
-            summary: summaryString,
-            questions: responseParsed.questions, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
-            created_by_id: "1" // USER ID from JWT 
-        });
-
-        res.status(200).json({ quizID: result.insertedId.toString(), questions: questionsString, summary: summaryString, error: ""});
-    } 
-    catch (error) {
-        res.status(400).json({ questions: "", summary: "", error: "Error: " + error.message });
-    }
+    res.status(SUCCESS).json({
+      quizID: result.insertedId.toString(),
+      questions: questionsString,
+      summary: summaryString,
+      error: "",
+      jwt: jwtRefreshStr,
+    });
+  } catch (error) {
+    res.status(INTERNAL_ERROR).json({
+      questions: "",
+      summary: "",
+      error: "Error: " + error.message,
+      jwt: jwtRefreshStr,
+    });
+  }
 }

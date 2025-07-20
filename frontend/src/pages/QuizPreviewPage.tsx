@@ -17,7 +17,7 @@ export default function PreviewPage() {
 
   const { questions, summary, quizID, title } = location.state || {};
 
-  if (!questions || !summary) {
+  if (!questions || !summary) { // todo: handle case where no quiz data is provided
     return (
       <Box p={4}>
         <Typography variant="h6" color="error">

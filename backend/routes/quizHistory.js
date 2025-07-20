@@ -8,36 +8,36 @@
  */
 
 import { ObjectId } from "mongodb";
-import { COLLECTIONS } from "../dbConstants.js";
+import { COLLECTIONS } from "../utils/dbConstants.js";
 import {
   BAD_REQUEST,
   INTERNAL_ERROR,
+  UNAUTHORIZED,
   SUCCESS,
-} from "../responseCodeConstants.js";
+} from "../utils/responseCodeConstants.js";
+import { verifyAndRefreshJWT } from "../utils/jwtService.js";
 
 export async function quizHistory(req, res, next) {
   const { jwt } = req.body;
 
-  // todo: get userId from JWT
-
-  const userId = "abc";
-
-  if (!userId) {
-    return res.status(BAD_REQUEST).json({ error: "Missing required field" });
-  }
+  const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
+  if (!jwtVerified)
+    return res.status(UNAUTHORIZED).json({ error: "JWT invalid or expired" });
 
   try {
     const db = req.app.locals.mongodb;
     const sessions = await db
       .collection(COLLECTIONS.QUIZ_SESSIONS)
-      .find({ userId })
+      .find({ user_id: jwtPayload.userId })
       .toArray();
     const quizIds = [
       ...new Set(sessions.map((s) => s.quiz_id).filter(Boolean)),
     ];
 
     if (quizIds.length === 0) {
-      return res.status(SUCCESS).json({ error: "", history: [] });
+      return res
+        .status(SUCCESS)
+        .json({ error: "", history: [], jwt: jwtRefreshStr });
     }
 
     const quizzes = await db
@@ -64,9 +64,13 @@ export async function quizHistory(req, res, next) {
       topic: q.topic,
     }));
 
-    res.status(SUCCESS).json({ error: "", hisory: response });
+    res
+      .status(SUCCESS)
+      .json({ error: "", hisory: response, jwt: jwtRefreshStr });
   } catch (err) {
     console.log("Internal error for /api/quiz/history: " + err);
-    res.status(INTERNAL_ERROR).json({ error: "Internal error" });
+    res
+      .status(INTERNAL_ERROR)
+      .json({ error: "Internal error", jwt: jwtRefreshStr });
   }
 }

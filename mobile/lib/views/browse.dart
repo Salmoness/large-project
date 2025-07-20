@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/api_fetcher.dart';
+import '../utils/jwt_types.dart';
+import '../utils/jwt_api.dart';
+import '../utils/jwt_storage.dart';
 import '../utils/snackbars.dart';
 import '../utils/debug_mode_print.dart';
 import '../utils/list_item_card.dart';
 import '../utils/user_auth_only_widget.dart';
 import '../utils/api_base_url.dart';
-import '../utils/api_fetcher.dart';
 
 class BrowseView extends StatefulWidget {
   const BrowseView({super.key});
@@ -26,11 +29,18 @@ class BrowseViewState extends State<BrowseView> {
 
   Future<void> fetchAllQuizzes() async {
     try {
-      final responseTEXT = await fetchAPI(
+      final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
+      final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/search',
-        body: {'search': ''},
+        body: {'search': '', 'jwt': jwtStr},
       );
-      final Map<String, dynamic> responseJSON = jsonDecode(responseTEXT);
+      final Map<String, dynamic> responseJSON = jsonDecode(response.body);
+      handleAPIJWTAndRefresh(
+        state: this,
+        response: response,
+        type: JWTType.userAuth,
+        refresh: responseJSON['jwt'],
+      );
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }

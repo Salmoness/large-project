@@ -3,16 +3,16 @@
  * Its purpose is to provide the description of a quiz given its id. A quiz
  * description consists of a title, summary, and topic.
  *
- * No JWT authorization is needed for this endpoint.
+ * No JWT is needed for this endpoint.
  */
 
 import { ObjectId } from "mongodb";
-import { COLLECTIONS } from "../dbConstants.js";
+import { COLLECTIONS } from "../utils/dbConstants.js";
 import {
   BAD_REQUEST,
   INTERNAL_ERROR,
   SUCCESS,
-} from "../responseCodeConstants.js";
+} from "../utils/responseCodeConstants.js";
 
 export async function quizInfo(req, res, next) {
   const { quizID } = req.body;
