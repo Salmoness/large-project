@@ -30,7 +30,7 @@ export async function guestJoinQuiz(req, res, next) {
         else {
             // Insert guest into the game
             let displayName = username.trim(); // Validate JWT wether its a user or guest
-            let userID = "0"; // Guest user ID, validate JWT wether its a user or guest
+               // Guest user ID, validate JWT wether its a user or guest
 
             const result = await req.app.locals.mongodb
                 .collection("QuizzSessions")
