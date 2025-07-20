@@ -26,47 +26,46 @@ export async function quizHistory(req, res, next) {
 
   try {
     const db = req.app.locals.mongodb;
-    const sessions = await db
+    const history = await db
       .collection(COLLECTIONS.QUIZ_SESSIONS)
-      .find({ user_id: jwtPayload.userId })
-      .toArray();
-    const quizIds = [
-      ...new Set(sessions.map((s) => s.quiz_id).filter(Boolean)),
-    ];
-
-    if (quizIds.length === 0) {
-      return res
-        .status(SUCCESS)
-        .json({ error: "", history: [], jwt: jwtRefreshStr });
-    }
-
-    const quizzes = await db
-      .collection(COLLECTIONS.QUIZZES)
-      .find(
-        { _id: { $in: quizIds.map((id) => new ObjectId(id)) } },
+      .aggregate([
         {
-          // _id is kept automatically and does not need to be specified
-          projection: {
-            title: 1,
-            summary: 1,
-            topic: 1,
+          $match: {
+            user_id: jwtPayload.userId,
+            finished_at: { $ne: null }, // Return only completed sessions
           },
-        }
-      )
+        },
+        {
+          $lookup: {
+            from: COLLECTIONS.QUIZ_GAMES,
+            localField: "quiz_game_id",
+            foreignField: "_id",
+            as: "quiz_game",
+          },
+        },
+        { $unwind: "$quiz_game" },
+        {
+          $lookup: {
+            from: COLLECTIONS.QUIZZES,
+            localField: "quiz_game.quiz_id",
+            foreignField: "_id",
+            as: "quiz",
+          },
+        },
+        { $unwind: "$quiz" },
+        {
+          $project: {
+            _id: 0,
+            game_quiz_id: "$quiz_game_id",
+            title: "$quiz.title",
+            summary: "$quiz.summary",
+          },
+        },
+      ])
       .toArray();
-
-    // result should be of the form [{},{},...] where each {} has a quizId, title,
-    // summary, and topic field.
-    const response = quizzes.map((q) => ({
-      quizGameId: q._id.toString(),
-      title: q.title,
-      summary: q.summary,
-      topic: q.topic,
-    }));
-
     res
       .status(SUCCESS)
-      .json({ error: "", hisory: response, jwt: jwtRefreshStr });
+      .json({ error: "", history: history, jwt: jwtRefreshStr });
   } catch (err) {
     console.log("Internal error for /api/quiz/history: " + err);
     res

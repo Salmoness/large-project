@@ -83,7 +83,7 @@ class HistoryViewState extends State<HistoryView> {
               ],
             ),
             actions: ElevatedButton(
-              onPressed: () => handleScoreboard(quiz['quizGameId']),
+              onPressed: () => handleScoreboard(quiz['game_quiz_id']),
               child: Text('View Scoreboard'),
             ),
           );

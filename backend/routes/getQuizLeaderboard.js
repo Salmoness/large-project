@@ -1,18 +1,18 @@
+/* This is the /api/quiz/leaderboard endpoint.
+ *
+ * Its purpose is to provide an array of usernames, sorted in order of
+ * number of correct answers, with tie breaking being determined by
+ * the amount of time it took for them to finish the quiz.
+ *
+ * JWT authorization is NOT needed for this endpoint.
+ */
+
 import { ObjectId } from "mongodb";
+import { SUCCESS, INTERNAL_ERROR } from "../utils/responseCodeConstants.js";
 
 export async function getQuizLeaderboard(req, res, next) {
-  // Expects a search term and JWT in the request body
   const { quizGameID, jwt } = req.body;
 
-  // implement JWT verification
-  // try {
-  //     jwtutils.verifyJWT(jwt);
-  // } catch (e) {
-  //     console.log(e);
-  //     res.status(200).json({ results: [], error: "Session invalid", jwt: "" });
-  //     return;
-  // }
-  // const payload = jwtutils.decodeJWT(jwt).payload;
   let leaderboard = [];
 
   try {
@@ -39,10 +39,10 @@ export async function getQuizLeaderboard(req, res, next) {
       }
     });
 
-    res.status(200).json({ leaderboard: leaderboard, error: "" }); //jwt:
+    res.status(SUCCESS).json({ leaderboard: leaderboard, error: "" });
   } catch (e) {
     console.error("Error fetching quiz leaderboard:", e);
-    res.status(500).json({ error: "Failed to fetch leaderboard" });
+    res.status(INTERNAL_ERROR).json({ error: "Failed to fetch leaderboard" });
     return;
   }
 }
