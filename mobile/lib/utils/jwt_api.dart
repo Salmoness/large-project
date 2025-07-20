@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/utils/jwt_storage.dart';
-import 'package:mobile/utils/snackbars.dart';
+import '../utils/jwt_storage.dart';
+import '../utils/snackbars.dart';
 import 'jwt_types.dart';
 
 Future<void> handleAPIJWTAndRefresh({

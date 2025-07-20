@@ -29,6 +29,7 @@ class GameViewState extends State<GameView> {
   // (I will admit doing it this way simplifies the API, though.)
   int currentQuestionIndex = 0;
   int totalScore = 0;
+  int totalCorrect = 0;
   bool isLoading = false;
   bool isFinished = false;
   late DateTime questionStartTime;
@@ -70,6 +71,7 @@ class GameViewState extends State<GameView> {
           .clamp(0, 1000)
           .toInt();
       totalScore += score;
+      totalCorrect++;
       debugModePrint('Got a score of: $score for this question.');
       debugModePrint('Correct!');
     }
@@ -163,7 +165,9 @@ class GameViewState extends State<GameView> {
     ];
 
     final finished = [
-      Text('You scored $totalScore'),
+      Text('Your score is $totalScore'),
+      SizedBox(height: 12),
+      Text('($totalCorrect / ${widget.questions.length} correct answers)'),
       SizedBox(height: 12),
       ElevatedButton(
         onPressed: handleViewScoreboard,

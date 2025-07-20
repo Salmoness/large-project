@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mobile/utils/center_widget.dart';
+import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
