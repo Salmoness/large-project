@@ -26,10 +26,9 @@ class TrivAIMobileApp extends StatelessWidget {
         '/': (context) => IndexView(),
         '/play': (context) => PlayView(),
         '/game': (context) {
-          final questions =
-              ModalRoute.of(context)!.settings.arguments
-                  as List<Map<String, dynamic>>;
-          return GameView(questions: questions);
+          List<dynamic> args =
+              ModalRoute.of(context)!.settings.arguments as List<dynamic>;
+          return GameView(questions: args[1], quizGameId: args[0]);
         },
         '/home': (context) => HomeView(),
         '/login': (context) => LoginView(),

@@ -94,6 +94,7 @@ class HostViewState extends State<HostView> {
     setState(() {
       isLoading = true;
     });
+    // Unfortunately, this logic is duplicated in /views/play. Needs a refactor.
     try {
       final displayName = "";
       final jwtStr = await JWTStorage.getJWT(JWTType.userAuth);
@@ -116,7 +117,11 @@ class HostViewState extends State<HostView> {
           // This is not ideal. It would be better if I could just pass
           // the gameQuizId to the game page, and then fetch the
           // questions as I need them.
-          Navigator.pushNamed(context, "/game", arguments: questions);
+          Navigator.pushNamed(
+            context,
+            "/game",
+            arguments: [responseJSON['quiz_game_id'], questions],
+          );
         }
       }
     } catch (e) {

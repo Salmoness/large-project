@@ -7,7 +7,6 @@
  * JWT authorization is required for this endpoint.
  */
 
-import { ObjectId } from "mongodb";
 import { COLLECTIONS } from "../utils/dbConstants.js";
 import {
   BAD_REQUEST,
@@ -32,7 +31,7 @@ export async function quizHistory(req, res, next) {
         {
           $match: {
             user_id: jwtPayload.userId,
-            finished_at: { $ne: null }, // Return only completed sessions
+            is_completed: true, // Return only completed sessions
           },
         },
         {

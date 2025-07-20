@@ -12,7 +12,7 @@ import {
 } from "../utils/responseCodeConstants.js";
 
 export async function submitQuiz(req, res, next) {
-  const { correctCount, jwt } = req.body;
+  const { score, jwt } = req.body;
 
   // quizSessionJWT
   // note: no reason to send the jwtRefreshStr back, the session is over!
@@ -27,7 +27,8 @@ export async function submitQuiz(req, res, next) {
       {
         $set: {
           finished_at: new Date(),
-          correct_count: correctCount,
+          is_completed: true,
+          score: score,
         },
       }
     );

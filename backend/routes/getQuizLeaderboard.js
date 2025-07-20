@@ -8,36 +8,37 @@
  */
 
 import { ObjectId } from "mongodb";
+import { COLLECTIONS } from "../utils/dbConstants.js";
 import { SUCCESS, INTERNAL_ERROR } from "../utils/responseCodeConstants.js";
 
 export async function getQuizLeaderboard(req, res, next) {
   const { quizGameID, jwt } = req.body;
 
-  let leaderboard = [];
-
   try {
-    const sessions = await req.app.locals.mongodb
-      .collection("QuizzSessions")
-      .find({ quiz_game_id: new ObjectId(quizGameID) })
+    let db = await req.app.locals.mongodb;
+    const leaderboard = await db
+      .collection(COLLECTIONS.QUIZ_SESSIONS)
+      .aggregate([
+        {
+          $match: {
+            quiz_game_id: new ObjectId(quizGameID),
+            is_completed: true,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            username: 1,
+            score: 1,
+          },
+        },
+        {
+          $sort: {
+            score: -1,
+          },
+        },
+      ])
       .toArray();
-
-    console.log("Sessions found:", sessions.length);
-
-    for (let i = 0; i < sessions.length; i++) {
-      leaderboard.push({
-        username: sessions[i].username,
-        correctCount: sessions[i].correct_count,
-        finishedAt: sessions[i].finished_at.toString(), // may be buggy?
-      });
-    }
-
-    leaderboard.sort((a, b) => {
-      if (b.correctCount !== a.correctCount) {
-        return b.correctCount - a.correctCount;
-      } else {
-        return new Date(a.finishedAt) - new Date(b.finishedAt); // tiebreaker: earlier finishedAt first
-      }
-    });
 
     res.status(SUCCESS).json({ leaderboard: leaderboard, error: "" });
   } catch (e) {

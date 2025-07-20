@@ -46,6 +46,7 @@ class PlayViewState extends State<PlayView> {
     setState(() {
       isLoading = true;
     });
+    // Unfortunately, this logic is duplicated in /views/host. Needs a refactor.
     try {
       final displayName = isLoggedIn! ? "" : displayNameController.text.trim();
       final accessCode = accessCodeController.text.trim();
@@ -71,7 +72,11 @@ class PlayViewState extends State<PlayView> {
           // This is not ideal. It would be better if I could just pass
           // the gameQuizId to the game page, and then fetch the
           // questions as I need them.
-          Navigator.pushNamed(context, "/game", arguments: questions);
+          Navigator.pushNamed(
+            context,
+            "/game",
+            arguments: [responseJSON['quiz_game_id'], questions],
+          );
         }
       }
     } catch (e) {

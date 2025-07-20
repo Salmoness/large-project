@@ -1,12 +1,11 @@
 /* This is the /api/quiz/join endpoint.
  *
- * Its purpose is to ...
+ * Its purpose is to start a quiz game session (play a quiz).
  *
  * UserAuthJWT is NOT required for this endpoint.
  * Generates and returns a QuizSessionJWT.
  */
 
-import { ObjectId } from "mongodb";
 import {
   createQuizSessionJWT,
   verifyAndRefreshJWT,
@@ -17,7 +16,7 @@ import {
   BAD_REQUEST,
 } from "../utils/responseCodeConstants.js";
 
-export async function guestJoinQuiz(req, res, next) {
+export async function joinQuiz(req, res, next) {
   const { username, accessCode, jwt } = req.body;
 
   // determine if a guest based on userAuthJWT
@@ -51,6 +50,8 @@ export async function guestJoinQuiz(req, res, next) {
           username: displayName,
           joined_at: new Date(),
           finished_at: null, // This will be set when the user ends the quiz
+          is_completed: false,
+          score: null,
         });
 
       const quiz = await req.app.locals.mongodb.collection("Quizzes").findOne({
@@ -64,6 +65,7 @@ export async function guestJoinQuiz(req, res, next) {
 
       res.status(SUCCESS).json({
         questions: quiz.questions,
+        quiz_game_id: quizGame._id,
         jwt: quizSessionJWTStr,
         error: "",
       });

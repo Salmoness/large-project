@@ -10,8 +10,13 @@ import '../utils/jwt_types.dart';
 
 class GameView extends StatefulWidget {
   final List<Map<String, dynamic>> questions;
+  final String quizGameId;
 
-  const GameView({super.key, required this.questions});
+  const GameView({
+    super.key,
+    required this.questions,
+    required this.quizGameId,
+  });
 
   @override
   GameViewState createState() => GameViewState();
@@ -20,11 +25,15 @@ class GameView extends StatefulWidget {
 class GameViewState extends State<GameView> {
   // The entire design of this is not ideal. The user is given
   // full access to the questions, their answers, and can return
-  // any "correctCount" they want to.
+  // any "totalScore" they want to.
   // (I will admit doing it this way simplifies the API, though.)
   int currentQuestionIndex = 0;
-  int correctCount = 0;
+  int totalScore = 0;
   bool isLoading = false;
+  bool isFinished = false;
+  late DateTime questionStartTime;
+  int maxPointsPerQuestion = 1000;
+  Duration maxDuration = Duration(seconds: 20);
 
   @override
   void initState() {
@@ -40,6 +49,7 @@ class GameViewState extends State<GameView> {
       handleSubmitQuiz();
     } else {
       setState(() {
+        questionStartTime = DateTime.now();
         currentQuestionIndex++;
         isLoading = false;
       });
@@ -53,7 +63,14 @@ class GameViewState extends State<GameView> {
     debugModePrint('Selected answer: $selectedAnswer');
     debugModePrint('Expected/correct answer: $correctAnswer');
     if (selectedAnswer == correctAnswer) {
-      setState(() => correctCount++);
+      final elapsed = DateTime.now().difference(questionStartTime);
+      final elapsedSeconds = elapsed.inMilliseconds / 1000.0;
+      double decayRate = maxPointsPerQuestion / maxDuration.inSeconds;
+      int score = (maxPointsPerQuestion - (decayRate * elapsedSeconds))
+          .clamp(0, 1000)
+          .toInt();
+      totalScore += score;
+      debugModePrint('Got a score of: $score for this question.');
       debugModePrint('Correct!');
     }
     setState(() => isLoading = false);
@@ -61,16 +78,21 @@ class GameViewState extends State<GameView> {
   }
 
   Future<void> handleSubmitQuiz() async {
+    debugModePrint('Final score is $totalScore');
     try {
       final jwtStr = await JWTStorage.getJWT(JWTType.quizSession);
       final response = await fetchAPI(
         url: '${getAPIBaseURL()}/quiz/submit',
-        body: {'jwt': jwtStr, 'correctCount': correctCount},
+        body: {'jwt': jwtStr, 'score': totalScore},
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
         throw Exception(responseJSON['error']);
       }
+      setState(() {
+        isLoading = false;
+        isFinished = true;
+      });
     } catch (e) {
       setState(() {
         debugModePrint('Exception: $e');
@@ -104,9 +126,18 @@ class GameViewState extends State<GameView> {
     }
   }
 
+  Future<void> handleViewScoreboard() async {
+    setState(() => isLoading = true);
+    Navigator.pushReplacementNamed(
+      context,
+      '/scoreboard',
+      arguments: widget.quizGameId,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final content = [
+    final game = [
       Text(
         widget.questions[currentQuestionIndex]['question'],
         style: TextStyle(fontSize: 20),
@@ -131,6 +162,15 @@ class GameViewState extends State<GameView> {
       ),
     ];
 
+    final finished = [
+      Text('You scored $totalScore'),
+      SizedBox(height: 12),
+      ElevatedButton(
+        onPressed: handleViewScoreboard,
+        child: Text('View Scoreboard'),
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -140,7 +180,11 @@ class GameViewState extends State<GameView> {
         title: const Text('Playing Quiz'),
       ),
       body: SuperCentered(
-        children: isLoading ? [CircularProgressIndicator()] : content,
+        children: isLoading
+            ? [CircularProgressIndicator()]
+            : isFinished
+            ? finished
+            : game,
       ),
     );
   }

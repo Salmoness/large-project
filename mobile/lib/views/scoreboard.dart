@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile/utils/center_widget.dart';
 import '../utils/snackbars.dart';
 import '../utils/api_base_url.dart';
 import '../utils/api_fetcher.dart';
@@ -53,29 +54,31 @@ class ScoreboardViewState extends State<ScoreboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Scoreboard')),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : scoreboard.isEmpty
-          ? Center(child: Text("No scores available yet!"))
-          : SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Username')),
-                  DataColumn(label: Text('Score')),
-                  DataColumn(label: Text('Time Taken')),
-                ],
-                rows: scoreboard.map((entry) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(entry['username'].toString())),
-                      DataCell(Text(entry['score'].toString())),
-                      DataCell(Text(entry['time_taken'].toString())),
+      body: SuperCentered(
+        children: [
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : scoreboard.isEmpty
+              ? Center(child: Text("No scores available yet!"))
+              : SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text('Username')),
+                      DataColumn(label: Text('Score')),
                     ],
-                  );
-                }).toList(),
-              ),
-            ),
+                    rows: scoreboard.map((entry) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(entry['username'].toString())),
+                          DataCell(Text(entry['score'].toString())),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }
