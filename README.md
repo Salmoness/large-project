@@ -5,11 +5,11 @@ A competitive online trivia game powered by AI.
 ## Features
 
 - Simple accounts with email validation and password recovery!
-- Generate quizzes with the power of AI!
-- Browse previously generated quizzes!
-- Host quizzes and share them with an access code!
+- Auatomatically generate quizzes using the power of AI!
+- Browse through and host any generated quiz!
+- Host quizzes and play with others using an access code!
 - Play quizzes with an access code! No account required!
-- View live quiz scoreboards!
+- View live scoreboards!
 
 ## Web Application
 
@@ -70,8 +70,9 @@ Run `cd /mobile && flutter pub get && flutter run -d chrome` to emulate the mobi
 - ExpressJS (API)
 - NodeJS (Web Server)
 - OpenAI (AI Integration)
-- Heroku (Hosting and Domain)
-- Flutter (Mobile UI)
+- DigitalOcean (Hosting)
+- GoDaddy (Domain)
+- Flutter (Mobile)
 - Figma (UI Prototyping)
 - SendGrid (Email Component)
 - NPM (NodeJS Package Manager)
