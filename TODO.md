@@ -7,8 +7,8 @@
 - [x] Gantt Chart
 - [x] Entity Relationship Diagram for Database
 - [x] Activity Diagram
-- [ ] Mobile Application Class Diagram
-- [ ] Mobile Application
+- [x] Mobile Application Class Diagram
+- [x] Mobile Application
 - [x] API for Account Password Recovery
 - [x] API for Registration Email Verification
 - [x] API for Account Registration
@@ -29,20 +29,17 @@
 - [ ] Improve scoring logic
 - [x] Password Hashing
 - [ ] 6 API Endpoint Unit Tests
-- [ ] 3 Mobile Application Unit Tests
+- [ ] Demonstrate 1 API Endpoint with SwaggerHub
+- [x] 3 Mobile Application Unit Tests
 - [ ] Create Project Presentation
 - [ ] Practice Project Presentation
+- [ ] Mobile Application Polishing
+- [ ] Frontend Styling and Polishing
+- [ ] Frontend JWT
 
 ## Known Issues
 
-- [ ] NO PAGES ARE STYLED YET
-- [ ] JWT are not validated in most functions (IMPORTANT)
-- [x] NodeMailer does not work on DigitalOcean
-- [ ] Logged in users are not redirected from /login to /home
-- [ ] Logged out users are not redirected from /home to /login
-- [x] Username should be unique for registration
-- [x] Email should be unique for registration
-- [ ] Email not recieved in user inbox :  this is unfixable cause we arent secure https or a company i think - ethan
+None
 
 ## Master Plan
 
@@ -80,18 +77,16 @@
 
 `:quiz_game_id` is `_id` from the database `QuizGames` table. When a quiz is hosted, it is stored in this table. It contains an access code. This makes it so that a single generated quiz can be hosted more than once.
 
-Guests can provide their own username for each quiz. No uniqueness for usernames is required. This is `guest_username` in the database `QuizSessions` table.
-
-Quizzes will NOT have a time limit, per-user OR globally. Instead, TIME-STARTED is recorded when someone first begins a quiz, and TIME-FINISHED is recorded once the last question is submitted.
+Guests can provide their own username for each quiz. No uniqueness for usernames is required. This is `username` in the database `QuizSessions` table, which would otherwise be populated by the `username` data from a logged in user's JWT.
 
 #### JWT Clarification
 
 There are two separate JWTs. One for user authentication and another for quiztaking.
 
-| JWT            | Field                                                          |
+| JWT Name       | Field                                                          |
 | -------------- | -------------------------------------------------------------- |
-| authedUserJWT  | `authUserJWT.payload.userId` (`_id` from `Users`)              |
-| quizSessionJWT | `quizSessionJWT.payload.sessionId` (`_id` from `QuizSessions`) |
+| authedUserJWT  | `authUserJWT.payload.userId` (`_id` from `Users`), `authUserJWT.payload.username` (permanent username)              |
+| quizSessionJWT | `quizSessionJWT.payload.sessionId` (`_id` from `QuizSessions`), `quizSessionJWT.payload.displayname` (temporary username) |
 
 `authedUserJWT` is used for: `generateQuiz`, `quizHistory`, `searchQuiz`, and `hostQuiz`.
 
@@ -99,6 +94,4 @@ There are two separate JWTs. One for user authentication and another for quiztak
 
 No JWT is needed for `login`, `register`, `confirmEmail`, `recoverPassword`, `quizInfo`, and `viewQuizScoreboard`.
 
-Why do it like this? This way, users and guests are treated the exact same while playing a quiz.
-
-Currently undecided on if we should store `username`/`displayname`/other information inside the JWT. Technically, this information can be fetched from an API when needed, like the scoreboard.
+Why do it like this? This way, users and guests are treated the exact same way when they're playing a quiz.
