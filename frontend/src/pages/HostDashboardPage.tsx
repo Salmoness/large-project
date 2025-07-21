@@ -1,5 +1,6 @@
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
 export default function HostPage() {
   const navigate = useNavigate();
@@ -8,9 +9,11 @@ export default function HostPage() {
     navigate(-1); // Go back to previous page
   };
 
+  const jwt = retrieveJWTFromLocalStorage();
+  console.log("jwt: " + jwt);
+
   return (
     <Box
-      
       sx={{
         height: "100vh",
         display: "flex",
@@ -58,8 +61,6 @@ export default function HostPage() {
         >
             Back
         </Button>
-                
-
       </Stack>
     </Box>
   );

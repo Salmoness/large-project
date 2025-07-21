@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import QuizThumbnail from "../components/QuizThumbnail";
 import { getAPIBaseURL } from "../components/APIBaseURL";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
 type QuizData = {
   _id: string;
@@ -29,10 +30,11 @@ export default function BrowsePage() {
 
   const fetchQuizzes = async (term: string) => {
     try {
+      const jwt = retrieveJWTFromLocalStorage();
       const response = await fetch(getAPIBaseURL() + "quiz/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ search: term }),
+        body: JSON.stringify({ search: term, jwt: jwt}),
       });
 
       const data = await response.json();
