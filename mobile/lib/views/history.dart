@@ -100,7 +100,7 @@ class HistoryViewState extends State<HistoryView> {
             children: [
               SizedBox(height: 12),
               Text(
-                "Browse quizzes that you've previously completed",
+                "Quizzes that you've completed previously",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 12),

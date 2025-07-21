@@ -20,7 +20,7 @@ class LoginViewState extends State<LoginView> {
   final loginForm = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  String statusMessage = '';
+  String? errorMessage;
   bool isLoading = false;
 
   Future<void> handleLogin() async {
@@ -41,7 +41,7 @@ class LoginViewState extends State<LoginView> {
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
-        statusMessage = responseJSON['error'];
+        errorMessage = responseJSON['error'];
       } else {
         JWTStorage.saveJWT(JWTType.userAuth, responseJSON['jwt'].toString());
         if (mounted) {
@@ -106,9 +106,22 @@ class LoginViewState extends State<LoginView> {
               ],
             ),
           ),
-          SizedBox(height: 16),
-          Text(statusMessage),
-          SizedBox(height: 32),
+          if (errorMessage != null) SizedBox(height: 24),
+          if (errorMessage != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.warning, color: Colors.red),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    errorMessage!,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

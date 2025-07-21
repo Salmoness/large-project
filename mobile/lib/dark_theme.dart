@@ -19,10 +19,14 @@ ThemeData darkTheme = ThemeData(
 
   // Text
   textTheme: TextTheme(
-    bodyMedium: TextStyle(color: Colors.white),
-    bodyLarge: TextStyle(color: Colors.white),
+    bodyMedium: TextStyle(color: Colors.white, fontSize: 16),
+    bodyLarge: TextStyle(color: Colors.white, fontSize: 18),
     titleLarge: TextStyle(color: Colors.white),
     labelLarge: TextStyle(color: Colors.white),
+    displayLarge: TextStyle(fontSize: 32.0),
+    displayMedium: TextStyle(fontSize: 24.0),
+    headlineSmall: TextStyle(fontSize: 20.0),
+    bodySmall: TextStyle(fontSize: 14.0),
   ),
 
   // Inputs

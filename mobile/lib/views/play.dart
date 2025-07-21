@@ -21,7 +21,7 @@ class PlayViewState extends State<PlayView> {
   bool? isLoggedIn;
   final TextEditingController displayNameController = TextEditingController();
   final TextEditingController accessCodeController = TextEditingController();
-  String statusMessage = '';
+  String? errorMessage;
   bool isLoading = false;
 
   @override
@@ -63,7 +63,7 @@ class PlayViewState extends State<PlayView> {
       );
       final Map<String, dynamic> responseJSON = jsonDecode(response.body);
       if (responseJSON['error'] != null && responseJSON['error'] != '') {
-        statusMessage = responseJSON['error'];
+        errorMessage = responseJSON['error'];
       } else {
         await JWTStorage.saveJWT(JWTType.quizSession, responseJSON['jwt']);
         final List<Map<String, dynamic>> questions =
@@ -135,21 +135,32 @@ class PlayViewState extends State<PlayView> {
                     ? CircularProgressIndicator()
                     : ElevatedButton(
                         onPressed: handlePlay,
-                        child: Text('Play'),
+                        child: Text('Join'),
                       ),
-                SizedBox(height: 24),
-                Text(statusMessage),
-                SizedBox(height: 24),
+                if (errorMessage != null) SizedBox(height: 24),
+                if (errorMessage != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.warning, color: Colors.red),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          errorMessage!,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 40),
           if (isLoggedIn == false)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Want a permanent display name?"),
-
                 TextButton(
                   onPressed: () =>
                       Navigator.pushReplacementNamed(context, '/login'),

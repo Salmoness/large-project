@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/jwt_service.dart';
 import '../utils/jwt_types.dart';
 import '../utils/center_widget.dart';
 import '../utils/snackbars.dart';
@@ -13,6 +14,22 @@ class HomeView extends StatefulWidget {
 }
 
 class HomeViewState extends State<HomeView> {
+  String? username;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUsername();
+  }
+
+  Future<void> loadUsername() async {
+    Map<String, dynamic>? user = await JWTService.getJWTPayload(
+      JWTType.userAuth,
+    );
+    if (user == null) return;
+    setState(() => username = user['username']);
+  }
+
   Future<void> handleLogout(BuildContext context) async {
     context.notifyUserOfSuccess("Logged out");
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
@@ -26,9 +43,14 @@ class HomeViewState extends State<HomeView> {
         appBar: AppBar(title: Text('TrivAI')),
         body: SuperCentered(
           children: [
+            Text('Hello, $username!', style: TextStyle(fontSize: 26)),
+            SizedBox(height: 32),
             ElevatedButton(
-              child: Text('Play'),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.green),
+              ),
               onPressed: () => Navigator.pushNamed(context, '/play'),
+              child: Text('Play'),
             ),
             SizedBox(height: 32),
             ElevatedButton(
@@ -42,13 +64,16 @@ class HomeViewState extends State<HomeView> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              child: Text('View my Quiz History'),
+              child: Text('View my History'),
               onPressed: () => Navigator.pushNamed(context, '/history'),
             ),
             SizedBox(height: 32),
             ElevatedButton(
-              child: Text('Log out'),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+              ),
               onPressed: () => handleLogout(context),
+              child: Text('Log out'),
             ),
           ],
         ),
