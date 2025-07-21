@@ -165,8 +165,11 @@ class GameViewState extends State<GameView> {
     ];
 
     final finished = [
-      Text('Your score is $totalScore'),
+      Text('Finished!', style: TextStyle(fontSize: 26)),
       SizedBox(height: 12),
+      Text(
+        'Your score is $totalScore / ${widget.questions.length * maxPointsPerQuestion}',
+      ),
       Text('($totalCorrect / ${widget.questions.length} correct answers)'),
       SizedBox(height: 12),
       ElevatedButton(

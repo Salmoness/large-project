@@ -11,10 +11,13 @@ class IndexView extends StatelessWidget {
       body: SuperCentered(
         children: [
           ElevatedButton(
-            child: Text('Play'),
             onPressed: () => Navigator.pushNamed(context, '/play'),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.green),
+            ),
+            child: Text('Play'),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 18),
           ElevatedButton(
             child: Text('Host'),
             onPressed: () => Navigator.pushNamed(context, '/home'),

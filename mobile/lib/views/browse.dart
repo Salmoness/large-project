@@ -100,7 +100,7 @@ class BrowseViewState extends State<BrowseView> {
             children: [
               SizedBox(height: 12),
               Text(
-                "Browse quizzes that you or others have created",
+                "Quizzes that you or others have created",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 12),
