@@ -23,6 +23,7 @@ export async function searchQuiz(req, res, next) {
     const results = await req.app.locals.mongodb
       .collection("Quizzes")
       .find({})
+      .sort({ created_at: -1 })
       .toArray();
     res
       .status(SUCCESS)
@@ -36,7 +37,9 @@ export async function searchQuiz(req, res, next) {
         title: { $regex: _search + ".*", $options: "i" },
         //created_by_id: "1" // This is for "viewing own quizzes" feature, can be removed if not needed
       })
+      .sort({ created_at: -1 })
       .toArray();
+      
     res
       .status(SUCCESS)
       .json({ quizzes: results, error: "", jwt: jwtRefreshStr });

@@ -17,7 +17,7 @@ type QuizData = {
   _id: string;
   title: string;
   summary: string;
-  created_by: string;
+  created_by_username: string;
   created_at: string;
   playerCount: number;
   questions: any[];
@@ -40,6 +40,7 @@ export default function BrowsePage() {
       const data = await response.json();
       if (data.error) {
         console.error(data.error);
+        if (response.status === 401) navigate('/login');
         return;
       }
 
@@ -94,13 +95,12 @@ export default function BrowsePage() {
       <Grid container spacing={3}>
         {quizzes.map((quiz) => (
           
-            <Box onClick={() => handlePreview(quiz)} sx={{ cursor: "pointer" }}>
+            <Box key={quiz._id} onClick={() => handlePreview(quiz)} sx={{ cursor: "pointer" }}>
               <QuizThumbnail
                 title={quiz.title}
                 description={quiz.summary || "No description"}
-                createdBy={quiz.created_by || "Unknown"}
+                createdBy={quiz.created_by_username || "Unknown"}
                 createdAt={new Date(quiz.created_at).toLocaleDateString()}
-                playerCount={quiz.playerCount || 0}
               />
             </Box>
           

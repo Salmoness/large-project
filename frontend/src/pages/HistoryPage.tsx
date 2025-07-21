@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import QuizThumbnail from "../components/QuizThumbnail";
 import { getAPIBaseURL } from "../components/APIBaseURL";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
 // type GameData = {
 //     _id: string;
@@ -42,13 +43,15 @@ export default function HistoryPage() {
     const fetchGames = async (term: string) => {
         let gamesArray: GameData[] = [];
         try {
+            const jwt = retrieveJWTFromLocalStorage();
             const response = await fetch(getAPIBaseURL() + "quiz/searchGame", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ search: term, userId: "1"}),
+                body: JSON.stringify({ search: term, userId: "1", jwt: jwt}),
             });
             const data = await response.json();
             if (data.error) {
+                if (response.status === 401) navigate('/login')
                 console.log("error: " + data.error);
                 return;
             }
@@ -129,7 +132,6 @@ export default function HistoryPage() {
                             description={game.summary || "No description"}
                             createdBy={game.created_by || "Unknown"}
                             createdAt={new Date(game.created_at).toLocaleDateString()}
-                            playerCount={game.players || 0}
                         />
                     </Box>
                 </Grid>

@@ -7,7 +7,6 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
   Stack,
 } from "@mui/material";
 
@@ -57,16 +56,23 @@ export default function PreviewPage() {
       <List>
         {questions.map((q: any, index: number) => (
           <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
-            <ListItemText
-              primary={`Q${index + 1}: ${q.question}`}
-              secondary={
-                <ul style={{ margin: 0, paddingLeft: "1.5em" }}>
-                  {q.options.map((opt: string, i: number) => (
-                    <li key={i}>{opt}</li>
-                  ))}
-                </ul>
-              }
-            />
+            <Box>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                {`Q${index + 1}: ${q.question}`}
+              </Typography>
+              <List>
+                {q.options.map((opt: string, optIndex: number) => (
+                  <ListItem
+                    key={`${index}-${optIndex}`} // Ensures uniqueness
+                    divider
+                    dense
+                    sx={{ color: "#696969ff", pl: 2 }}
+                  >
+                    <Typography>{opt}</Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           </ListItem>
         ))}
       </List>

@@ -14,6 +14,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
+import { useNavigate } from "react-router-dom";
 
 const initialTime = 20; // seconds
 
@@ -30,10 +32,15 @@ export default function PlayPage() {
   const [sessionID, setSessionID] = useState("");
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
   const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const timePercentage = (timeLeft / initialTime) * 100;
+  const navigate = useNavigate();
 
   useEffect(() => {
+
+    checkLoginStatus();
+
     if (step !== "quiz") return;
 
     setTimeLeft(initialTime);
@@ -51,6 +58,29 @@ export default function PlayPage() {
 
     return () => clearInterval(timer);
   }, [step, current]);
+
+    async function checkLoginStatus() {
+      try {
+        const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
+        const response = await fetch(getAPIBaseURL() + "users/verify-login", {
+          method: "POST",
+          body: payload,
+          headers: {"Content-Type": "application/json"}
+        })
+        console.log("status: " + response.status);
+        const data = await response.json();
+        if (response.status === 200) {
+          setLoggedIn(true);
+          setName(data.username);
+        }
+        else {
+          setLoggedIn(false);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      
+    }
 
   async function handleStart() {
     if (name.trim() && gameCode.trim()) {
@@ -167,6 +197,7 @@ export default function PlayPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
+              disabled={loggedIn}
             />
             <TextField
               label="Game Code"
@@ -195,6 +226,15 @@ export default function PlayPage() {
               ) : (
                 "Start Quiz"
               )}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {!loggedIn ? navigate("/") : navigate('/host_dashboard')}}
+              sx={{ py: 1.5, height: 48 }}
+              fullWidth
+            >
+                Home
             </Button>
           </Stack>
         </Box>

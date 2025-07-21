@@ -6,12 +6,13 @@ const { doRegister } = require("../routes/register.js");
 const { verifyEmail } = require("../routes/verifyEmail.js");
 const { resetPassword } = require("../routes/resetPassword.js");
 const { requestPasswordReset } = require("../routes/requestPasswordReset.js");
-
+const { verifyLogin } = require("../routes/verifyLogin.js");
 
 usersRouter.post("/login", doLogin);
 usersRouter.post("/register", doRegister);
 usersRouter.post("/verify-email", verifyEmail);
 usersRouter.post("/reset-password", resetPassword);
 usersRouter.post("/request-password-reset", requestPasswordReset);
+usersRouter.post("/verify-login", verifyLogin);
 
 module.exports.usersRouter = usersRouter;

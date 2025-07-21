@@ -9,6 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
 
 export default function CreatePage() {
   const [topic, setTopic] = useState("");
@@ -22,12 +23,13 @@ export default function CreatePage() {
   async function handleGenerate(): Promise<void> {
     setLoading(true);
     try {
+      const jwt = retrieveJWTFromLocalStorage();
       const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, jwt }),
       });
 
       const data = await response.json();
@@ -36,6 +38,7 @@ export default function CreatePage() {
         alert(data.error);
         console.error("Error generating quiz:", data.error);
         setLoading(false);
+        if (response.status === 401) navigate('/login');
         return;
       }
 

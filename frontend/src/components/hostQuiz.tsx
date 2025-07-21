@@ -1,10 +1,12 @@
 
 import { getAPIBaseURL } from "./APIBaseURL";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
 export async function hostQuiz(quizID: any) : Promise<void> {
     try {
         // use startQuiz API to host the quiz
-        const payload = JSON.stringify({ quizID: quizID });
+        const jwt = retrieveJWTFromLocalStorage();
+        const payload = JSON.stringify({ quizID: quizID, jwt: jwt });
         const response = await fetch(getAPIBaseURL() + "/quiz/start", {
             method: "POST",
             headers: {

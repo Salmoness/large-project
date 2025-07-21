@@ -21,9 +21,9 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const SYSTEM_PROMPT = `
 You are a quiz-generating AI that creates multiple-choice questions about any topic.
 
-Given a topic, return a JSON object with the following structure:
-
 Do not include any helper text or explanations. Output only the JSON object.
+
+Given a topic, return a JSON object with the following structure:
 
 {
   "summary": "A concise summary of the quiz content in at most 10 words.",
@@ -97,6 +97,8 @@ export async function generateQuiz(req, res, next) {
         summary: summaryString,
         questions: responseParsed.questions, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
         created_by_id: jwtPayload.userId,
+        created_by_username: jwtPayload.username,
+        created_at: new Date()
       });
 
     res.status(SUCCESS).json({

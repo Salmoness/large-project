@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
-import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
+import { saveJWTToLocalStorage, retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
 import { Box, TextField, Button, Stack, Typography, Link } from "@mui/material";
@@ -14,6 +14,7 @@ export default function Login() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+
 
   async function doLogin(): Promise<void> {
     if (!username || !password) {
@@ -42,31 +43,50 @@ export default function Login() {
     }
   }
 
-  async function handleForgotPasswordSubmit() {
-  if (!email) {
-    setMessage("Please enter your email address.");
-    return;
+  async function checkLoginStatus() {
+    try {
+      const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
+      const response = await fetch(getAPIBaseURL() + "users/verify-login", {
+        method: "POST",
+        body: payload,
+        headers: {"Content-Type": "application/json"}
+      })
+      if (response.status === 200) {
+        navigate("/host_dashboard")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
-  try {
-    const response = await fetch(getAPIBaseURL() + "users/request-password-reset", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-
-    const res = await response.json();
-    if (res.error) {
-        setMessage(res.error);
+  async function handleForgotPasswordSubmit() {
+    if (!email) {
+      setMessage("Please enter your email address.");
+      return;
     }
 
-    // Treat success or failure the same to avoid leaking info
-    setEmailSent(true);
-    setMessage("If an account exists with that email, a reset link was sent.");
-  } catch (error) {
-    setMessage("Service unavailable. Try again later.");
-  }
+    try {
+      const response = await fetch(getAPIBaseURL() + "users/request-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const res = await response.json();
+      if (res.error) {
+          setMessage(res.error);
+      }
+
+      // Treat success or failure the same to avoid leaking info
+      setEmailSent(true);
+      setMessage("If an account exists with that email, a reset link was sent.");
+    } catch (error) {
+      setMessage("Service unavailable. Try again later.");
+    }
 }
+
+  useEffect(() => { checkLoginStatus() })
 
   return (
     <CenteredContainer>

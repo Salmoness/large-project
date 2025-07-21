@@ -1,16 +1,17 @@
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
+import { retrieveJWTFromLocalStorage, forgetJWTInLocalStorage } from "../assets/jwt-utils";
 
 export default function HostPage() {
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate(-1); // Go back to previous page
-  };
-
   const jwt = retrieveJWTFromLocalStorage();
   console.log("jwt: " + jwt);
+
+  const handleLogout = () => {
+    forgetJWTInLocalStorage();
+    navigate('/');
+  }
 
   return (
     <Box
@@ -56,10 +57,18 @@ export default function HostPage() {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleBack}
+          onClick={() => navigate("/play")}
           fullWidth
         >
-            Back
+            Play
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleLogout}
+          fullWidth
+        >
+            Logout
         </Button>
       </Stack>
     </Box>

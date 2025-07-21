@@ -5,7 +5,6 @@ type QuizThumbnailProps = {
   description: string;
   createdBy: string;
   createdAt: string;
-  playerCount: number;
 };
 
 export default function QuizThumbnail({
@@ -13,7 +12,6 @@ export default function QuizThumbnail({
   description,
   createdBy,
   createdAt,
-  playerCount,
 }: QuizThumbnailProps) {
   return (
     <Card
@@ -37,23 +35,16 @@ export default function QuizThumbnail({
           {description}
         </Typography>
         <Box>
-          {
-            createdBy && 
-            <Typography variant="caption" color="text.secondary">
-            Created by: {createdBy}
-            </Typography>
-          }
-          <br />
-          <Typography variant="caption" color="text.secondary">
-            Date: {createdAt}
-          </Typography>
         </Box>
       </CardContent>
 
       <Box mt={1}>
         <Typography variant="subtitle2" color="primary">
-          Players: {playerCount}
+          Created by: {createdBy}
         </Typography>
+        <Typography variant="caption" color="text.secondary">
+            Date: {createdAt}
+          </Typography>
       </Box>
     </Card>
   );
