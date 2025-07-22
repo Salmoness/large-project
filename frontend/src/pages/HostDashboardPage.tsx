@@ -12,8 +12,8 @@ export default function HostPage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Add your logout logic here if needed
-    navigate("/");
+    
+    navigate("/login");
   };
 
   return (
