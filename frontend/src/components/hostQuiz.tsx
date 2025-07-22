@@ -7,7 +7,7 @@ export async function hostQuiz(quizID: any) : Promise<void> {
         // use startQuiz API to host the quiz
         const jwt = retrieveJWTFromLocalStorage();
         const payload = JSON.stringify({ quizID: quizID, jwt: jwt });
-        const response = await fetch(getAPIBaseURL() + "/quiz/start", {
+        const response = await fetch(getAPIBaseURL() + "quiz/start", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

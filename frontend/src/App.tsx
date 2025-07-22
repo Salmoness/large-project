@@ -27,6 +27,7 @@ import HostQuizPage from "./pages/HostQuizPage";
 import HistoryPage from "./pages/HistoryPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 
+
 function App() {
   return (
     <ThemeProvider theme={theme}>

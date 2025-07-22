@@ -2,10 +2,24 @@ import { useNavigate } from "react-router-dom";
 import { Button, Stack } from "@mui/material";
 import ProjectHeader from "../components/ProjectHeader";
 import CenteredContainer from "../components/CenteredContainer";
-
+import { checkLoginStatus } from "../components/CheckLoginStatus"
+import { useEffect } from "react";
 
 export default function IndexPage() {
+
   const navigate = useNavigate();
+
+  async function checkLogin() {
+    const isLoggedIn = await checkLoginStatus();
+    if (!isLoggedIn) {
+      navigate("/host_dashboard");
+    }
+  } 
+  
+  
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
   return (
     
