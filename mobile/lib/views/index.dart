@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../leaf_logo_widget.dart';
 import '../utils/center_widget.dart';
 
 class IndexView extends StatelessWidget {
@@ -7,7 +8,7 @@ class IndexView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('TrivAI')),
+      appBar: AppBar(title: LeafLogo()),
       body: SuperCentered(
         children: [
           ElevatedButton(

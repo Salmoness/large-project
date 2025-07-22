@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../leaf_logo_widget.dart';
 import '../utils/jwt_service.dart';
 import '../utils/jwt_types.dart';
 import '../utils/center_widget.dart';
@@ -40,7 +41,7 @@ class HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return AuthedOnly(
       child: Scaffold(
-        appBar: AppBar(title: Text('TrivAI')),
+        appBar: AppBar(title: LeafLogo()),
         body: SuperCentered(
           children: [
             Text('Hello, $username!', style: TextStyle(fontSize: 26)),
