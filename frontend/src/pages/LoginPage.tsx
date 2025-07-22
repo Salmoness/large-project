@@ -51,7 +51,8 @@ export default function Login() {
         body: payload,
         headers: {"Content-Type": "application/json"}
       })
-      if (response.status === 200) {
+      const data = await response.json();
+      if (!data.error) {
         navigate("/host_dashboard")
       }
     } catch (error) {

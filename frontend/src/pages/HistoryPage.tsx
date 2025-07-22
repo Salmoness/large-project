@@ -13,18 +13,6 @@ import QuizThumbnail from "../components/QuizThumbnail";
 import { getAPIBaseURL } from "../components/APIBaseURL";
 import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
-// type GameData = {
-//     _id: string;
-//     quiz_id: string;
-//     title: string;
-//     summary: string;
-//     created_by_user_id: string;
-//     created_by: string;
-//     created_at: string;
-//     players: number;
-//     questions: any[];
-// };
-
 type GameData = {
     _id: string;
     title: string;
@@ -37,6 +25,7 @@ type GameData = {
 
 export default function HistoryPage() {
     const [search, setSearch] = useState("");
+    const [name, setName] = useState("");
     const [games, setGames] = useState<GameData[]>([]);
     const navigate = useNavigate();
 
@@ -65,7 +54,7 @@ export default function HistoryPage() {
                     title: data.games[i].title,
                     summary: data.games[i].summary,
                     created_by: "",
-                    created_at: "",
+                    created_at: data.games[i].created_at,
                     players: data.games[i].players,
                     questions: data.games[i].questions,
                     }
@@ -80,7 +69,29 @@ export default function HistoryPage() {
         }
     }
 
-    useEffect(() => { fetchGames("") }, []);
+    useEffect(() => { 
+        checkLoginStatus()
+        fetchGames("")
+     }, []);
+
+    async function checkLoginStatus() {
+        try {
+            const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
+            const response = await fetch(getAPIBaseURL() + "users/verify-login", {
+                method: "POST",
+                body: payload,
+                headers: {"Content-Type": "application/json"}
+            })
+            console.log("status: " + response.status);
+            const data = await response.json();
+            if (!data.error) {
+                setName(data.username);
+            }
+        } catch (error) {
+            console.log( error)
+        }
+        
+    }
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value;
@@ -130,7 +141,7 @@ export default function HistoryPage() {
                         <QuizThumbnail
                             title={game.title}
                             description={game.summary || "No description"}
-                            createdBy={game.created_by || "Unknown"}
+                            createdBy={name || "Unknown"}
                             createdAt={new Date(game.created_at).toLocaleDateString()}
                         />
                     </Box>

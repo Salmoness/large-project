@@ -35,7 +35,7 @@ export default function ResultScreen({
         onClick={onRestart}
         sx={{ mt: 3 }}
       >
-        Restart Quiz
+        Return
       </Button>
     </Box>
   );

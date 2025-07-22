@@ -32,6 +32,7 @@ export async function startQuiz(req, res, next) {
         in_progress: true,
         access_code: code, // an object array: [{question: "", options: [], correctAnswer: ""}, {question: "", options: [], correctAnswer: ""}, ...]
         created_by_id: jwtPayload.userId,
+        created_at: new Date()
       });
     res.status(SUCCESS).json({
       accessCode: code,

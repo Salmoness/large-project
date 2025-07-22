@@ -6,7 +6,7 @@ export async function verifyLogin(req, res) {
         const { jwt } = req.body;
         const [jwtPayload, jwtRefreshStr, jwtVerified] = verifyAndRefreshJWT(jwt);
         if (!jwtVerified)
-            return res.status(UNAUTHORIZED).json({ error: "JWT invalid or expired" });
+            return res.status(SUCCESS).json({ error: "User Not Logged In" });
         else 
             return res.status(SUCCESS).json({error: "", username: jwtPayload.username})
 

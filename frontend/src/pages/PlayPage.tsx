@@ -33,6 +33,7 @@ export default function PlayPage() {
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [quizSessionJWT, setQuizSessionJWT] = useState("");
 
   const timePercentage = (timeLeft / initialTime) * 100;
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ export default function PlayPage() {
         })
         console.log("status: " + response.status);
         const data = await response.json();
-        if (response.status === 200) {
+        if (!data.error) {
           setLoggedIn(true);
           setName(data.username);
         }
@@ -77,7 +78,7 @@ export default function PlayPage() {
           setLoggedIn(false);
         }
       } catch (error) {
-        console.log(error)
+        console.log( error)
       }
       
     }
@@ -87,7 +88,8 @@ export default function PlayPage() {
       setLoading(true);
       const username = name.trim();
       const accessCode = gameCode.trim();
-      const payload = JSON.stringify({ username, accessCode });
+      const jwt = retrieveJWTFromLocalStorage();
+      const payload = JSON.stringify({ username, accessCode, jwt });
 
       try {
         const response = await fetch(getAPIBaseURL() + "quiz/join", {
@@ -99,6 +101,8 @@ export default function PlayPage() {
         });
 
         const data = await response.json();
+        setQuizSessionJWT(data.jwt);
+
         if (data.error) {
           alert(data.error);
           return;
@@ -134,6 +138,7 @@ export default function PlayPage() {
         body: JSON.stringify({
           quizSessionID: sessionID,
           correctCount: score,
+          jwt: quizSessionJWT
         }),
       });
 

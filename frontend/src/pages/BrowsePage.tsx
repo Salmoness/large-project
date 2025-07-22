@@ -6,6 +6,8 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Container,
+  ToggleButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +28,7 @@ type QuizData = {
 export default function BrowsePage() {
   const [search, setSearch] = useState("");
   const [quizzes, setQuizzes] = useState<QuizData[]>([]);
+  const [selected, setSelected] = useState(true);
   const navigate = useNavigate();
 
   const fetchQuizzes = async (term: string) => {
@@ -34,7 +37,7 @@ export default function BrowsePage() {
       const response = await fetch(getAPIBaseURL() + "quiz/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ search: term, jwt: jwt}),
+        body: JSON.stringify({ search: term, own: !selected, jwt: jwt}),
       });
 
       const data = await response.json();
@@ -52,12 +55,17 @@ export default function BrowsePage() {
 
   useEffect(() => {
     fetchQuizzes(""); // Load all on mount
-  }, []);
+  }, [selected]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearch(term);
     fetchQuizzes(term);
+  };
+
+  const handleToggleChange = () => {
+    setSelected(!selected);
+    console.log(selected);
   };
 
   const handlePreview = (quiz: QuizData) => {
@@ -72,29 +80,40 @@ export default function BrowsePage() {
   };
 
   return (
-    <Box sx={{ px: 4, py: 6 }}>
+    <Container maxWidth="xl" sx={{ display: "flex", flexDirection: "column", alignItems:"center", px: 4, py: 6 }}>
       <Typography variant="h4" fontWeight={600} gutterBottom>
         Browse Quizzes
       </Typography>
 
-      <TextField
-        placeholder="Search quizzes..."
-        fullWidth
-        value={search}
-        onChange={handleSearchChange}
-        sx={{ mb: 4 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
+      <Box sx={{ display: "flex", flexDirection: "horizontal", mb: 4, width:"40%"}}>
+        <ToggleButton
+          value="check"
+          selected={selected}
+          disableRipple
+          onChange={handleToggleChange}
+          sx={{color: selected ? "white" : "grey", lineHeight: 1.2,}}
+        >
+          Own Quizzes
+      </ToggleButton>
 
-      <Grid container spacing={3}>
+        <TextField
+          placeholder="Search quizzes..."
+          fullWidth
+          value={search}
+          onChange={handleSearchChange}
+          sx={{ ml: 4 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+
+      <Grid container spacing={3} justifyContent="center">
         {quizzes.map((quiz) => (
-          
             <Box key={quiz._id} onClick={() => handlePreview(quiz)} sx={{ cursor: "pointer" }}>
               <QuizThumbnail
                 title={quiz.title}
@@ -115,6 +134,6 @@ export default function BrowsePage() {
       >
         Back
       </Button>
-    </Box>
+    </Container>
   );
 }

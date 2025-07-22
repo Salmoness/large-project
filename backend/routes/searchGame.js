@@ -60,6 +60,7 @@ export async function searchGame(req, res, next) {
         summary: currQuiz.summary,
         questions: currQuiz.questions,
         players: gamesHostedByUser[i].players,
+        created_at: gamesHostedByUser[i].created_at
       });
     }
     return res
