@@ -19,7 +19,6 @@ import CrownIcon from "@mui/icons-material/EmojiEvents";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech"; // silver medal icon
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium"; // bronze medal icon
 
-import QuizThumbnail from "../components/QuizThumbnail";
 
 type LeaderboardData = {
   username: string;
@@ -34,7 +33,7 @@ export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  const { questions, summary, title, gameID, createdBy, createdAt } = location.state || {};
+  const { questions, summary, title, gameID } = location.state || {};
 
   if (!questions || !summary) {
     return (
@@ -97,30 +96,51 @@ export default function LeaderboardPage() {
           flexWrap: "wrap",
         }}
       >
-        {/* Quiz Thumbnail Section */}
-        <Box
-          onClick={() => setPreviewOpen((prev) => !prev)}
-          sx={{
-            cursor: "pointer",
+        {/*Question button */}
+    <Box
+        sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             height: "100%",
             mt: 2,
-          }}
+        }}
         >
-          <QuizThumbnail
-            title={title}
-            description={summary}
-            createdBy={createdBy || "Unknown"}
-            createdAt={createdAt || "Unknown"}
-          />
-          {!previewOpen && (
-            <Typography variant="body2" color="text.secondary" mt={1}>
-              Click to expand
-            </Typography>
-          )}
+        <Box
+            onClick={() => setPreviewOpen((prev) => !prev)}
+            sx={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: "primary.main",
+            color: "white",
+            px: 3,
+            py: 1,
+            borderRadius: "999px",
+            fontWeight: 600,
+            boxShadow: 2,
+            "&:hover": {
+                boxShadow: 4,
+                bgcolor: "primary.dark",
+            },
+            }}
+        >
+            Questions
         </Box>
+
+        {!previewOpen && (
+            <Typography
+            variant="body2"
+            color="text.secondary"
+            mt={1}
+            sx={{ userSelect: "none" }}
+            >
+            Click to expand
+            </Typography>
+        )}
+        </Box>
+
 
         {/* Collapsible Questions List */}
         <Collapse in={previewOpen} timeout="auto" unmountOnExit>
@@ -134,9 +154,7 @@ export default function LeaderboardPage() {
               width: 600,
             }}
           >
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Questions
-            </Typography>
+            
             <List>
               {questions.map((q: any, index: number) => (
                 <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
@@ -226,7 +244,7 @@ export default function LeaderboardPage() {
         </Paper>
       </Box>
 
-      {/* Fixed Back Button with arrow */}
+      {/* Back button*/}
       <Box
         sx={{
           position: "fixed",

@@ -45,8 +45,21 @@ export default function HostPage() {
           <Button
             variant="contained"
             fullWidth
+            color="success" 
             startIcon={<PlayArrowIcon />}
             onClick={() => navigate("/play")}
+             sx={{ fontWeight: 700, py: 1.5 }}
+          >
+            Play
+          </Button>
+
+          <Button
+            variant="contained"
+            
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={() => navigate("/create")}
+           
             sx={{
               fontWeight: 700,
               py: 1.5,
@@ -55,17 +68,6 @@ export default function HostPage() {
                 backgroundColor: "#1B346E",
               },
             }}
-          >
-            Play
-          </Button>
-
-          <Button
-            variant="contained"
-            color="success" 
-            fullWidth
-            startIcon={<AddIcon />}
-            onClick={() => navigate("/create")}
-            sx={{ fontWeight: 700, py: 1.5 }}
           >
             Create
           </Button>
