@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import ProjectHeader from "../components/ProjectHeader";
 import {
   Box,
   Button,
@@ -8,27 +9,23 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
-import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
-import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
+import { getAPIBaseURL } from "../components/APIBaseURL";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 
 export default function CreatePage() {
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate(-1); // Go back to previous page
-  };
+  const handleBack = () => navigate(-1);
 
-  async function handleGenerate(): Promise<void> {
+  async function handleGenerate() {
     setLoading(true);
     try {
       const jwt = retrieveJWTFromLocalStorage();
       const response = await fetch(getAPIBaseURL() + "/quiz/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic, jwt }),
       });
 
@@ -36,21 +33,16 @@ export default function CreatePage() {
 
       if (data.error) {
         alert(data.error);
-        console.error("Error generating quiz:", data.error);
-        setLoading(false);
-        if (response.status === 401) navigate('/login');
+        if (response.status === 401) navigate("/login");
         return;
       }
 
       const questions = JSON.parse(data.questions);
-      const summary = JSON.stringify(data.summary);
+      const summary = data.summary; // no need to stringify again
       const quizID = data.quizID;
 
-      navigate("/generation_success", {
-        state: { quizID, questions, summary },
-      });
-
-    } catch (err) {
+      navigate("/generation_success", { state: { quizID, questions, summary } });
+    } catch {
       alert("Something went wrong generating the quiz.");
     } finally {
       setLoading(false);
@@ -60,16 +52,19 @@ export default function CreatePage() {
   return (
     <Box
       sx={{
-        maxWidth: 400,
+        maxWidth: 420,
         mx: "auto",
-        mt: 6,
-        p: 4,
+        mt: 8,
+        p: 5,
         borderRadius: 3,
-        boxShadow: 3,
-        backgroundColor: "#ffffff",
+        boxShadow: 6,
+        bgcolor: "background.paper",
       }}
     >
-      <Typography variant="h5" fontWeight={600} gutterBottom>
+
+      
+      <ProjectHeader />
+      <Typography variant="h5" fontWeight={700} gutterBottom color="primary">
         Generate a New Quiz
       </Typography>
 
@@ -80,23 +75,27 @@ export default function CreatePage() {
           fullWidth
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
+          disabled={loading}
+          autoFocus
         />
 
         <Button
           variant="contained"
           color="primary"
-          disabled={!topic || loading}
+          disabled={!topic.trim() || loading}
           onClick={handleGenerate}
-          startIcon={loading && <CircularProgress size={20} />}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
+          sx={{ fontWeight: 700, py: 1.5 }}
         >
           {loading ? "Generating..." : "Generate Quiz"}
         </Button>
 
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={handleBack}
           disabled={loading}
+          sx={{ fontWeight: 700, py: 1.5 }}
         >
           Back
         </Button>

@@ -3,10 +3,12 @@ import { Button, Stack } from "@mui/material";
 import ProjectHeader from "../components/ProjectHeader";
 import CenteredContainer from "../components/CenteredContainer";
 
+
 export default function IndexPage() {
   const navigate = useNavigate();
 
   return (
+    
     <CenteredContainer>
       <ProjectHeader />
 
@@ -31,7 +33,7 @@ export default function IndexPage() {
           Login
         </Button>
 
-        <Button
+        {/* <Button
           fullWidth
           variant="contained"
           color="secondary"
@@ -39,7 +41,7 @@ export default function IndexPage() {
           sx={{ py: 2 }}
         >
           Host
-        </Button>
+        </Button> */}
 
         {/* <Button
           fullWidth

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
-import { saveJWTToLocalStorage, retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
+import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
 import { Box, TextField, Button, Stack, Typography, Link } from "@mui/material";
@@ -14,7 +14,6 @@ export default function Login() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-
 
   async function doLogin(): Promise<void> {
     if (!username || !password) {
@@ -36,29 +35,11 @@ export default function Login() {
       } else {
         saveJWTToLocalStorage(res.jwt);
         setMessage("");
-        navigate("/host_dashboard", );
+        navigate("/host_dashboard");
       }
-    } catch (error: any) {
+    } catch {
       setMessage("Service unavailable. Try again later!");
     }
-  }
-
-  async function checkLoginStatus() {
-    try {
-      const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
-      const response = await fetch(getAPIBaseURL() + "users/verify-login", {
-        method: "POST",
-        body: payload,
-        headers: {"Content-Type": "application/json"}
-      })
-      const data = await response.json();
-      if (!data.error) {
-        navigate("/host_dashboard")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    
   }
 
   async function handleForgotPasswordSubmit() {
@@ -75,24 +56,19 @@ export default function Login() {
       });
 
       const res = await response.json();
-      if (res.error) {
-          setMessage(res.error);
-      }
+      if (res.error) setMessage(res.error);
 
-      // Treat success or failure the same to avoid leaking info
       setEmailSent(true);
       setMessage("If an account exists with that email, a reset link was sent.");
-    } catch (error) {
+    } catch {
       setMessage("Service unavailable. Try again later.");
     }
-}
-
-  useEffect(() => { checkLoginStatus() })
+  }
 
   return (
     <CenteredContainer>
       <ProjectHeader />
-      <Box width="100%">
+      <Box width="100%" maxWidth={400} mx="auto" px={2}>
         <Stack spacing={3}>
           {!forgotPassword ? (
             <>
@@ -102,6 +78,7 @@ export default function Login() {
                 placeholder="Username"
                 fullWidth
                 onChange={(e) => setUsername(e.target.value)}
+                autoFocus
               />
 
               <TextField
@@ -115,7 +92,7 @@ export default function Login() {
               />
 
               {message && (
-                <Typography color="error" fontWeight="500">
+                <Typography color="error" fontWeight={500} textAlign="center">
                   {message}
                 </Typography>
               )}
@@ -125,7 +102,7 @@ export default function Login() {
                 variant="contained"
                 color="primary"
                 onClick={doLogin}
-                sx={{ py: 2 }}
+                sx={{ py: 1.75, fontWeight: 600 }}
               >
                 Login
               </Button>
@@ -134,18 +111,21 @@ export default function Login() {
                 component="button"
                 variant="body2"
                 onClick={() => setForgotPassword(true)}
-                sx={{ alignSelf: "center" }}
+                sx={{ alignSelf: "center", cursor: "pointer" }}
               >
                 Forgot password?
               </Link>
 
-              <Typography align="center">Don't have an account?</Typography>
+              <Typography align="center" color="text.secondary">
+                Don't have an account?
+              </Typography>
+
               <Button
                 fullWidth
                 variant="contained"
                 color="secondary"
                 onClick={() => navigate("/register")}
-                sx={{ py: 2 }}
+                sx={{ py: 1.75, fontWeight: 600 }}
               >
                 Register
               </Button>
@@ -158,10 +138,15 @@ export default function Login() {
                 placeholder="Enter your email"
                 fullWidth
                 onChange={(e) => setEmail(e.target.value)}
+                autoFocus
               />
 
               {message && (
-                <Typography color={emailSent ? "success.main" : "error"} fontWeight="500">
+                <Typography
+                  color={emailSent ? "success.main" : "error"}
+                  fontWeight={500}
+                  textAlign="center"
+                >
                   {message}
                 </Typography>
               )}
@@ -171,7 +156,7 @@ export default function Login() {
                 variant="contained"
                 color="primary"
                 onClick={handleForgotPasswordSubmit}
-                sx={{ py: 2 }}
+                sx={{ py: 1.75, fontWeight: 600 }}
               >
                 Send Reset Link
               </Button>
@@ -185,7 +170,7 @@ export default function Login() {
                   setEmail("");
                   setEmailSent(false);
                 }}
-                sx={{ alignSelf: "center" }}
+                sx={{ alignSelf: "center", cursor: "pointer" }}
               >
                 Back to Login
               </Link>

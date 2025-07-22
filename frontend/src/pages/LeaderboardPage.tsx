@@ -16,7 +16,7 @@ import {
 
 type LeaderboardData = {
     username: String,
-    correctCount: Number,
+    score: Number,
     finishedAt: String,
 };
 
@@ -52,13 +52,18 @@ export default function LeaderboardPage() {
                 },
                 body: payload,
             });
+
+            console.log("is this reaching")
             const data = await response.json();
+
             if (data.error) {
                 console.log(data.error);
                 if (response.status === 401) navigate('/login');
             }
+            console.log(data)
+
             setLeaderboard(data.leaderboard);
-            console.log("Leaderboard: " + leaderboard);
+            console.log("Leaderboard: "+leaderboard);
         } catch (error) {
             console.error("error: " + error)
         }
@@ -95,27 +100,23 @@ export default function LeaderboardPage() {
                         Questions
                     </Typography>
                     <List>
-                    {questions.map((q: any, index: number) => (
-                        <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
-                            <Box>
-                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                {`Q${index + 1}: ${q.question}`}
-                                </Typography>
-                                <List>
-                                {q.options.map((opt: string, optIndex: number) => (
-                                    <ListItem
-                                    key={`${index}-${optIndex}`} // Ensures uniqueness
-                                    divider
-                                    dense
-                                    sx={{ color: "#696969ff", pl: 2 }}
-                                    >
-                                    <Typography>{opt}</Typography>
-                                    </ListItem>
-                                ))}
-                                </List>
-                            </Box>
-                        </ListItem>
-                    ))}
+                        {questions.map((q: any, index: number) => (
+                            <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
+                                <Box >
+                                    <Typography variant="body1">
+                                        {`Q${index + 1}: ${q.question}`}
+                                    </Typography>
+
+                                    <List>
+                                        {q.options.map((opt: string) => (
+                                            <Typography>
+                                                <ListItem divider dense key={opt} sx={{ color:"#696969ff" }}>{opt}</ListItem>
+                                            </Typography>
+                                        ))}
+                                    </List>
+                                </Box>
+                            </ListItem>
+                        ))}
                     </List>
                 </Paper>
                 <Paper elevation={3} sx={{ mx: "10px", display: "flex", flexDirection:"column", height:"", p: 2, justifyContent: "center", alignItems: "center"}}>
@@ -127,7 +128,7 @@ export default function LeaderboardPage() {
                         <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
                             <ListItemText
                                 primary={`#${index + 1}: ${p.username}`}
-                                secondary={`Score: ${p.correctCount}`}
+                                secondary={`Score: ${p.score}`}
                             />
                         </ListItem>
                         ))}

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
-import { Box, TextField, Button, Stack } from "@mui/material";
+import { Box, TextField, Button, Stack, Typography } from "@mui/material";
 import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 
 export default function Register() {
@@ -14,11 +14,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
 
   async function doRegister(): Promise<void> {
-    const payload = JSON.stringify({
-      username: username,
-      password: password,
-      email: email,
-    });
+    const payload = JSON.stringify({ username, password, email });
 
     try {
       const response = await fetch(getAPIBaseURL() + "users/register", {
@@ -34,16 +30,15 @@ export default function Register() {
         setMessage("");
         navigate("/account/registration-email-sent");
       }
-    } catch (error: any) {
+    } catch {
       setMessage("Service unavailable. Try again later!");
-      return;
     }
   }
 
   return (
     <CenteredContainer>
       <ProjectHeader />
-      <Box width="100%">
+      <Box width="100%" maxWidth={400} mx="auto">
         <Stack spacing={3}>
           <TextField
             label="Username"
@@ -52,7 +47,6 @@ export default function Register() {
             fullWidth
             onChange={(e) => setUsername(e.target.value)}
           />
-
           <TextField
             label="Email"
             variant="outlined"
@@ -60,7 +54,6 @@ export default function Register() {
             fullWidth
             onChange={(e) => setEmail(e.target.value)}
           />
-
           <TextField
             label="Password"
             variant="outlined"
@@ -70,19 +63,24 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <p id="statusMessage">{message}</p>
+          {message && (
+            <Typography color="error" fontWeight="500" textAlign="center">
+              {message}
+            </Typography>
+          )}
 
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => doRegister()}
+            onClick={doRegister}
             sx={{ py: 2 }}
           >
             Register
           </Button>
 
-          <p>Already have an account?</p>
+          <Typography align="center">Already have an account?</Typography>
+
           <Button
             fullWidth
             variant="contained"

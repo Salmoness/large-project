@@ -16,9 +16,9 @@ export default function PreviewPage() {
 
   const { questions, summary, quizID, title } = location.state || {};
 
-  if (!questions || !summary) { // todo: handle case where no quiz data is provided
+  if (!questions || !summary) {
     return (
-      <Box p={4}>
+      <Box p={4} textAlign="center">
         <Typography variant="h6" color="error">
           No quiz data provided.
         </Typography>
@@ -29,68 +29,55 @@ export default function PreviewPage() {
   const handleHost = () => {
     hostQuiz(quizID)
       .then((accessCode) => {
-        // Navigate to the host page with access code and quiz details
         navigate("/host", { state: { questions, accessCode, summary, quizID } });
       })
-      .catch((error) => {
-        console.error("Error hosting quiz:", error);
+      .catch(() => {
         alert("Failed to host the quiz. Please try again.");
       });
   };
 
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    navigate(-1);
   };
 
   return (
-    <Box sx={{ px: 4, py: 6 }}>
+    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto" }}>
       <Typography variant="h4" fontWeight={600} gutterBottom>
         {title || "Quiz Preview"}
       </Typography>
-      <Typography variant="subtitle1" gutterBottom>
+      <Typography variant="subtitle1" gutterBottom color="text.secondary">
         {summary}
       </Typography>
 
       <Divider sx={{ my: 3 }} />
 
       <List>
-        {questions.map((q: any, index: number) => (
-          <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
-            <Box>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                {`Q${index + 1}: ${q.question}`}
-              </Typography>
-              <List>
-                {q.options.map((opt: string, optIndex: number) => (
-                  <ListItem
-                    key={`${index}-${optIndex}`} // Ensures uniqueness
-                    divider
-                    dense
-                    sx={{ color: "#696969ff", pl: 2 }}
-                  >
-                    <Typography>{opt}</Typography>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
+        {questions.map((q: any, i: number) => (
+          <ListItem key={i} alignItems="flex-start" sx={{ mb: 2, flexDirection: "column", alignItems: "stretch" }}>
+            <Typography variant="body1" fontWeight="bold" mb={1}>
+              {`Q${i + 1}: ${q.question}`}
+            </Typography>
+            <List disablePadding>
+              {q.options.map((opt: string, idx: number) => (
+                <ListItem
+                  key={`${i}-${idx}`}
+                  divider
+                  dense
+                  sx={{ color: "text.secondary", pl: 3 }}
+                >
+                  <Typography>{opt}</Typography>
+                </ListItem>
+              ))}
+            </List>
           </ListItem>
         ))}
       </List>
 
-      <Stack direction="row" spacing={2} mt={4}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleBack}
-        >
+      <Stack direction="row" spacing={2} mt={4} justifyContent="center">
+        <Button variant="contained" color="primary" onClick={handleBack} sx={{ minWidth: 120 }}>
           Back
         </Button>
-
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleHost}
-        >
+        <Button variant="contained" color="success" onClick={handleHost} sx={{ minWidth: 120 }}>
           Host Quiz
         </Button>
       </Stack>

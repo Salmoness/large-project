@@ -16,6 +16,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
 import { useNavigate } from "react-router-dom";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const initialTime = 20; // seconds
 
@@ -39,7 +40,6 @@ export default function PlayPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     checkLoginStatus();
 
     if (step !== "quiz") return;
@@ -60,28 +60,25 @@ export default function PlayPage() {
     return () => clearInterval(timer);
   }, [step, current]);
 
-    async function checkLoginStatus() {
-      try {
-        const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
-        const response = await fetch(getAPIBaseURL() + "users/verify-login", {
-          method: "POST",
-          body: payload,
-          headers: {"Content-Type": "application/json"}
-        })
-        console.log("status: " + response.status);
-        const data = await response.json();
-        if (!data.error) {
-          setLoggedIn(true);
-          setName(data.username);
-        }
-        else {
-          setLoggedIn(false);
-        }
-      } catch (error) {
-        console.log( error)
+  async function checkLoginStatus() {
+    try {
+      const payload = JSON.stringify({ jwt: retrieveJWTFromLocalStorage() });
+      const response = await fetch(getAPIBaseURL() + "users/verify-login", {
+        method: "POST",
+        body: payload,
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      if (!data.error) {
+        setLoggedIn(true);
+        setName(data.username);
+      } else {
+        setLoggedIn(false);
       }
-      
+    } catch (error) {
+      console.log(error);
     }
+  }
 
   async function handleStart() {
     if (name.trim() && gameCode.trim()) {
@@ -105,11 +102,13 @@ export default function PlayPage() {
 
         if (data.error) {
           alert(data.error);
+          setLoading(false);
           return;
         }
 
         if (!data.questions || !Array.isArray(data.questions)) {
           alert("Invalid question data from server.");
+          setLoading(false);
           return;
         }
 
@@ -137,8 +136,8 @@ export default function PlayPage() {
         },
         body: JSON.stringify({
           quizSessionID: sessionID,
-          correctCount: score,
-          jwt: quizSessionJWT
+          score: score,
+          jwt: quizSessionJWT,
         }),
       });
 
@@ -187,14 +186,45 @@ export default function PlayPage() {
     setQuestions([]);
   };
 
+  const containerStyle = {
+    maxWidth: 450,
+    mx: "auto",
+    mt: 8,
+    p: 4,
+    borderRadius: 3,
+    boxShadow: "0 8px 24px rgba(25, 118, 210, 0.15)",
+    backgroundColor: "#fff",
+    textAlign: "center" as const,
+  };
+
+  const inputStyle = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 8,
+      boxShadow: "0 0 8px rgba(25, 118, 210, 0.15)",
+      transition: "box-shadow 0.3s ease",
+      "&.Mui-focused": {
+        boxShadow: "0 0 12px #1976d2",
+      },
+    },
+  };
+
+  const buttonStyle = {
+    borderRadius: 8,
+    textTransform: "none",
+    fontWeight: 600,
+    py: 1.5,
+    fontSize: "1rem",
+  };
+
   return (
     <CenteredContainer>
       {step === "start" && (
-        <Box sx={{ maxWidth: 400, mx: "auto", textAlign: "center" }}>
-          <Typography variant="h5" gutterBottom>
+        <Box sx={containerStyle}>
+          <Typography variant="h4" fontWeight={700} gutterBottom>
             Join Quiz
           </Typography>
-          <Stack spacing={2} sx={{ mt: 2 }}>
+
+          <Stack spacing={3} sx={{ mt: 3 }}>
             <TextField
               label="Name"
               variant="outlined"
@@ -203,27 +233,27 @@ export default function PlayPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
               disabled={loggedIn}
+              sx={inputStyle}
             />
             <TextField
               label="Game Code"
               variant="outlined"
               fullWidth
               value={gameCode}
-              onChange={(e) =>
-                setGameCode(e.target.value.toUpperCase())
-              }
+              onChange={(e) => setGameCode(e.target.value.toUpperCase())}
               inputProps={{
                 maxLength: 6,
                 style: { textTransform: "uppercase" },
               }}
               placeholder="e.g. 12345"
+              sx={inputStyle}
             />
             <Button
               variant="contained"
               color="primary"
               onClick={handleStart}
               disabled={!name.trim() || !gameCode.trim() || loading}
-              sx={{ py: 1.5, height: 48 }}
+              sx={{ ...buttonStyle, backgroundColor: "#1976d2" }}
               fullWidth
             >
               {loading ? (
@@ -232,14 +262,17 @@ export default function PlayPage() {
                 "Start Quiz"
               )}
             </Button>
+
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
-              onClick={() => {!loggedIn ? navigate("/") : navigate('/host_dashboard')}}
-              sx={{ py: 1.5, height: 48 }}
+              onClick={() =>
+                !loggedIn ? navigate("/") : navigate("/host_dashboard")
+              }
+              sx={{ ...buttonStyle, borderColor: "#1976d2", color: "#1976d2" }}
               fullWidth
             >
-                Home
+              Home
             </Button>
           </Stack>
         </Box>
@@ -247,60 +280,120 @@ export default function PlayPage() {
 
       {step === "quiz" && (
         <>
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 2 }}>
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 600,
+              mb: 3,
+              mx: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <AccessTimeIcon
+              sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }}
+            />
             <LinearProgress
               variant="determinate"
               value={timePercentage}
               sx={{
-                height: 10,
-                borderRadius: 5,
+                flexGrow: 1,
+                height: 12,
+                borderRadius: 6,
+                boxShadow: "0 2px 6px rgba(25, 118, 210, 0.3)",
                 [`& .MuiLinearProgress-bar`]: {
-                  backgroundColor:
-                    timeLeft < 5 ? "error.main" : "primary.main",
+                  backgroundColor: timeLeft < 5 ? "#d32f2f" : "#1976d2",
+                  transition: "background-color 0.3s ease",
                 },
               }}
             />
           </Box>
 
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "right", color: "gray" }}>
-            Time left: {timeLeft}s
-          </Box>
-
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 1, textAlign: "left", color: "gray" }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            maxWidth={600}
+            mx="auto"
+            mb={3}
+            px={1}
+          >
             <AnimatePresence>
               <motion.div
                 key={score}
                 initial={{ scale: 1 }}
-                animate={scoreFlash ? { scale: 1.25 } : { scale: 1 }}
+                animate={scoreFlash ? { scale: 1.3 } : { scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <Typography variant="body2">Score: {score}</Typography>
+                <Typography
+                  variant="body1"
+                  fontWeight={700}
+                  color="#1976d2"
+                  sx={{
+                    letterSpacing: 1,
+                    textShadow: "0 1px 2px rgba(25, 118, 210, 0.5)",
+                  }}
+                >
+                  Score: {score}
+                </Typography>
               </motion.div>
             </AnimatePresence>
+          </Stack>
+
+          <Box
+            sx={{
+              maxWidth: 600,
+              mx: "auto",
+              mb: 4,
+              borderRadius: 3,
+              boxShadow: "0 4px 12px rgba(25, 118, 210, 0.1)",
+              backgroundColor: "#ffffff",
+              p: 3,
+            }}
+          >
+            {questions.length > 0 && (
+              <QuizCard
+                question={questions[current].question}
+                options={questions[current].options}
+                onAnswer={handleAnswer}
+              />
+            )}
           </Box>
 
-          {questions.length > 0 && (
-            <QuizCard
-              question={questions[current].question}
-              options={questions[current].options}
-              onAnswer={handleAnswer}
-            />
-          )}
-
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            textAlign="center"
+            color="text.secondary"
+            mb={4}
+            sx={{ fontWeight: 600, letterSpacing: 0.8 }}
+          >
             Question {current + 1} of {questions.length}
           </Typography>
         </>
       )}
 
       {step === "result" && (
-        <ResultScreen
-          score={score}
-          total={questions.length * 1000}
-          correctCount={correctCount}
-          totalQuestions={questions.length}
-          onRestart={handleRestart}
-        />
+        <Box
+          sx={{
+            maxWidth: 500,
+            mx: "auto",
+            mt: 10,
+            p: 4,
+            borderRadius: 3,
+            boxShadow: "0 8px 24px rgba(25, 118, 210, 0.15)",
+            backgroundColor: "#fff",
+            textAlign: "center",
+          }}
+        >
+          <ResultScreen
+            score={score}
+            total={questions.length * 1000}
+            correctCount={correctCount}
+            totalQuestions={questions.length}
+            onRestart={handleRestart}
+          />
+        </Box>
       )}
     </CenteredContainer>
   );

@@ -1,7 +1,7 @@
+// App.tsx
 import "./assets/custom.css";
-
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme.ts";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme";
 
 import {
   BrowserRouter as Router,
@@ -10,26 +10,27 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import LoginPage from "./pages/LoginPage.tsx";
-import RegisterPage from "./pages/RegisterPage.tsx";
-import IndexPage from "./pages/IndexPage.tsx";
-import PlayPage from "./pages/PlayPage.tsx";
-import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage.tsx";
-import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage.tsx";
-import ResetPasswordByTokenPage from "./pages/account/ResetPasswordByTokenPage.tsx";
-import HostDashboardPage from "./pages/HostDashboardPage.tsx";
-import PlaygroundPage from "./pages/PlaygroundPage.tsx";
-import CreatePage from "./pages/CreatePage.tsx";
-import BrowsePage from "./pages/BrowsePage.tsx";
-import QuizPreviewPage from "./pages/QuizPreviewPage.tsx";
-import GenerationSuccessPage from "./pages/GenerationSuccessPage.tsx";
-import HostQuizPage from "./pages/HostQuizPage.tsx";
-import HistoryPage from "./pages/HistoryPage.tsx";
-import LeaderboardPage from "./pages/LeaderboardPage.tsx";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import IndexPage from "./pages/IndexPage";
+import PlayPage from "./pages/PlayPage";
+import ConfirmEmailByTokenPage from "./pages/account/ConfirmEmailByTokenPage";
+import ConfirmEmailTokenSentPage from "./pages/account/ConfirmEmailTokenSentPage";
+import ResetPasswordByTokenPage from "./pages/account/ResetPasswordByTokenPage";
+import HostDashboardPage from "./pages/HostDashboardPage";
+import PlaygroundPage from "./pages/PlaygroundPage";
+import CreatePage from "./pages/CreatePage";
+import BrowsePage from "./pages/BrowsePage";
+import QuizPreviewPage from "./pages/QuizPreviewPage";
+import GenerationSuccessPage from "./pages/GenerationSuccessPage";
+import HostQuizPage from "./pages/HostQuizPage";
+import HistoryPage from "./pages/HistoryPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Router>
         <Routes>
           <Route path="/" element={<IndexPage />} />
@@ -54,7 +55,6 @@ function App() {
             path="/account/registration-email-confirmation/:token"
             element={<ConfirmEmailByTokenPage />}
           />
-
           <Route
             path="/account/reset-password/:token"
             element={<ResetPasswordByTokenPage />}
@@ -66,4 +66,5 @@ function App() {
     </ThemeProvider>
   );
 }
+
 export default App;

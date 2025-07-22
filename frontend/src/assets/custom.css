@@ -1,1 +1,6 @@
 @import 'normalize.css';
+body {
+  background: linear-gradient(to bottom right, #E3F2FD, #F9F9F9);
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
