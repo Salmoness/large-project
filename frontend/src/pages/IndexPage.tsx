@@ -6,12 +6,14 @@ import {
   Typography,
   useMediaQuery,
   IconButton,
+  Paper
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ProjectHeader from "../components/ProjectHeader";
 import CenteredContainer from "../components/CenteredContainer";
 import { checkLoginStatus } from "../components/CheckLoginStatus"
 import { useEffect } from "react";
+import SpotlightOverlay from "../components/spotlight";
 
 export default function IndexPage() {
 
@@ -32,56 +34,59 @@ export default function IndexPage() {
 
   return (
     <CenteredContainer>
-      {/* Floating top-right question icon */}
-      <Box sx={{ position: "absolute", top: 20, right: 20 }}>
-        <IconButton
-          onClick={() => navigate("/info")}
-          sx={{ color: "grey.600" }}
-          aria-label="Site Info"
+      <SpotlightOverlay />
+      <Paper  sx={{p:10, elevation: 10, border: "solid rgba(60, 77, 224, 0.3)", backdropFilter: "blur(12px)", bgcolor: "rgba(250, 250, 250, 0.42)"
+      }}>
+        <ProjectHeader />
+        <Box
+          sx={{
+            textAlign: "center",
+            mt: -2,
+            maxWidth: 700,
+            mx: "auto",
+          }}
         >
-          <HelpOutlineIcon fontSize="large" />
-        </IconButton>
-      </Box>
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+            Test your wits. Beat the clock.
+          </Typography>
+        </Box>
 
-      {/* Main content */}
-      <ProjectHeader />
-
-      <Box
-        sx={{
-          textAlign: "center",
-          mt: 6,
-          maxWidth: 700,
-          mx: "auto",
-        }}
-      >
-        <Typography variant="h6" color="text.secondary" sx={{ mb: 5 }}>
-          Test your wits. Beat the clock.
-        </Typography>
-      </Box>
-
-      <Stack
-        direction={isMobile ? "column" : "row"}
-        spacing={2}
-        sx={{ mt: 2, width: "100%", justifyContent: "center", px: 3 }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/play")}
-          sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          spacing={2}
+          sx={{ mt: 4, width: "100%", justifyContent: "center", px: 3 }}
         >
-          Play as Guest
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/play")}
+            sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
+          >
+            Play as Guest
+          </Button>
 
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => navigate("/login")}
-          sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
-        >
-          Login
-        </Button>
-      </Stack>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => navigate("/login")}
+            sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
+          >
+            Login
+          </Button>
+        </Stack>
+        <Box sx={{ }}>
+          <IconButton
+            onClick={() => navigate("/info")}
+            sx={{ color: "grey.600", mt: 4}}
+            aria-label="Site Info"
+          >
+            <HelpOutlineIcon fontSize="large" />
+          </IconButton>
+          <Typography variant="h6" color="grey" fontSize={12}>
+            Click here to learn more!
+          </Typography>
+        </Box>
+      </Paper>
     </CenteredContainer>
   );
 }
