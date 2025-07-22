@@ -3,7 +3,7 @@ import type { Question } from "../types";
 import QuizCard from "../components/QuizCard";
 import ResultScreen from "../components/ResultsScreen";
 import CenteredContainer from "../components/CenteredContainer";
-import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
+import { getAPIBaseURL } from "../components/APIBaseURL";
 import {
   Box,
   Button,
@@ -14,11 +14,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils.ts";
+import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 import { useNavigate } from "react-router-dom";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-const initialTime = 20; // seconds
+const initialTime = 20;
 
 export default function PlayPage() {
   const [step, setStep] = useState<"start" | "quiz" | "result">("start");
@@ -83,17 +83,17 @@ export default function PlayPage() {
   async function handleStart() {
     if (name.trim() && gameCode.trim()) {
       setLoading(true);
-      const username = name.trim();
-      const accessCode = gameCode.trim();
       const jwt = retrieveJWTFromLocalStorage();
-      const payload = JSON.stringify({ username, accessCode, jwt });
+      const payload = JSON.stringify({
+        username: name.trim(),
+        accessCode: gameCode.trim(),
+        jwt,
+      });
 
       try {
         const response = await fetch(getAPIBaseURL() + "quiz/join", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: payload,
         });
 
@@ -106,7 +106,7 @@ export default function PlayPage() {
           return;
         }
 
-        if (!data.questions || !Array.isArray(data.questions)) {
+        if (!Array.isArray(data.questions)) {
           alert("Invalid question data from server.");
           setLoading(false);
           return;
@@ -120,7 +120,7 @@ export default function PlayPage() {
         setCurrent(0);
       } catch (error) {
         console.error("Error starting quiz:", error);
-        alert("Failed to start the quiz. Please check your inputs.");
+        alert("Failed to start the quiz.");
       } finally {
         setLoading(false);
       }
@@ -131,9 +131,7 @@ export default function PlayPage() {
     try {
       const response = await fetch(getAPIBaseURL() + "quiz/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quizSessionID: sessionID,
           score: score,
@@ -142,11 +140,7 @@ export default function PlayPage() {
       });
 
       const data = await response.json();
-      if (data.error) {
-        console.error("Error submitting results:", data.error);
-      } else {
-        console.log("Results submitted successfully:", data);
-      }
+      if (data.error) console.error("Error submitting results:", data.error);
     } catch (error) {
       console.error("Error submitting results:", error);
     }
@@ -186,44 +180,13 @@ export default function PlayPage() {
     setQuestions([]);
   };
 
-  const containerStyle = {
-    maxWidth: 450,
-    mx: "auto",
-    mt: 8,
-    p: 4,
-    borderRadius: 3,
-    boxShadow: "0 8px 24px rgba(25, 118, 210, 0.15)",
-    backgroundColor: "#fff",
-    textAlign: "center" as const,
-  };
-
-  const inputStyle = {
-    "& .MuiOutlinedInput-root": {
-      borderRadius: 8,
-      boxShadow: "0 0 8px rgba(25, 118, 210, 0.15)",
-      transition: "box-shadow 0.3s ease",
-      "&.Mui-focused": {
-        boxShadow: "0 0 12px #1976d2",
-      },
-    },
-  };
-
-  const buttonStyle = {
-    borderRadius: 8,
-    textTransform: "none",
-    fontWeight: 600,
-    py: 1.5,
-    fontSize: "1rem",
-  };
-
   return (
     <CenteredContainer>
       {step === "start" && (
-        <Box sx={containerStyle}>
+        <Box sx={{ maxWidth: 450, mx: "auto", mt: 8, p: 4, borderRadius: 3, boxShadow: 3, backgroundColor: "#fff", textAlign: "center" }}>
           <Typography variant="h4" fontWeight={700} gutterBottom>
             Join Quiz
           </Typography>
-
           <Stack spacing={3} sx={{ mt: 3 }}>
             <TextField
               label="Name"
@@ -231,9 +194,7 @@ export default function PlayPage() {
               fullWidth
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
               disabled={loggedIn}
-              sx={inputStyle}
             />
             <TextField
               label="Game Code"
@@ -241,35 +202,21 @@ export default function PlayPage() {
               fullWidth
               value={gameCode}
               onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-              inputProps={{
-                maxLength: 6,
-                style: { textTransform: "uppercase" },
-              }}
-              placeholder="e.g. 12345"
-              sx={inputStyle}
+              inputProps={{ maxLength: 6, style: { textTransform: "uppercase" } }}
             />
             <Button
               variant="contained"
               color="primary"
               onClick={handleStart}
               disabled={!name.trim() || !gameCode.trim() || loading}
-              sx={{ ...buttonStyle, backgroundColor: "#1976d2" }}
               fullWidth
             >
-              {loading ? (
-                <CircularProgress size={24} sx={{ color: "white" }} />
-              ) : (
-                "Start Quiz"
-              )}
+              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Start Quiz"}
             </Button>
-
             <Button
               variant="outlined"
               color="primary"
-              onClick={() =>
-                !loggedIn ? navigate("/") : navigate("/host_dashboard")
-              }
-              sx={{ ...buttonStyle, borderColor: "#1976d2", color: "#1976d2" }}
+              onClick={() => (!loggedIn ? navigate("/") : navigate("/host_dashboard"))}
               fullWidth
             >
               Home
@@ -280,20 +227,8 @@ export default function PlayPage() {
 
       {step === "quiz" && (
         <>
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: 600,
-              mb: 3,
-              mx: "auto",
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <AccessTimeIcon
-              sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }}
-            />
+          <Box sx={{ width: "100%", maxWidth: 600, mb: 3, mx: "auto", display: "flex", alignItems: "center", gap: 1 }}>
+            <AccessTimeIcon sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }} />
             <LinearProgress
               variant="determinate"
               value={timePercentage}
@@ -310,15 +245,7 @@ export default function PlayPage() {
             />
           </Box>
 
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            maxWidth={600}
-            mx="auto"
-            mb={3}
-            px={1}
-          >
+          <Stack direction="row" justifyContent="space-between" alignItems="center" maxWidth={600} mx="auto" mb={3} px={1}>
             <AnimatePresence>
               <motion.div
                 key={score}
@@ -326,32 +253,14 @@ export default function PlayPage() {
                 animate={scoreFlash ? { scale: 1.3 } : { scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <Typography
-                  variant="body1"
-                  fontWeight={700}
-                  color="#1976d2"
-                  sx={{
-                    letterSpacing: 1,
-                    textShadow: "0 1px 2px rgba(25, 118, 210, 0.5)",
-                  }}
-                >
+                <Typography variant="body1" fontWeight={700} color="#1976d2">
                   Score: {score}
                 </Typography>
               </motion.div>
             </AnimatePresence>
           </Stack>
 
-          <Box
-            sx={{
-              maxWidth: 600,
-              mx: "auto",
-              mb: 4,
-              borderRadius: 3,
-              boxShadow: "0 4px 12px rgba(25, 118, 210, 0.1)",
-              backgroundColor: "#ffffff",
-              p: 3,
-            }}
-          >
+          <Box sx={{ maxWidth: 600, mx: "auto", mb: 4, borderRadius: 3, boxShadow: 1, backgroundColor: "#ffffff", p: 3 }}>
             {questions.length > 0 && (
               <QuizCard
                 question={questions[current].question}
@@ -361,31 +270,14 @@ export default function PlayPage() {
             )}
           </Box>
 
-          <Typography
-            variant="body2"
-            textAlign="center"
-            color="text.secondary"
-            mb={4}
-            sx={{ fontWeight: 600, letterSpacing: 0.8 }}
-          >
+          <Typography variant="body2" textAlign="center" color="text.secondary" mb={4}>
             Question {current + 1} of {questions.length}
           </Typography>
         </>
       )}
 
       {step === "result" && (
-        <Box
-          sx={{
-            maxWidth: 500,
-            mx: "auto",
-            mt: 10,
-            p: 4,
-            borderRadius: 3,
-            boxShadow: "0 8px 24px rgba(25, 118, 210, 0.15)",
-            backgroundColor: "#fff",
-            textAlign: "center",
-          }}
-        >
+        <Box sx={{ maxWidth: 500, mx: "auto", mt: 10, p: 4, borderRadius: 3, boxShadow: 3, backgroundColor: "#fff", textAlign: "center" }}>
           <ResultScreen
             score={score}
             total={questions.length * 1000}
