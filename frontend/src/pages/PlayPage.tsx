@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
 import { useNavigate } from "react-router-dom";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const initialTime = 20;
 
@@ -183,7 +184,18 @@ export default function PlayPage() {
   return (
     <CenteredContainer>
       {step === "start" && (
-        <Box sx={{ maxWidth: 450, mx: "auto", mt: 8, p: 4, borderRadius: 3, boxShadow: 3, backgroundColor: "#fff", textAlign: "center" }}>
+        <Box
+          sx={{
+            maxWidth: 500, // wider name input container
+            mx: "auto",
+            mt: 8,
+            p: 4,
+            borderRadius: 3,
+            boxShadow: 3,
+            backgroundColor: "#fff",
+            textAlign: "center",
+          }}
+        >
           <Typography variant="h4" fontWeight={700} gutterBottom>
             Join Quiz
           </Typography>
@@ -211,15 +223,22 @@ export default function PlayPage() {
               disabled={!name.trim() || !gameCode.trim() || loading}
               fullWidth
             >
-              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Start Quiz"}
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Start Quiz"
+              )}
             </Button>
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => (!loggedIn ? navigate("/") : navigate("/host_dashboard"))}
+              onClick={() =>
+                !loggedIn ? navigate("/") : navigate("/host_dashboard")
+              }
               fullWidth
+              startIcon={<ArrowBackIosNewIcon />}
             >
-              Home
+              Back
             </Button>
           </Stack>
         </Box>
@@ -227,8 +246,20 @@ export default function PlayPage() {
 
       {step === "quiz" && (
         <>
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 3, mx: "auto", display: "flex", alignItems: "center", gap: 1 }}>
-            <AccessTimeIcon sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }} />
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 600,
+              mb: 3,
+              mx: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <AccessTimeIcon
+              sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }}
+            />
             <LinearProgress
               variant="determinate"
               value={timePercentage}
@@ -245,7 +276,15 @@ export default function PlayPage() {
             />
           </Box>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center" maxWidth={600} mx="auto" mb={3} px={1}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            maxWidth={600}
+            mx="auto"
+            mb={3}
+            px={1}
+          >
             <AnimatePresence>
               <motion.div
                 key={score}
@@ -260,7 +299,17 @@ export default function PlayPage() {
             </AnimatePresence>
           </Stack>
 
-          <Box sx={{ maxWidth: 600, mx: "auto", mb: 4, borderRadius: 3, boxShadow: 1, backgroundColor: "#ffffff", p: 3 }}>
+          <Box
+            sx={{
+              maxWidth: 600,
+              mx: "auto",
+              mb: 4,
+              borderRadius: 3,
+              boxShadow: 1,
+              backgroundColor: "#ffffff",
+              p: 3,
+            }}
+          >
             {questions.length > 0 && (
               <QuizCard
                 question={questions[current].question}
@@ -277,7 +326,18 @@ export default function PlayPage() {
       )}
 
       {step === "result" && (
-        <Box sx={{ maxWidth: 500, mx: "auto", mt: 10, p: 4, borderRadius: 3, boxShadow: 3, backgroundColor: "#fff", textAlign: "center" }}>
+        <Box
+          sx={{
+            maxWidth: 500,
+            mx: "auto",
+            mt: 10,
+            p: 4,
+            borderRadius: 3,
+            boxShadow: 3,
+            backgroundColor: "#fff",
+            textAlign: "center",
+          }}
+        >
           <ResultScreen
             score={score}
             total={questions.length * 1000}

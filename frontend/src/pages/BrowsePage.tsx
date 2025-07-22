@@ -1,3 +1,4 @@
+// BrowsePage.tsx
 import { useEffect, useState } from "react";
 import ProjectHeader from "../components/ProjectHeader";
 import {
@@ -10,6 +11,7 @@ import {
   Container,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
 import QuizThumbnail from "../components/QuizThumbnail";
 import { getAPIBaseURL } from "../components/APIBaseURL";
@@ -84,16 +86,22 @@ export default function BrowsePage() {
       const response = await fetch(getAPIBaseURL() + "quiz/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ search: term, own: own, jwt: jwt }),
+        body: JSON.stringify({ search: term, own, jwt }),
       });
 
-      const data = await response.json();
-      if (data.error) {
-        if (response.status === 401) navigate("/login");
+      if (response.status === 401) {
+        navigate("/login");
         return;
       }
 
-      setQuizzes(data.quizzes);
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("API error:", data.error);
+        return;
+      }
+
+      setQuizzes(data.quizzes || []);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
     }
@@ -109,6 +117,10 @@ export default function BrowsePage() {
     fetchQuizzes(term, selected === "own");
   };
 
+  const handleBack = () => {
+    navigate("/host_dashboard");
+  };
+
   return (
     <Container
       maxWidth="xl"
@@ -120,6 +132,7 @@ export default function BrowsePage() {
         py: 6,
         minHeight: "100vh",
         bgcolor: "background.default",
+        position: "relative",
       }}
     >
       <Box sx={{ alignSelf: "flex-start", mb: 3 }}>
@@ -160,12 +173,8 @@ export default function BrowsePage() {
               borderRadius: 3,
               boxShadow: 3,
               border: "none",
-              "& fieldset": {
-                border: "none",
-              },
-              "&:hover fieldset": {
-                border: "none",
-              },
+              "& fieldset": { border: "none" },
+              "&:hover fieldset": { border: "none" },
               "&.Mui-focused fieldset": {
                 border: "none",
                 boxShadow: "0 0 8px 2px rgba(59, 130, 246, 0.4)",
@@ -208,14 +217,28 @@ export default function BrowsePage() {
         )}
       </Grid>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/host_dashboard")}
-        sx={{ mt: 6, borderRadius: 3, px: 5, py: 1.5, fontWeight: 700 }}
+      {/* Fixed Back button bottom-left */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 20,
+          left: 20,
+          zIndex: 999,
+          pointerEvents: "none",
+        }}
       >
-        Back
-      </Button>
+        <Box sx={{ pointerEvents: "auto" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            sx={{ minWidth: 120 }}
+            startIcon={<ArrowBackIosNewIcon />}
+          >
+            Back
+          </Button>
+        </Box>
+      </Box>
     </Container>
   );
 }

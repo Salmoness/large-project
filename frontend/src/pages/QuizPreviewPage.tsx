@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { hostQuiz } from "../components/hostQuiz"
+import { useLocation, useNavigate } from "react-router-dom";
+import { hostQuiz } from "../components/hostQuiz";
 import {
   Box,
   Typography,
@@ -7,14 +7,15 @@ import {
   Divider,
   List,
   ListItem,
-} from "@mui/material"
-import BroadcastOnPersonalIcon from "@mui/icons-material/BroadcastOnPersonal"
+} from "@mui/material";
+import BroadcastOnPersonalIcon from "@mui/icons-material/BroadcastOnPersonal";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 export default function PreviewPage() {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const { questions, summary, quizID, title } = location.state || {}
+  const { questions, summary, quizID, title } = location.state || {};
 
   if (!questions || !summary) {
     return (
@@ -23,7 +24,7 @@ export default function PreviewPage() {
           No quiz data provided.
         </Typography>
       </Box>
-    )
+    );
   }
 
   const handleHost = () => {
@@ -31,23 +32,22 @@ export default function PreviewPage() {
       .then((accessCode) => {
         navigate("/host", {
           state: { questions, accessCode, summary, quizID },
-        })
+        });
       })
       .catch(() => {
-        alert("Failed to host the quiz. Please try again.")
-      })
-  }
+        alert("Failed to host the quiz. Please try again.");
+      });
+  };
 
   const handleBack = () => {
-    navigate(-1)
-  }
+    navigate(-1);
+  };
 
   return (
-    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto", pb: 12 }}>
+    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto" }}>
       <Typography variant="h4" fontWeight={600} gutterBottom>
         {title || "Quiz Preview"}
       </Typography>
-
       <Typography variant="subtitle1" gutterBottom color="text.secondary">
         {summary}
       </Typography>
@@ -59,16 +59,11 @@ export default function PreviewPage() {
           <ListItem
             key={i}
             alignItems="flex-start"
-            sx={{
-              mb: 2,
-              flexDirection: "column",
-              alignItems: "stretch",
-            }}
+            sx={{ mb: 2, flexDirection: "column", alignItems: "stretch" }}
           >
             <Typography variant="body1" fontWeight="bold" mb={1}>
               {`Q${i + 1}: ${q.question}`}
             </Typography>
-
             <List disablePadding>
               {q.options.map((opt: string, idx: number) => (
                 <ListItem
@@ -85,37 +80,38 @@ export default function PreviewPage() {
         ))}
       </List>
 
-     
       <Box
         sx={{
           position: "fixed",
-          bottom: 0,
+          bottom: 20,
           left: 0,
-          right: 0,
-          py: 2,
-          px: 4,
-          backgroundColor: "rgba(24, 113, 172, 0.1)",
-          borderTop: "1px solid #ccc",
+          width: "100%",
           display: "flex",
           justifyContent: "center",
-          gap: 2,
-          zIndex: 1000,
-          backdropFilter: "blur(6px)",
+          gap: 3,
+          zIndex: 999,
+          pointerEvents: "none",
         }}
       >
-        <Button variant="contained" color="primary" onClick={handleBack}>
-          Back
-        </Button>
-
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<BroadcastOnPersonalIcon />}
-          onClick={handleHost}
-        >
-          Host Quiz
-        </Button>
+        <Box sx={{ pointerEvents: "auto", display: "flex", gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            startIcon={<ArrowBackIosNewIcon />}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<BroadcastOnPersonalIcon />}
+            onClick={handleHost}
+          >
+            Host Quiz
+          </Button>
+        </Box>
       </Box>
     </Box>
-  )
+  );
 }

@@ -9,6 +9,7 @@ import {
   Container,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
 import QuizThumbnail from "../components/QuizThumbnail";
 import { getAPIBaseURL } from "../components/APIBaseURL";
@@ -111,6 +112,10 @@ export default function HistoryPage() {
     });
   };
 
+  const handleBack = () => {
+    navigate("/host_dashboard");
+  };
+
   return (
     <Container
       maxWidth="xl"
@@ -122,6 +127,7 @@ export default function HistoryPage() {
         py: 6,
         minHeight: "100vh",
         bgcolor: "background.default",
+        position: "relative",
       }}
     >
       <Box sx={{ alignSelf: "flex-start", mb: 3 }}>
@@ -170,14 +176,28 @@ export default function HistoryPage() {
         )}
       </Grid>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/host_dashboard")}
-        sx={{ mt: 6, borderRadius: 3, px: 5, py: 1.5, fontWeight: 700 }}
+      {/* Fixed Back button bottom-left */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 20,
+          left: 20,
+          zIndex: 999,
+          pointerEvents: "none",
+        }}
       >
-        Back
-      </Button>
+        <Box sx={{ pointerEvents: "auto" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            sx={{ minWidth: 120 }}
+            startIcon={<ArrowBackIosNewIcon />}
+          >
+            Back
+          </Button>
+        </Box>
+      </Box>
     </Container>
   );
 }
