@@ -16,7 +16,7 @@ import {
 
 type LeaderboardData = {
     username: String,
-    correctCount: Number,
+    score: Number,
     finishedAt: String,
 };
 
@@ -52,11 +52,14 @@ export default function LeaderboardPage() {
                 },
                 body: payload,
             });
+
+            console.log("is this reaching")
             const data = await response.json();
             if (data.error) {
                 console.log(data.error);
                 if (response.status === 401) navigate('/login');
             }
+            console.log(data)
             setLeaderboard(data.leaderboard);
             console.log("Leaderboard: " + leaderboard);
         } catch (error) {
@@ -127,7 +130,7 @@ export default function LeaderboardPage() {
                         <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
                             <ListItemText
                                 primary={`#${index + 1}: ${p.username}`}
-                                secondary={`Score: ${p.correctCount}`}
+                                secondary={`Score: ${p.score}`}
                             />
                         </ListItem>
                         ))}

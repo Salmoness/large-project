@@ -18,7 +18,7 @@ type GameData = {
     title: string;
     summary: string;
     created_by: string;
-    created_at: string;
+    created_at: Date;
     players: number;
     questions: any[];
 };
@@ -54,13 +54,14 @@ export default function HistoryPage() {
                     title: data.games[i].title,
                     summary: data.games[i].summary,
                     created_by: "",
-                    created_at: data.games[i].created_at,
+                    created_at: new Date(data.games[i].created_at),
                     players: data.games[i].players,
                     questions: data.games[i].questions,
                     }
-                gamesArray.push(game)
-            }
-
+                gamesArray.push(game);
+            }    
+            
+            games.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
             setGames(data.games);
             console.log(games);
         } catch (error) {

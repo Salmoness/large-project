@@ -1,10 +1,10 @@
-import { Box, Button, Typography, Stack } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function HostPage() {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
-    const { accessCode, summary, quizID } = location.state || {};
+    const { accessCode, summary } = location.state || {};
     
 
   return (
@@ -26,11 +26,10 @@ export default function HostPage() {
         <Typography variant="h6" fontWeight={500}>
             Summary: {summary}
         </Typography>
-        <Typography variant="h6" fontWeight={500}>
-            Quiz ID: {quizID}
-        </Typography>
-        <Button>nothing</Button>
-        <Stack>nothing</Stack>
+        <Button 
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/host_dashboard")}>Back to Dashboard</Button>
     </Box>
   );
 }
