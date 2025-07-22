@@ -1,6 +1,6 @@
 const request = require("supertest");
 const express = require("express");
-const { doRegister } = require("./register");
+const { doRegister } = require("../routes/register");
 
 const sendEmail = require("../utils/sendEmail");
 const md5 = require("../utils/md5");
@@ -23,9 +23,13 @@ describe("POST /register", () => {
       insertOne: jest.fn(),
     };
 
-    app.locals = { mongodb: mockDb };
+    app.locals.mongodb = mockDb;
     app.post("/api/user/register", doRegister);
   });
+
+  afterEach(() => {
+        jest.clearAllMocks();
+    });
 
   it("should register a new user", async () => {
     mockDb.findOne.mockResolvedValueOnce(null); // no existing username
