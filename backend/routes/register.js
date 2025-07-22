@@ -26,7 +26,7 @@ module.exports.doRegister = async function (req, res, next) {
     //checks if name exists in the collection
     const existingUsername = await usersCollection.findOne({ username });
 
-    //checks if name exists in the collection
+    //checks if email exists in the collection
     const existingEmail = await usersCollection.findOne({ email });
 
     if (existingUsername) {
