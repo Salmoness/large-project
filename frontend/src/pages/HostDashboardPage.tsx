@@ -7,6 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import HistoryIcon from "@mui/icons-material/History";
 import SearchIcon from "@mui/icons-material/Search";
+import SpotlightOverlay from "../components/spotlight";
 
 export default function HostPage() {
   const navigate = useNavigate();
@@ -26,24 +27,7 @@ export default function HostPage() {
         px: 2,
       }}
     >
-      {/* Top Bar */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          p: 2,
-        }}
-      >
-        <Button variant="text" size="small" color="error" onClick={handleLogout}>
-          Logout
-        </Button>
-      </Box>
-
-      {/* Project Header */}
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <ProjectHeader />
-      </Box>
+      <SpotlightOverlay/>
 
       {/* Main Buttons */}
       <Box
@@ -56,10 +40,21 @@ export default function HostPage() {
           gap: 4,
         }}
       >
+        <ProjectHeader />
         <Stack spacing={2} sx={{ width: 250 }}>
           <Button
             variant="contained"
-            color="success" // green
+            color="secondary" 
+            fullWidth
+            startIcon={<PlayArrowIcon />}
+            onClick={() => navigate("/play")}
+            sx={{ fontWeight: 700, py: 1.5 }}
+          >
+            Play
+          </Button>
+          <Button
+            variant="contained"
+            color="success" 
             fullWidth
             startIcon={<AddIcon />}
             onClick={() => navigate("/create")}
@@ -70,7 +65,7 @@ export default function HostPage() {
 
           <Button
             variant="outlined"
-            color="primary" // blue
+            color="primary" 
             fullWidth
             startIcon={<SearchIcon />}
             onClick={() => navigate("/browse")}
@@ -80,8 +75,8 @@ export default function HostPage() {
           </Button>
 
           <Button
-            variant="outlined"
-            color="warning" // orange
+            variant="contained"
+            color="warning" 
             fullWidth
             startIcon={<HistoryIcon />}
             onClick={() => navigate("/history")}
@@ -90,15 +85,14 @@ export default function HostPage() {
             History
           </Button>
 
-          <Button
-            variant="contained"
-            color="secondary" // purple
+          
+          <Button 
+            variant="contained" 
             fullWidth
-            startIcon={<PlayArrowIcon />}
-            onClick={() => navigate("/play")}
-            sx={{ fontWeight: 700, py: 1.5 }}
-          >
-            Play
+            color="error" 
+            onClick={handleLogout}
+            sx={{ m: 4 }}>
+            LOGOUT
           </Button>
         </Stack>
       </Box>
