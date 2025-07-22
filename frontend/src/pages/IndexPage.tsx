@@ -1,58 +1,71 @@
 import { useNavigate } from "react-router-dom";
-import { Button, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Typography,
+  useMediaQuery,
+  IconButton,
+} from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ProjectHeader from "../components/ProjectHeader";
 import CenteredContainer from "../components/CenteredContainer";
 
-
 export default function IndexPage() {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   return (
-    
     <CenteredContainer>
+      {/* Floating top-right question icon */}
+      <Box sx={{ position: "absolute", top: 20, right: 20 }}>
+        <IconButton
+          onClick={() => navigate("/info")}
+          sx={{ color: "grey.600" }}
+          aria-label="Site Info"
+        >
+          <HelpOutlineIcon fontSize="large" />
+        </IconButton>
+      </Box>
+
+      {/* Main content */}
       <ProjectHeader />
 
-      <Stack spacing={2} sx={{ mt: 4, width: "60%" }}>
+      <Box
+        sx={{
+          textAlign: "center",
+          mt: 6,
+          maxWidth: 700,
+          mx: "auto",
+        }}
+      >
+        <Typography variant="h6" color="text.secondary" sx={{ mb: 5 }}>
+          Test your wits. Beat the clock.
+        </Typography>
+      </Box>
+
+      <Stack
+        direction={isMobile ? "column" : "row"}
+        spacing={2}
+        sx={{ mt: 2, width: "100%", justifyContent: "center", px: 3 }}
+      >
         <Button
-          fullWidth
           variant="contained"
           color="primary"
           onClick={() => navigate("/play")}
-          sx={{ py: 2 }}
+          sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
         >
           Play as Guest
         </Button>
 
         <Button
-          fullWidth
           variant="contained"
           color="success"
           onClick={() => navigate("/login")}
-          sx={{ py: 2 }}
+          sx={{ py: 2, px: 4, fontSize: "1.1rem", fontWeight: 600 }}
         >
           Login
         </Button>
-
-        {/* <Button
-          fullWidth
-          variant="contained"
-          color="secondary"
-          onClick={() => navigate("/host_dashboard")}
-          sx={{ py: 2 }}
-        >
-          Host
-        </Button> */}
-
-        {/* <Button
-          fullWidth
-          variant="contained"
-          color="error"
-          onClick={() => navigate("/playground")}
-          sx={{ py: 2 }}
-        >
-          Playground
-        </Button> */}
-
       </Stack>
     </CenteredContainer>
   );

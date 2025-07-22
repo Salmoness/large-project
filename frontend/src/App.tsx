@@ -10,6 +10,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import InfoPage from "./pages/InfoPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import IndexPage from "./pages/IndexPage";
@@ -37,6 +38,7 @@ function App() {
           <Route path="/play" element={<PlayPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/create" element={<CreatePage />} />
+          <Route path="/info" element={<InfoPage />} />
           <Route path="/host_dashboard" element={<HostDashboardPage />} />
           <Route path="/host" element={<HostQuizPage />} />
           <Route path="/browse" element={<BrowsePage />} />

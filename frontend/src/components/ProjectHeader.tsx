@@ -11,27 +11,37 @@ export default function ProjectHeader() {
         textDecoration: "none",
         color: "inherit",
         display: "inline-block",
-        mb: 3,
+        mb: 4,
+        transition: "transform 0.2s ease-in-out",
+        "&:hover": {
+          transform: "scale(1.03)",
+        },
       }}
     >
-      <Stack direction="row" spacing={1} alignItems="center">
-        <img
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Box
+          component="img"
           src={leafLogo}
           alt="TrivAI Logo"
-          style={{ height: 40, width: "auto" }}
+          sx={{
+            height: 64,
+            width: "auto",
+            filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.2))",
+          }}
         />
         <Typography
-          variant="h4"
-          fontWeight={700}
+          variant="h3"
+          fontWeight={800}
           sx={{
             fontFamily: `'Poppins', 'Quicksand', 'Segoe UI', sans-serif`,
-            letterSpacing: 1,
+            letterSpacing: 1.5,
+            textShadow: "1px 1px 4px rgba(0,0,0,0.1)",
           }}
         >
-          <Box component="span" sx={{ color: "#4CAF50" /* green */ }}>
+          <Box component="span" sx={{ color: "#4CAF50" }}>
             Triv
           </Box>
-          <Box component="span" sx={{ color: "#2196F3" /* blue */ }}>
+          <Box component="span" sx={{ color: "#2196F3" }}>
             AI
           </Box>
         </Typography>
