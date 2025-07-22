@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { hostQuiz } from "../components/hostQuiz";
+import { useLocation, useNavigate } from "react-router-dom"
+import { hostQuiz } from "../components/hostQuiz"
 import {
   Box,
   Typography,
@@ -7,14 +7,14 @@ import {
   Divider,
   List,
   ListItem,
-  Stack,
-} from "@mui/material";
+} from "@mui/material"
+import BroadcastOnPersonalIcon from "@mui/icons-material/BroadcastOnPersonal"
 
 export default function PreviewPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  const { questions, summary, quizID, title } = location.state || {};
+  const { questions, summary, quizID, title } = location.state || {}
 
   if (!questions || !summary) {
     return (
@@ -23,28 +23,31 @@ export default function PreviewPage() {
           No quiz data provided.
         </Typography>
       </Box>
-    );
+    )
   }
 
   const handleHost = () => {
     hostQuiz(quizID)
       .then((accessCode) => {
-        navigate("/host", { state: { questions, accessCode, summary, quizID } });
+        navigate("/host", {
+          state: { questions, accessCode, summary, quizID },
+        })
       })
       .catch(() => {
-        alert("Failed to host the quiz. Please try again.");
-      });
-  };
+        alert("Failed to host the quiz. Please try again.")
+      })
+  }
 
   const handleBack = () => {
-    navigate(-1);
-  };
+    navigate(-1)
+  }
 
   return (
-    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto" }}>
+    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto", pb: 12 }}>
       <Typography variant="h4" fontWeight={600} gutterBottom>
         {title || "Quiz Preview"}
       </Typography>
+
       <Typography variant="subtitle1" gutterBottom color="text.secondary">
         {summary}
       </Typography>
@@ -53,10 +56,19 @@ export default function PreviewPage() {
 
       <List>
         {questions.map((q: any, i: number) => (
-          <ListItem key={i} alignItems="flex-start" sx={{ mb: 2, flexDirection: "column", alignItems: "stretch" }}>
+          <ListItem
+            key={i}
+            alignItems="flex-start"
+            sx={{
+              mb: 2,
+              flexDirection: "column",
+              alignItems: "stretch",
+            }}
+          >
             <Typography variant="body1" fontWeight="bold" mb={1}>
               {`Q${i + 1}: ${q.question}`}
             </Typography>
+
             <List disablePadding>
               {q.options.map((opt: string, idx: number) => (
                 <ListItem
@@ -73,14 +85,37 @@ export default function PreviewPage() {
         ))}
       </List>
 
-      <Stack direction="row" spacing={2} mt={4} justifyContent="center">
-        <Button variant="contained" color="primary" onClick={handleBack} sx={{ minWidth: 120 }}>
+     
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          py: 2,
+          px: 4,
+          backgroundColor: "rgba(24, 113, 172, 0.1)",
+          borderTop: "1px solid #ccc",
+          display: "flex",
+          justifyContent: "center",
+          gap: 2,
+          zIndex: 1000,
+          backdropFilter: "blur(6px)",
+        }}
+      >
+        <Button variant="contained" color="primary" onClick={handleBack}>
           Back
         </Button>
-        <Button variant="contained" color="success" onClick={handleHost} sx={{ minWidth: 120 }}>
+
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<BroadcastOnPersonalIcon />}
+          onClick={handleHost}
+        >
           Host Quiz
         </Button>
-      </Stack>
+      </Box>
     </Box>
-  );
+  )
 }
