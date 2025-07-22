@@ -32,7 +32,7 @@ export default function IndexPage() {
 
   return (
     <CenteredContainer>
-      {/* Floating top-right question icon */}
+      
       <Box sx={{ position: "absolute", top: 20, right: 20 }}>
         <IconButton
           onClick={() => navigate("/info")}
@@ -43,7 +43,7 @@ export default function IndexPage() {
         </IconButton>
       </Box>
 
-      {/* Main content */}
+      
       <ProjectHeader />
 
       <Box
