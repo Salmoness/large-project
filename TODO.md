@@ -21,21 +21,21 @@
 - [x] API for Quiz Game (Submit Answer)
 - [x] Frontend for Account Password Recovery
 - [x] Frontend for Quiz Browser
-- [ ] Frontend for Quiz Scoreboard
+- [x] Frontend for Quiz Scoreboard
 - [x] Frontend for Quiz Game (Questions and Answers)
 - [x] Frontend for Account Login
 - [x] Frontend for Account Registration
 - [x] Frontend for Registration Email Verification
-- [ ] Improve scoring logic
+- [x] Improve scoring logic
 - [x] Password Hashing
 - [ ] 6 API Endpoint Unit Tests
 - [ ] Demonstrate 1 API Endpoint with SwaggerHub
 - [x] 3 Mobile Application Unit Tests
-- [ ] Create Project Presentation
+- [x] Create Project Presentation
 - [ ] Practice Project Presentation
-- [ ] Mobile Application Polishing
-- [ ] Frontend Styling and Polishing
-- [ ] Frontend JWT
+- [x] Mobile Application Polishing
+- [x] Frontend Styling and Polishing
+- [x] Frontend JWT
 
 ## Known Issues
 

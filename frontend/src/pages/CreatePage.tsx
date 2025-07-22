@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { getAPIBaseURL } from "../components/APIBaseURL";
 import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
+import SpotlightOverlay from "../components/spotlight";
 
 export default function CreatePage() {
   const [topic, setTopic] = useState("");
@@ -50,56 +51,74 @@ export default function CreatePage() {
   }
 
   return (
-    <Box
-      sx={{
-        maxWidth: 420,
-        mx: "auto",
-        mt: 8,
-        p: 5,
-        borderRadius: 3,
-        boxShadow: 6,
-        bgcolor: "background.paper",
-      }}
-    >
-
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      bgcolor:"white",
+      minHeight: "100vh",
+      position: "relative",
+      }}>
+      <SpotlightOverlay/>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          maxWidth: 420,
+          minWidth: 420,
+          mx: "auto",
+          p: 5,
+          borderRadius: 3,
+          boxShadow: 6,
+          bgcolor: "white",
+        }}
+      > 
       
-      <ProjectHeader />
-      <Typography variant="h5" fontWeight={700} gutterBottom color="primary">
-        Generate a New Quiz
-      </Typography>
+        <ProjectHeader />
+        
+        <Typography variant="h5" fontWeight={700} gutterBottom color="primary" mb={3}>
+          Generate a New Quiz!
+        </Typography>
+        <Typography fontWeight={700} whiteSpace={"pre"} letterSpacing={4} gutterBottom color="rgba(119, 119, 119, 1)" mb={5}>
+          {"Sky's  the  Limit."}
+        </Typography>
 
-      <Stack spacing={3}>
-        <TextField
-          label="Quiz Topic"
-          variant="outlined"
-          fullWidth
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          disabled={loading}
-          autoFocus
-        />
+        <Stack spacing={3} sx={{width: "100%"}}>
+          <TextField
+            label="Quiz Topic"
+            variant="outlined"
+            fullWidth
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            disabled={loading}
+            autoFocus
+          />
 
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!topic.trim() || loading}
-          onClick={handleGenerate}
-          startIcon={loading ? <CircularProgress size={20} /> : null}
-          sx={{ fontWeight: 700, py: 1.5 }}
-        >
-          {loading ? "Generating..." : "Generate Quiz"}
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!topic.trim() || loading}
+            onClick={handleGenerate}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
+            sx={{ fontWeight: 700, py: 1.5 }}
+          >
+            {loading ? "Generating..." : "Generate Quiz"}
+          </Button>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={handleBack}
-          disabled={loading}
-          sx={{ fontWeight: 700, py: 1.5 }}
-        >
-          Back
-        </Button>
-      </Stack>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleBack}
+            disabled={loading}
+            sx={{ fontWeight: 700, py: 1.5 }}
+          >
+            Back
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 }
