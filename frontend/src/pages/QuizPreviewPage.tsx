@@ -7,15 +7,17 @@ import {
   Divider,
   List,
   ListItem,
+  Paper,
 } from "@mui/material";
 import BroadcastOnPersonalIcon from "@mui/icons-material/BroadcastOnPersonal";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import QuizThumbnail from "../components/QuizThumbnail";
 
 export default function PreviewPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { questions, summary, quizID, title } = location.state || {};
+  const { questions, summary, quizID, title, createdBy, createdAt } = location.state || {};
 
   if (!questions || !summary) {
     return (
@@ -44,51 +46,84 @@ export default function PreviewPage() {
   };
 
   return (
-    <Box sx={{ px: 4, py: 6, maxWidth: 700, mx: "auto" }}>
-      <Typography variant="h4" fontWeight={600} gutterBottom>
-        {title || "Quiz Preview"}
-      </Typography>
-      <Typography variant="subtitle1" gutterBottom color="text.secondary">
-        {summary}
-      </Typography>
+    <Box sx={{ px: 4, py: 6 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Typography variant="h4" fontWeight={600} gutterBottom>
+          {title || "Quiz Preview"}
+        </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          {summary}
+        </Typography>
+      </Box>
 
-      <Divider sx={{ my: 3 }} />
+      <Box
+        sx={{
+          display: "flex",
+          gap: 3,
+          justifyContent: "center",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          mt: 4,
+        }}
+      >
+        {/* Quiz Thumbnail */}
+        {/* <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 1 }}>
+          <QuizThumbnail
+            title={title}
+            description={summary}
+            createdBy={createdBy || "Unknown"}
+            createdAt={createdAt || "Unknown"}
+          />
+        </Box> */}
 
-      <List>
-        {questions.map((q: any, i: number) => (
-          <ListItem
-            key={i}
-            alignItems="flex-start"
-            sx={{ mb: 2, flexDirection: "column", alignItems: "stretch" }}
-          >
-            <Typography variant="body1" fontWeight="bold" mb={1}>
-              {`Q${i + 1}: ${q.question}`}
-            </Typography>
-            <List disablePadding>
-              {q.options.map((opt: string, idx: number) => (
-                <ListItem
-                  key={`${i}-${idx}`}
-                  divider
-                  dense
-                  sx={{ color: "text.secondary", pl: 3 }}
-                >
-                  <Typography>{opt}</Typography>
-                </ListItem>
-              ))}
-            </List>
-          </ListItem>
-        ))}
-      </List>
+        {/* Questions Preview */}
+        <Paper
+          elevation={3}
+          sx={{
+            mt: 2,
+            p: 2,
+            maxHeight: 500,
+            overflowY: "auto",
+            width: 600,
+          }}
+        >
+          <Typography variant="h6" fontWeight={600} gutterBottom>
+            Questions
+          </Typography>
+          <List>
+            {questions.map((q: any, i: number) => (
+              <ListItem
+                key={i}
+                alignItems="flex-start"
+                sx={{ mb: 2, flexDirection: "column", alignItems: "stretch" }}
+              >
+                <Typography variant="body1" fontWeight="bold" mb={1}>
+                  {`Q${i + 1}: ${q.question}`}
+                </Typography>
+                <List disablePadding>
+                  {q.options.map((opt: string, idx: number) => (
+                    <ListItem
+                      key={`${i}-${idx}`}
+                      divider
+                      dense
+                      sx={{ color: "text.secondary", pl: 3 }}
+                    >
+                      <Typography>{opt}</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      </Box>
 
+      {/* Fixed Back and Host buttons */}
       <Box
         sx={{
           position: "fixed",
           bottom: 20,
-          left: 0,
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          gap: 3,
+          left: 20,
           zIndex: 999,
           pointerEvents: "none",
         }}
@@ -98,6 +133,7 @@ export default function PreviewPage() {
             variant="contained"
             color="primary"
             onClick={handleBack}
+            sx={{ minWidth: 120 }}
             startIcon={<ArrowBackIosNewIcon />}
           >
             Back

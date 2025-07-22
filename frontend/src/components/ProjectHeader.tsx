@@ -41,7 +41,7 @@ export default function ProjectHeader() {
           <Box component="span" sx={{ color: "#4CAF50" }}>
             Triv
           </Box>
-          <Box component="span" sx={{ color: "#2196F3" }}>
+          <Box component="span" sx={{ color: "#2196f3ff" }}>
             AI
           </Box>
         </Typography>
