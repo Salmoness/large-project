@@ -1,6 +1,7 @@
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { hostQuiz } from "../components/hostQuiz";
+import SpotlightOverlay from "../components/spotlight";
 
 export default function GenerationSuccessPage() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export default function GenerationSuccessPage() {
         px: 2,
       }}
     >
+      <SpotlightOverlay/>
       <Typography variant="h4" fontWeight={700} color="primary" textAlign="center">
         Quiz Generated Successfully!
       </Typography>
