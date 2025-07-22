@@ -50,6 +50,7 @@ Rules:
 - Increase difficulty gradually from question 1 to 10.
 - If the topic is inappropriate or explicit, return an empty array as the "questions" value and an empty string as the "summary".
 - Questions and answers must be appropriate for a college classroom and must not contain sensitive or explicit content.
+- Correct answers should be randomly distributed among the options.
 
 Do not include any helper text or explanations. Output only the JSON object in valid JSON format.
 `;

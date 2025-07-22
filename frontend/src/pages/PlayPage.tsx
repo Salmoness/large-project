@@ -12,6 +12,7 @@ import {
   Stack,
   LinearProgress,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { retrieveJWTFromLocalStorage } from "../assets/jwt-utils";
@@ -183,171 +184,187 @@ export default function PlayPage() {
 
   return (
     <CenteredContainer>
-      {step === "start" && (
-        <Box
-          sx={{
-            maxWidth: 400,
-            width: "100%",
-            mx: "auto",
-            mt: 10,
-            p: 4,
-            borderRadius: 4,
-            bgcolor: "background.paper",
-            boxShadow: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="h4" fontWeight={700} gutterBottom>
-            Join Quiz
-          </Typography>
+      <Paper
+        sx={{
+          p: 6,
+          mt: 6,
+          mb: 6,
+          borderRadius: 4,
+          border: "solid rgba(60, 77, 224, 0.2)",
+          bgcolor: "rgba(255, 255, 255, 0.42)",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 8px 32px rgba(31, 38, 135, 0.2)",
+          mx: "auto",
+          maxWidth: step === "quiz" ? 700 : 500,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        {step === "start" && (
+          <>
+            <Typography variant="h4" fontWeight={700} gutterBottom>
+              Join Quiz
+            </Typography>
 
-          <Stack spacing={3} mt={3}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={loggedIn}
-              sx={{ borderRadius: 2 }}
-            />
-
-            <TextField
-              label="Game Code"
-              variant="outlined"
-              fullWidth
-              value={gameCode}
-              onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-              inputProps={{ maxLength: 6, style: { textTransform: "uppercase", letterSpacing: 2 } }}
-            />
-
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleStart}
-              disabled={!name.trim() || !gameCode.trim() || loading}
-              sx={{ py: 1.5, fontWeight: 600 }}
-            >
-              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Start Quiz"}
-            </Button>
-
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => (loggedIn ? navigate("/host_dashboard") : navigate("/"))}
-              startIcon={<ArrowBackIosNewIcon />}
-              sx={{ py: 1.5, fontWeight: 600 }}
-            >
-              Back
-            </Button>
-          </Stack>
-        </Box>
-
-      )}
-
-      {step === "quiz" && (
-        <>
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: 400,
-              mb: 3,
-              mx: "auto",
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <AccessTimeIcon
-              sx={{ color: timeLeft < 5 ? "#d32f2f" : "#1976d2", fontSize: 30 }}
-            />
-            <LinearProgress
-              variant="determinate"
-              value={timePercentage}
-              sx={{
-                flexGrow: 1,
-                height: 12,
-                borderRadius: 6,
-                boxShadow: "0 2px 6px rgba(25, 118, 210, 0.3)",
-                [`& .MuiLinearProgress-bar`]: {
-                  backgroundColor: timeLeft < 5 ? "#d32f2f" : "#1976d2",
-                  transition: "background-color 0.3s ease",
-                },
-              }}
-            />
-          </Box>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            maxWidth={600}
-            mx="auto"
-            mb={3}
-            px={1}
-          >
-            <AnimatePresence>
-              <motion.div
-                key={score}
-                initial={{ scale: 1 }}
-                animate={scoreFlash ? { scale: 1.3 } : { scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Typography variant="body1" fontWeight={700} color="#1976d2">
-                  Score: {score}
-                </Typography>
-              </motion.div>
-            </AnimatePresence>
-          </Stack>
-
-          <Box
-            sx={{
-              maxWidth: 600,
-              mx: "auto",
-              mb: 4,
-              borderRadius: 3,
-              boxShadow: 1,
-              backgroundColor: "#ffffff",
-              p: 3,
-            }}
-          >
-            {questions.length > 0 && (
-              <QuizCard
-                question={questions[current].question}
-                options={questions[current].options}
-                onAnswer={handleAnswer}
+            <Stack spacing={3} mt={3}>
+              <TextField
+                label="Name"
+                variant="outlined"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={loggedIn}
+                sx={{ borderRadius: 2 }}
               />
-            )}
-          </Box>
 
-          <Typography variant="body2" textAlign="center" color="text.secondary" mb={4}>
-            Question {current + 1} of {questions.length}
-          </Typography>
-        </>
-      )}
+              <TextField
+                label="Game Code"
+                variant="outlined"
+                fullWidth
+                value={gameCode}
+                onChange={(e) => setGameCode(e.target.value.toUpperCase())}
+                inputProps={{
+                  maxLength: 6,
+                  style: { textTransform: "uppercase", letterSpacing: 2 },
+                }}
+              />
 
-      {step === "result" && (
-        <Box
-          sx={{
-            maxWidth: 500,
-            mx: "auto",
-            mt: 10,
-            p: 4,
-            borderRadius: 3,
-            boxShadow: 3,
-            backgroundColor: "#fff",
-            textAlign: "center",
-          }}
-        >
-          <ResultScreen
-            score={score}
-            total={questions.length * 1000}
-            correctCount={correctCount}
-            totalQuestions={questions.length}
-            onRestart={handleRestart}
-          />
-        </Box>
-      )}
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleStart}
+                disabled={!name.trim() || !gameCode.trim() || loading}
+                sx={{ py: 1.5, fontWeight: 600 }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: "white" }} />
+                ) : (
+                  "Start Quiz"
+                )}
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => (loggedIn ? navigate("/host_dashboard") : navigate("/"))}
+                startIcon={<ArrowBackIosNewIcon />}
+                sx={{ py: 1.5, fontWeight: 600 }}
+              >
+                Back
+              </Button>
+            </Stack>
+          </>
+        )}
+
+        {step === "quiz" && (
+          <>
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: 400,
+                mb: 3,
+                mx: "auto",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <AccessTimeIcon
+                sx={{
+                  color: timeLeft < 5 ? "#d32f2f" : "#1976d2",
+                  fontSize: 30,
+                }}
+              />
+              <LinearProgress
+                variant="determinate"
+                value={timePercentage}
+                sx={{
+                  flexGrow: 1,
+                  height: 12,
+                  borderRadius: 6,
+                  boxShadow: "0 2px 6px rgba(25, 118, 210, 0.3)",
+                  [`& .MuiLinearProgress-bar`]: {
+                    backgroundColor: timeLeft < 5 ? "#d32f2f" : "#1976d2",
+                    transition: "background-color 0.3s ease",
+                  },
+                }}
+              />
+            </Box>
+
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              maxWidth={600}
+              mx="auto"
+              mb={3}
+              px={1}
+            >
+              <AnimatePresence>
+                <motion.div
+                  key={score}
+                  initial={{ scale: 1 }}
+                  animate={scoreFlash ? { scale: 1.3 } : { scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Typography variant="body1" fontWeight={700} color="#1976d2">
+                    Score: {score}
+                  </Typography>
+                </motion.div>
+              </AnimatePresence>
+            </Stack>
+
+            <Box
+              sx={{
+                maxWidth: 600,
+                mx: "auto",
+                mb: 4,
+                borderRadius: 3,
+                boxShadow: 1,
+                backgroundColor: "#ffffff",
+                p: 3,
+              }}
+            >
+              {questions.length > 0 && (
+                <QuizCard
+                  question={questions[current].question}
+                  options={questions[current].options}
+                  onAnswer={handleAnswer}
+                />
+              )}
+            </Box>
+
+            <Typography variant="body2" textAlign="center" color="text.secondary" mb={4}>
+              Question {current + 1} of {questions.length}
+            </Typography>
+          </>
+        )}
+
+        {step === "result" && (
+          <>
+            <Box
+              sx={{
+                maxWidth: 500,
+                mx: "auto",
+                mt: 10,
+                p: 4,
+                borderRadius: 3,
+                boxShadow: 3,
+                backgroundColor: "#fff",
+                textAlign: "center",
+              }}
+            >
+              <ResultScreen
+                score={score}
+                total={questions.length * 1000}
+                correctCount={correctCount}
+                totalQuestions={questions.length}
+                onRestart={handleRestart}
+              />
+            </Box>
+          </>
+        )}
+      </Paper>
     </CenteredContainer>
   );
 }
