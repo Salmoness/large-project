@@ -44,14 +44,21 @@ export default function HostPage() {
         <Stack spacing={2} sx={{ width: 250 }}>
           <Button
             variant="contained"
-            color="secondary" 
             fullWidth
             startIcon={<PlayArrowIcon />}
             onClick={() => navigate("/play")}
-            sx={{ fontWeight: 700, py: 1.5 }}
+            sx={{
+              fontWeight: 700,
+              py: 1.5,
+              backgroundColor: "#2196f3ff",
+              "&:hover": {
+                backgroundColor: "#1B346E",
+              },
+            }}
           >
             Play
           </Button>
+
           <Button
             variant="contained"
             color="success" 
