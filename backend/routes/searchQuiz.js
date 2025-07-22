@@ -35,5 +35,4 @@ export async function searchQuiz(req, res, next) {
     .status(SUCCESS)
     .json({ quizzes: results, error: "", jwt: jwtRefreshStr });
   return;
-  
 }

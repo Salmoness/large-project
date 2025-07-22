@@ -137,7 +137,7 @@ export default function PlayPage() {
         },
         body: JSON.stringify({
           quizSessionID: sessionID,
-          correctCount: score,
+          score: score,
           jwt: quizSessionJWT
         }),
       });
