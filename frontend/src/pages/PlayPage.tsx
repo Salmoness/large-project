@@ -186,20 +186,22 @@ export default function PlayPage() {
       {step === "start" && (
         <Box
           sx={{
-            maxWidth: 500, // wider name input container
+            maxWidth: 400,
+            width: "100%",
             mx: "auto",
-            mt: 8,
+            mt: 10,
             p: 4,
-            borderRadius: 3,
-            boxShadow: 3,
-            backgroundColor: "#fff",
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            boxShadow: 4,
             textAlign: "center",
           }}
         >
           <Typography variant="h4" fontWeight={700} gutterBottom>
             Join Quiz
           </Typography>
-          <Stack spacing={3} sx={{ mt: 3 }}>
+
+          <Stack spacing={3} mt={3}>
             <TextField
               label="Name"
               variant="outlined"
@@ -207,41 +209,40 @@ export default function PlayPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loggedIn}
+              sx={{ borderRadius: 2 }}
             />
+
             <TextField
               label="Game Code"
               variant="outlined"
               fullWidth
               value={gameCode}
               onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-              inputProps={{ maxLength: 6, style: { textTransform: "uppercase" } }}
+              inputProps={{ maxLength: 6, style: { textTransform: "uppercase", letterSpacing: 2 } }}
             />
+
             <Button
               variant="contained"
-              color="primary"
+              size="large"
               onClick={handleStart}
               disabled={!name.trim() || !gameCode.trim() || loading}
-              fullWidth
+              sx={{ py: 1.5, fontWeight: 600 }}
             >
-              {loading ? (
-                <CircularProgress size={24} sx={{ color: "white" }} />
-              ) : (
-                "Start Quiz"
-              )}
+              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Start Quiz"}
             </Button>
+
             <Button
               variant="outlined"
-              color="primary"
-              onClick={() =>
-                !loggedIn ? navigate("/") : navigate("/host_dashboard")
-              }
-              fullWidth
+              size="large"
+              onClick={() => (loggedIn ? navigate("/host_dashboard") : navigate("/"))}
               startIcon={<ArrowBackIosNewIcon />}
+              sx={{ py: 1.5, fontWeight: 600 }}
             >
               Back
             </Button>
           </Stack>
         </Box>
+
       )}
 
       {step === "quiz" && (
@@ -249,7 +250,7 @@ export default function PlayPage() {
           <Box
             sx={{
               width: "100%",
-              maxWidth: 600,
+              maxWidth: 400,
               mb: 3,
               mx: "auto",
               display: "flex",
