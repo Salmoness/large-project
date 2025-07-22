@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAPIBaseURL } from "../components/APIBaseURL.tsx";
 import { saveJWTToLocalStorage } from "../assets/jwt-utils.ts";
 import ProjectHeader from "../components/ProjectHeader.tsx";
 import CenteredContainer from "../components/CenteredContainer.tsx";
 import { Box, TextField, Button, Stack, Typography, Link } from "@mui/material";
+import { checkLoginStatus } from "../components/CheckLoginStatus.tsx";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +15,17 @@ export default function Login() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+
+  useEffect(() => {
+    checkLogin();
+  }, [])
+  
+  async function checkLogin() {
+    const isLoggedIn = await checkLoginStatus();
+    if (!isLoggedIn) {
+      navigate("/host_dashboard");
+    }
+  } 
 
   async function doLogin(): Promise<void> {
     if (!username || !password) {

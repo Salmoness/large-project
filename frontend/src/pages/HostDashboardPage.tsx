@@ -1,7 +1,7 @@
 import { Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ProjectHeader from "../components/ProjectHeader";
-
+import { forgetJWTInLocalStorage } from "../assets/jwt-utils";
 // MUI Icons
 import AddIcon from "@mui/icons-material/Add";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -12,7 +12,7 @@ export default function HostPage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    
+    forgetJWTInLocalStorage();
     navigate("/login");
   };
 

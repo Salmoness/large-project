@@ -10,10 +10,25 @@ import {
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ProjectHeader from "../components/ProjectHeader";
 import CenteredContainer from "../components/CenteredContainer";
+import { checkLoginStatus } from "../components/CheckLoginStatus"
+import { useEffect } from "react";
 
 export default function IndexPage() {
+
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  async function checkLogin() {
+    const isLoggedIn = await checkLoginStatus();
+    if (!isLoggedIn) {
+      navigate("/host_dashboard");
+    }
+  } 
+  
+  
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
   return (
     <CenteredContainer>
