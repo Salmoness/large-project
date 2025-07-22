@@ -4,20 +4,19 @@ import {
   Box,
   Typography,
   Button,
-  Divider,
   List,
   ListItem,
   Paper,
 } from "@mui/material";
 import BroadcastOnPersonalIcon from "@mui/icons-material/BroadcastOnPersonal";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import QuizThumbnail from "../components/QuizThumbnail";
+// import QuizThumbnail from "../components/QuizThumbnail";
 
 export default function PreviewPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { questions, summary, quizID, title, createdBy, createdAt } = location.state || {};
+  const { questions, summary, quizID, title,  } = location.state || {};
 
   if (!questions || !summary) {
     return (
@@ -66,8 +65,8 @@ export default function PreviewPage() {
           mt: 4,
         }}
       >
-        {/* Quiz Thumbnail */}
-        {/* <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 1 }}>
+        {/* Quiz Thumbnail
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 1 }}>
           <QuizThumbnail
             title={title}
             description={summary}

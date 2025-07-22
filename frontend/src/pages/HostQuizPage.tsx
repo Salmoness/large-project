@@ -38,11 +38,11 @@ export default function HostPage() {
         {summary || "No summary available."}
       </Typography>
 
-      {/* {quizID && (
-        <Typography variant="body1" color="text.secondary">
-          <strong>Quiz ID:</strong> {quizID}
-        </Typography>
-      )} */}
+      {quizID && (
+        // <Typography variant="body1" color="text.secondary">
+        //   <strong>Quiz ID:</strong> {quizID}
+        // </Typography>
+      true)}
 
       <Stack direction="row" spacing={2} sx={{ mt: 5 }}>
         <Button
