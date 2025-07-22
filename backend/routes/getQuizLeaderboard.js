@@ -12,6 +12,7 @@ import { COLLECTIONS } from "../utils/dbConstants.js";
 import { SUCCESS, INTERNAL_ERROR } from "../utils/responseCodeConstants.js";
 
 export async function getQuizLeaderboard(req, res, next) {
+  
   const { quizGameID, jwt } = req.body;
 
   try {

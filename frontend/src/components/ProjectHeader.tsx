@@ -6,7 +6,7 @@ export default function ProjectHeader() {
   return (
     <Box
       component={Link}
-      to="/host_dashboard"
+      to="/"
       sx={{
         textDecoration: "none",
         color: "inherit",

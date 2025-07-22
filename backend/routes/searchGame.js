@@ -7,6 +7,7 @@ import {
 } from "../utils/responseCodeConstants.js";
 
 export async function searchGame(req, res, next) {
+  console.log("reaches")
   // Expects a search term and JWT in the request body
   const { search, jwt } = req.body;
 
@@ -22,6 +23,7 @@ export async function searchGame(req, res, next) {
     const gamesHostedByUser = await req.app.locals.mongodb
       .collection("QuizzGames")
       .find({ created_by_id: jwtPayload.userId, in_progress: false })
+      .sort({ created_at: -1 })
       .toArray();
 
     for (let i = 0; i < gamesHostedByUser.length; i++) {
@@ -60,9 +62,10 @@ export async function searchGame(req, res, next) {
         summary: currQuiz.summary,
         questions: currQuiz.questions,
         players: gamesHostedByUser[i].players,
-        created_at: gamesHostedByUser[i].created_at
+        created_at: new Date(gamesHostedByUser[i].created_at)
       });
     }
+
     return res
       .status(SUCCESS)
       .json({ games: games, error: "", jwt: jwtRefreshStr });
